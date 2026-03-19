@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Reyting">
+<title>🏆 O'quvchilar Reytingi</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{
+  --bg:#080c14;--s1:#0d1220;--s2:#131929;--s3:#1a2138;--s4:#222b45;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#eef0f8;--text2:#7880a0;--text3:#4a5070;
+  --card-bg:#131929;
+}
+[data-theme="light"]{
+  --bg:#f0f4ff;--s1:#ffffff;--s2:#f7f9ff;--s3:#edf0fa;--s4:#e2e6f5;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1d2e;--text2:#5a6080;--text3:#9098b8;
+  --card-bg:#ffffff;
+}
+:root{
+  --accent:#3d7fff;--accent2:#6c3dff;
+  --green:#00c97a;--yellow:#ffb020;--red:#ff4060;--teal:#00d4c8;
+  --gold:#ffd700;--silver:#c0c0c0;--bronze:#cd7f32;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+
+/* BG GLOW */
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-glow::before{content:'';position:absolute;top:-20%;left:10%;width:60%;height:60%;
+  background:radial-gradient(circle,rgba(61,127,255,.12) 0%,transparent 70%);border-radius:50%}
+.bg-glow::after{content:'';position:absolute;bottom:-10%;right:5%;width:50%;height:50%;
+  background:radial-gradient(circle,rgba(108,61,255,.1) 0%,transparent 70%);border-radius:50%}
+
+.container{max-width:480px;margin:0 auto;padding:0 14px 40px;position:relative;z-index:1}
+
+/* HEADER */
+.hdr{padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between}
+.hdr-left{display:flex;flex-direction:column}
+.hdr-title{font-size:24px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--text) 40%,var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-sub{font-size:12px;color:var(--text2);font-weight:600;margin-top:3px;font-family:var(--mono)}
+.theme-btn{width:36px;height:36px;border-radius:12px;background:var(--s2);border:1px solid var(--border);
+  color:var(--text2);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* SEARCH */
+.srch{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);
+  border-radius:14px;padding:11px 14px;margin-bottom:14px;transition:border-color .2s,background .3s}
+.srch:focus-within{border-color:var(--border2)}
+.srch input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-weight:500}
+.srch input::placeholder{color:var(--text3)}
+
+/* FILTER CHIPS */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;
+  cursor:pointer;background:var(--s2);border:1px solid var(--border);color:var(--text2);transition:all .2s}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(61,127,255,.3)}
+
+/* TOP 3 PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:10px 0 24px}
+.pod{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:130px}
+.pod-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:900;border:3px solid transparent;position:relative;transition:transform .3s}
+.pod-avatar.p1{width:72px;height:72px;font-size:22px;border-color:var(--gold);
+  box-shadow:0 0 20px rgba(255,215,0,.3);animation:pulse 2s ease-in-out infinite}
+.pod-avatar.p2{width:60px;height:60px;font-size:18px;border-color:var(--silver)}
+.pod-avatar.p3{width:52px;height:52px;font-size:16px;border-color:var(--bronze)}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.3)}50%{box-shadow:0 0 30px rgba(255,215,0,.5)}}
+.pod-crown{font-size:20px;margin-bottom:-4px}
+.pod-name{font-size:11px;font-weight:800;text-align:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod-score{font-family:var(--mono);font-size:13px;font-weight:900}
+.pod-score.pos{color:var(--green)}.pod-score.neg{color:var(--red)}
+.pod-base{width:100%;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:900;color:rgba(255,255,255,.7)}
+.pod-base.b1{height:70px;background:linear-gradient(180deg,rgba(255,215,0,.2),rgba(255,215,0,.05));border:1px solid rgba(255,215,0,.2)}
+.pod-base.b2{height:52px;background:linear-gradient(180deg,rgba(192,192,192,.15),rgba(192,192,192,.03));border:1px solid rgba(192,192,192,.15)}
+.pod-base.b3{height:38px;background:linear-gradient(180deg,rgba(205,127,50,.15),rgba(205,127,50,.03));border:1px solid rgba(205,127,50,.15)}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:8px;margin-bottom:20px}
+.stat-box{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:14px;
+  padding:12px 8px;text-align:center;transition:background .3s}
+.stat-num{font-size:22px;font-weight:900;font-family:var(--mono)}
+.stat-lbl{font-size:10px;color:var(--text2);font-weight:700;margin-top:2px}
+
+/* SECTION TITLE */
+.sec-title{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;
+  letter-spacing:1.2px;margin-bottom:10px}
+
+/* RANK CARD */
+.rank-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;
+  padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
+  transition:all .2s;position:relative;overflow:hidden}
+.rank-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.rank-card.top1::before{background:var(--gold)}
+.rank-card.top2::before{background:var(--silver)}
+.rank-card.top3::before{background:var(--bronze)}
+.rank-card.pos-rank::before{background:var(--green)}
+.rank-card.neg-rank::before{background:var(--red)}
+
+.rank-num{width:30px;text-align:center;font-size:14px;font-weight:900;
+  font-family:var(--mono);flex-shrink:0;color:var(--text2)}
+.rank-num.gold{color:var(--gold)}.rank-num.silver{color:var(--silver)}.rank-num.bronze{color:var(--bronze)}
+
+.rank-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;font-size:15px;font-weight:900}
+.av0{background:rgba(61,127,255,.15);color:var(--accent)}
+.av1{background:rgba(108,61,255,.15);color:#7c5af0}
+.av2{background:rgba(0,201,122,.15);color:var(--green)}
+.av3{background:rgba(255,176,32,.15);color:var(--yellow)}
+.av4{background:rgba(255,64,96,.15);color:var(--red)}
+.av5{background:rgba(0,212,200,.15);color:var(--teal)}
+.av6{background:rgba(255,120,50,.15);color:#ff7832}
+.av7{background:rgba(255,61,154,.15);color:#ff3d9a}
+
+.rank-info{flex:1;min-width:0}
+.rank-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-meta{font-size:11px;color:var(--text2);font-weight:500;margin-top:2px}
+.rank-bar-wrap{width:100%;background:var(--s3);border-radius:4px;height:4px;margin-top:6px}
+.rank-bar{height:4px;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+.rank-score{font-size:18px;font-weight:900;font-family:var(--mono);flex-shrink:0;letter-spacing:-.5px}
+.rank-score.pos{color:var(--green)}.rank-score.neg{color:var(--red)}.rank-score.zer{color:var(--text2)}
+
+/* SCORE BREAKDOWN */
+.breakdown{display:flex;gap:6px;margin-top:6px}
+.bk-item{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;font-family:var(--mono)}
+.bk-g{background:rgba(0,201,122,.1);color:var(--green);border:1px solid rgba(0,201,122,.15)}
+.bk-r{background:rgba(255,64,96,.1);color:var(--red);border:1px solid rgba(255,64,96,.15)}
+.bk-b{background:rgba(61,127,255,.1);color:var(--accent);border:1px solid rgba(61,127,255,.15)}
+
+/* LOADING */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 20px;gap:16px}
+.spin{width:40px;height:40px;border:3px solid var(--s4);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-txt{font-size:14px;color:var(--text2);font-weight:600}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px;font-weight:600}
+
+/* REFRESH */
+.refresh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;
+  background:var(--s2);border:1px solid var(--border);color:var(--text2);
+  font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.refresh-btn:active{background:var(--s3)}
+.refresh-btn.spin-icon svg{animation:spin .7s linear infinite}
+.last-update{font-size:11px;color:var(--text3);font-family:var(--mono)}
+
+/* FADE IN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.rank-card{animation:fadeUp .3s ease both}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="container">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="hdr-title">🏆 Reyting</div>
+      <div class="hdr-sub" id="hdr-sub">Yuklanmoqda...</div>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="spin"></div>
+    <div class="load-txt">Ma'lumotlar yuklanmoqda...</div>
+  </div>
+
+  <div id="main" style="display:none">
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-box"><div class="stat-num" id="s-total" style="color:var(--accent)">0</div><div class="stat-lbl">O'quvchi</div></div>
+      <div class="stat-box"><div class="stat-num" id="s-top" style="color:var(--gold)">0</div><div class="stat-lbl">Eng yuqori</div></div>
+      <div class="stat-box"><div class="stat-num" id="s-avg" style="color:var(--teal)">0</div><div class="stat-lbl">O'rtacha</div></div>
+    </div>
+
+    <!-- PODIUM (Top 3) -->
+    <div class="podium" id="podium"></div>
+
+    <!-- FILTER & SEARCH -->
+    <div class="chips" id="grp-chips"></div>
+    <div class="srch">
+      <span style="color:var(--text3)">🔍</span>
+      <input type="search" id="srch-inp" placeholder="Ism bo'yicha qidirish...">
+    </div>
+
+    <!-- REFRESH -->
+    <div class="refresh-row">
+      <div class="sec-title">Barcha o'quvchilar</div>
+      <button class="refresh-btn" onclick="loadData()" id="refresh-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Yangilash
+      </button>
+    </div>
+    <div class="last-update" id="last-update" style="margin-bottom:12px"></div>
+
+    <!-- LIST -->
+    <div id="rank-list"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════
+//  CONFIG
+// ══════════════════════════════
+const SB  = 'https://lwpimllflhpcxtehkgjb.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3cGltbGxmbGhwY3h0ZWhrZ2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzMzNDYsImV4cCI6MjA4OTM0OTM0Nn0.yq2XHQBE6nyfHtRWbbo4C7V5sma5DaCEwzCu9wS1f9M';
+const H   = {'apikey':KEY,'Authorization':'Bearer '+KEY};
+
+async function GET(table,params=''){
+  const r=await fetch(`${SB}/rest/v1/${table}${params}`,{headers:H});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+
+// ══════════════════════════════
+//  STATE
+// ══════════════════════════════
+let allStudents=[],allScores=[],allAtt=[],allGroups=[];
+let activeGrp='all',searchQuery='';
+
+const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+function avl(n){return(n||'').split(' ').slice(0,2).map(w=>(w[0]||'').toUpperCase()).join('')}
+function avCls(i){return 'av'+(i%8)}
+
+// ══════════════════════════════
+//  LOAD
+// ══════════════════════════════
+async function loadData(){
+  setRefreshAnim(true);
+  try{
+    [allGroups,allStudents,allScores,allAtt]=await Promise.all([
+      GET('groups','?order=name&select=*'),
+      GET('students','?order=name&select=id,name,student_id,group_id,groups(name)'),
+      GET('scores','?select=student_id,points'),
+      GET('attendance','?select=student_id,status')
+    ]);
+    document.getElementById('loader').style.display='none';
+    document.getElementById('main').style.display='block';
+    const now=new Date();
+    document.getElementById('last-update').textContent=
+      `Yangilandi: ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('hdr-sub').textContent=
+      `${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()} · ${allStudents.length} o'quvchi`;
+    render();
+  }catch(e){
+    document.querySelector('.load-txt').textContent='Xatolik: '+e.message;
+  }finally{setRefreshAnim(false)}
+}
+
+function setRefreshAnim(on){
+  const btn=document.getElementById('refresh-btn');
+  if(on)btn.classList.add('spin-icon');else btn.classList.remove('spin-icon');
+}
+
+// ══════════════════════════════
+//  SCORE CALC
+// ══════════════════════════════
+function calcScores(){
+  // manual scores per student
+  const manual={};
+  allScores.forEach(r=>{
+    manual[r.student_id]=(manual[r.student_id]||0)+r.points;
+  });
+  // auto scores from attendance
+  const auto={};
+  allAtt.forEach(r=>{
+    if(r.status==='kelmadi')auto[r.student_id]=(auto[r.student_id]||0)-30;
+    else if(r.status==='kechikdi')auto[r.student_id]=(auto[r.student_id]||0)-10;
+  });
+
+  return allStudents.map((s,i)=>{
+    const m=manual[s.id]||0;
+    const a=auto[s.id]||0;
+    return{...s,manual:m,auto:a,total:m+a,idx:i};
+  }).sort((a,b)=>b.total-a.total);
+}
+
+// ══════════════════════════════
+//  RENDER
+// ══════════════════════════════
+function render(){
+  const ranked=calcScores();
+
+  // Group chips
+  const gc=document.getElementById('grp-chips');gc.innerHTML='';
+  [{id:'all',name:'Hammasi'},...allGroups].forEach(g=>{
+    const el=document.createElement('div');
+    el.className='chip'+(activeGrp===g.id?' on':'');el.textContent=g.name;
+    el.onclick=()=>{activeGrp=g.id;render()};gc.appendChild(el);
+  });
+
+  // Filter
+  const fil=ranked.filter(s=>{
+    const grpOk=activeGrp==='all'||s.group_id===activeGrp;
+    const srchOk=!searchQuery||s.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return grpOk&&srchOk;
+  });
+
+  // Stats
+  document.getElementById('s-total').textContent=fil.length;
+  if(fil.length){
+    document.getElementById('s-top').textContent=(fil[0].total>=0?'+':'')+fil[0].total;
+    const avg=Math.round(fil.reduce((a,b)=>a+b.total,0)/fil.length);
+    document.getElementById('s-avg').textContent=(avg>=0?'+':'')+avg;
+  }
+
+  // Podium (top 3 from filtered)
+  renderPodium(fil.slice(0,3));
+
+  // List (from 4th onward)
+  const listItems=fil.slice(3);
+  document.getElementById('rank-list').innerHTML=listItems.map((s,i)=>{
+    const rank=i+4;
+    const col=s.total>0?'var(--green)':s.total<0?'var(--red)':'var(--text2)';
+    const cls=s.total>0?'pos-rank':s.total<0?'neg-rank':'';
+    const pct=Math.min(100,Math.max(2,((s.total+300)/600)*100));
+    const sc=s.total>0?'+'+s.total:String(s.total);
+    const scCls=s.total>0?'pos':s.total<0?'neg':'zer';
+    return`<div class="rank-card ${cls}" style="animation-delay:${Math.min(i*0.03,0.3)}s">
+      <div class="rank-num">${rank}</div>
+      <div class="rank-av ${avCls(s.idx)}">${avl(s.name)}</div>
+      <div class="rank-info">
+        <div class="rank-name">${s.name}</div>
+        <div class="rank-meta">${s.groups?.name||'—'} · ID #${s.student_id||'—'}</div>
+        <div class="breakdown">
+          ${s.manual!==0?`<span class="bk-item ${s.manual>0?'bk-g':'bk-r'}">${s.manual>0?'+':''}${s.manual} qo'lda</span>`:''}
+          ${s.auto!==0?`<span class="bk-item bk-r">${s.auto} avto</span>`:''}
+          ${s.manual===0&&s.auto===0?`<span class="bk-item bk-b">0 ball</span>`:''}
+        </div>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${col}"></div></div>
+      </div>
+      <div class="rank-score ${scCls}">${sc}</div>
+    </div>`;
+  }).join('')||'<div class="empty">O\'quvchi topilmadi</div>';
+}
+
+function renderPodium(top){
+  const pod=document.getElementById('podium');
+  if(top.length<1){pod.innerHTML='';return}
+
+  const order=top.length>=3?[top[1],top[0],top[2]]:(top.length===2?[top[1],top[0]]:[top[0]]);
+  const configs=[
+    {cls:'p2',baseCls:'b2',crown:'🥈',rank:2,nameMax:'90px'},
+    {cls:'p1',baseCls:'b1',crown:'🥇',rank:1,nameMax:'100px'},
+    {cls:'p3',baseCls:'b3',crown:'🥉',rank:3,nameMax:'90px'},
+  ];
+
+  pod.innerHTML=order.map((s,i)=>{
+    if(!s)return'';
+    const cfg=configs[i];
+    const sc=s.total>=0?'+'+s.total:String(s.total);
+    const scCls=s.total>=0?'pos':'neg';
+    return`<div class="pod">
+      <div class="pod-crown">${cfg.crown}</div>
+      <div class="pod-avatar ${cfg.cls} ${avCls(s.idx)}">${avl(s.name)}</div>
+      <div class="pod-name" style="max-width:${cfg.nameMax}">${s.name}</div>
+      <div class="pod-score ${scCls}">${sc}</div>
+      <div class="pod-base ${cfg.baseCls}">${cfg.rank}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  SEARCH
+// ══════════════════════════════
+document.getElementById('srch-inp').oninput=e=>{searchQuery=e.target.value;render()};
+
+// ══════════════════════════════
+//  THEME
+// ══════════════════════════════
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'🌙':'☀️';
+  localStorage.setItem('theme',isDark?'light':'dark');
+}
+const t=localStorage.getItem('theme');
+if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='light'?'🌙':'☀️'}
+
+// Auto refresh har 5 daqiqada
+setInterval(loadData,5*60*1000);
+
+loadData();
+</script>
+</body>
+</html>
