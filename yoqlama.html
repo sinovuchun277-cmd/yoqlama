@@ -819,7 +819,12 @@ async function saveGrpDav(grpId){
     for(const s of grpSts){if(exMap[s.id]&&!a[s.id])await DEL('attendance',`?student_id=eq.${s.id}&date=eq.${curDate}`)}
     const ups=grpSts.filter(s=>a[s.id]).map(s=>({student_id:s.id,date:curDate,status:a[s.id].status,auto_score:a[s.id].status==='kelmadi'?-30:a[s.id].status==='kechikdi'?-10:0}));
     if(ups.length)await UPSERT('attendance',ups);
-    hideLoad();showToast('✅ Saqlandi!');
+    const keldi=grpSts.filter(s=>a[s.id]?.status==='keldi');
+const kechikdi=grpSts.filter(s=>a[s.id]?.status==='kechikdi');
+const kelmadi=grpSts.filter(s=>a[s.id]?.status==='kelmadi');
+const grp=groups.find(g=>g.id===grpId);
+hideLoad();showToast('✅ Saqlandi!');
+await sendTelegramReport(grp?.name||'Guruh',keldi,kechikdi,kelmadi,grpSts);
   }catch(e){hideLoad();showToast('❌ '+e.message)}
 }
 
@@ -1424,6 +1429,43 @@ function copy(txt){
   navigator.clipboard?.writeText(txt).then(()=>showToast('📋 Nusxalandi!')).catch(()=>{
     const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 Nusxalandi!');
   });
+}
+
+// ── TELEGRAM ──
+async function sendTelegramReport(grpName, keldi, kechikdi, kelmadi, grpStudents) {
+  const TG_TOKEN = '8772643167:AAFQtJZrtayonVdX7JJ-HV0dBlLm0Q1nXtE';
+  const CHAT_ID  = '-1001850350557';
+  const dt = new Date(curDate+'T12:00:00');
+  const dateStr = `${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+
+  let msg = `📋 Davomat hisoboti\n`;
+  msg += `📅 ${dateStr} — ${DAYS[dt.getDay()]}\n`;
+  msg += `👥 Guruh: ${grpName}\n`;
+  msg += `────────────────\n`;
+  msg += `✅ Keldi: ${keldi.length} ta\n`;
+  if(kechikdi.length) msg += `⏰ Kechikdi: ${kechikdi.length} ta\n`;
+  msg += `❌ Kelmadi: ${kelmadi.length} ta\n`;
+  msg += `👥 Jami: ${grpStudents.length} ta\n`;
+  if(kelmadi.length){
+    msg += `\n────────────────\n`;
+    msg += `❌ Kelmagan:\n`;
+    kelmadi.forEach((s,i) => msg += `${i+1}. ${s.name}\n`);
+  }
+  if(kechikdi.length){
+    msg += `\n────────────────\n`;
+    msg += `⏰ Kechikkan:\n`;
+    kechikdi.forEach((s,i) => msg += `${i+1}. ${s.name}\n`);
+  }
+  if(!kelmadi.length && !kechikdi.length)
+    msg += `\n🎉 Barcha o'quvchilar o'z vaqtida keldi!`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ chat_id: CHAT_ID, text: msg })
+    });
+  } catch(e) { console.log('TG error:', e); }
 }
 
 // START
