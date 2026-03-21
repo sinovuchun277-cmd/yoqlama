@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="iHuquq">
+<title>iHuquq CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#080c14;--s1:#0d1220;--s2:#131929;--s3:#1a2138;--s4:#222b45;--s5:#2a3357;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#eef0f8;--text2:#7880a0;--text3:#4a5070;}
+[data-theme="light"]{--bg:#f0f4ff;--s1:#fff;--s2:#f7f9ff;--s3:#edf0fa;--s4:#e2e6f5;--s5:#d4daee;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);--text:#1a1d2e;--text2:#5a6080;--text3:#9098b8;}
+:root{--accent:#3d7fff;--accent2:#6c3dff;--green:#00c97a;--yellow:#ffb020;--red:#ff4060;--teal:#00d4c8;--pink:#ff3d9a;--orange:#ff7832;--r:18px;--rs:12px;--rxs:8px;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;--brand:'Montserrat',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+button,input,select,textarea{font-family:var(--font)}
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.spin{width:44px;height:44px;border:3px solid var(--s4);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* APP */
+#app{display:none;flex-direction:column;height:100dvh}
+/* HEADER */
+.hdr{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(env(safe-area-inset-top,0px)+10px);display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 14px rgba(61,127,255,.4);flex-shrink:0}
+.brand{font-family:var(--brand);font-size:20px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.hdr-date{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text2);background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn:active{background:var(--s4)}
+/* NAV 2 QATOR 4x2 */
+.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 6px 2px;gap:2px;transition:background .3s}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
+.ni .ic{font-size:22px;line-height:1}
+.ni.on{color:var(--accent);background:rgba(61,127,255,.08)}
+.ni:active{background:var(--s3)}
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;padding:12px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+12px);-webkit-overflow-scrolling:touch}
+.page.on{display:block}
+/* COMMON */
+.card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;transition:background .3s}
+.sec{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin:16px 0 8px}
+.sec:first-child{margin-top:0}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:var(--s2);border:1px solid var(--border);color:var(--text2);transition:all .15s}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(61,127,255,.3)}
+.srch{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px;transition:border-color .2s,background .3s}
+.srch:focus-within{border-color:var(--border2)}
+.srch input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-weight:500}
+.srch input::placeholder{color:var(--text3)}
+.srow{display:flex;gap:6px;margin-bottom:12px}
+.sbox{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 6px;text-align:center;transition:background .3s}
+.sbox .v{font-size:19px;font-weight:900;font-family:var(--mono)}
+.sbox .l{font-size:10px;color:var(--text2);font-weight:700;margin-top:2px}
+.sbox.g .v{color:var(--green)}.sbox.y .v{color:var(--yellow)}.sbox.r .v{color:var(--red)}.sbox.b .v{color:var(--accent)}.sbox.t .v{color:var(--teal)}
+.dnav{display:flex;align-items:center;justify-content:space-between;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;margin-bottom:12px;transition:background .3s}
+.dnbtn{width:36px;height:36px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.dnbtn:active{background:var(--s4)}
+.dc{text-align:center}.dm{font-size:15px;font-weight:800}.dd{font-size:11px;color:var(--text2);font-family:var(--mono);margin-top:2px}
+/* AVATAR */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.av0{background:rgba(61,127,255,.15);color:var(--accent)}.av1{background:rgba(108,61,255,.15);color:var(--accent2)}
+.av2{background:rgba(0,201,122,.15);color:var(--green)}.av3{background:rgba(255,176,32,.15);color:var(--yellow)}
+.av4{background:rgba(255,64,96,.15);color:var(--red)}.av5{background:rgba(0,212,200,.15);color:var(--teal)}
+.av6{background:rgba(255,120,50,.15);color:var(--orange)}.av7{background:rgba(255,61,154,.15);color:var(--pink)}
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;font-family:var(--mono)}
+.bdg.p{background:rgba(0,201,122,.12);color:var(--green);border:1px solid rgba(0,201,122,.2)}
+.bdg.n{background:rgba(255,64,96,.12);color:var(--red);border:1px solid rgba(255,64,96,.2)}
+.bdg.z{background:var(--s3);color:var(--text2);border:1px solid var(--border)}
+/* BUTTONS */
+.botbar{flex-shrink:0;padding:10px 12px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+10px);background:var(--s1);border-top:1px solid var(--border);transition:background .3s}
+.mbtn{width:100%;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(61,127,255,.35);transition:opacity .15s}
+.mbtn:active{opacity:.85}
+.abtn{padding:11px 16px;border-radius:var(--rxs);background:var(--accent);color:#fff;font-size:13px;font-weight:800;border:none;cursor:pointer;flex-shrink:0;transition:opacity .15s}
+.abtn:active{opacity:.8}
+.abtn.gr{background:var(--green)}.abtn.re{background:var(--red)}.abtn.ye{background:var(--yellow);color:#000}.abtn.te{background:var(--teal);color:#000}
+/* FORM */
+.fi{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:var(--rxs);padding:11px 12px;color:var(--text);font-size:14px;font-weight:600;outline:none;transition:border-color .2s,background .3s;min-width:0}
+.fi:focus{border-color:var(--accent)}
+.fi::placeholder{color:var(--text3);font-weight:400}
+.fsel{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:var(--rxs);padding:11px 12px;color:var(--text);font-size:14px;font-weight:600;outline:none;appearance:none;min-width:0}
+.fr{display:flex;gap:8px;margin-bottom:8px}
+.lr{display:flex;align-items:center;gap:8px;padding:10px;background:var(--s3);border-radius:var(--rxs);margin-bottom:6px;border:1px solid var(--border);transition:background .3s}
+.lr .lt{flex:1;min-width:0}
+.lr .ln{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr .ls{font-size:11px;color:var(--text2);margin-top:1px}
+.dbtn{width:30px;height:30px;border-radius:8px;background:rgba(255,64,96,.1);border:1px solid rgba(255,64,96,.15);color:var(--red);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dbtn:active{background:rgba(255,64,96,.25)}
+.ebtn{width:30px;height:30px;border-radius:8px;background:rgba(61,127,255,.1);border:1px solid rgba(61,127,255,.15);color:var(--accent);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ebtn:active{background:rgba(61,127,255,.25)}
+/* DAVOMAT */
+.grp-block{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;transition:background .3s}
+.grp-hdr{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--s3),var(--s2));border-bottom:1px solid var(--border)}
+.grp-hdr-l{display:flex;flex-direction:column;gap:2px}
+.grp-hdr-name{font-size:15px;font-weight:800}
+.grp-hdr-meta{font-size:11px;color:var(--text2);font-weight:600}
+.grp-stats{display:flex;gap:6px}
+.gstat{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;font-family:var(--mono)}
+.gstat.g{background:rgba(0,201,122,.12);color:var(--green)}.gstat.r{background:rgba(255,64,96,.12);color:var(--red)}.gstat.y{background:rgba(255,176,32,.12);color:var(--yellow)}
+.sc{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-bottom:1px solid var(--border);transition:background .15s}
+.sc:last-child{border-bottom:none}
+.sc.k{background:rgba(0,201,122,.04)}.sc.kch{background:rgba(255,176,32,.04)}.sc.km{background:rgba(255,64,96,.04)}
+.si{flex:1;min-width:0}
+.sn-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.sname{font-size:14px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sid-b{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.stbtns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.stbtn{padding:7px 10px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
+.stbtn.k{background:rgba(0,201,122,.08);border-color:rgba(0,201,122,.2);color:var(--green)}
+.stbtn.k.on{background:var(--green);border-color:var(--green);color:#000}
+.stbtn.kch{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.2);color:var(--yellow)}
+.stbtn.kch.on{background:var(--yellow);border-color:var(--yellow);color:#000}
+.stbtn.km{background:rgba(255,64,96,.08);border-color:rgba(255,64,96,.2);color:var(--red)}
+.stbtn.km.on{background:var(--red);border-color:var(--red);color:#fff}
+.sinl{display:flex;align-items:center;gap:5px;padding-top:6px;border-top:1px solid var(--border)}
+.sinl input{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:7px;padding:7px 9px;color:var(--text);font-size:12px;font-weight:600;outline:none;min-width:0}
+.sinl input:focus{border-color:var(--accent)}
+.sinl input::placeholder{color:var(--text3);font-weight:400;font-size:11px}
+.sadd{padding:7px 11px;border-radius:7px;background:var(--accent);color:#fff;font-size:12px;font-weight:800;border:none;cursor:pointer;flex-shrink:0}
+.save-grp-btn{width:100%;padding:11px;background:var(--s3);border:none;border-top:1px solid var(--border);color:var(--accent);font-size:13px;font-weight:800;cursor:pointer;transition:background .15s}
+.save-grp-btn:active{background:var(--s4)}
+/* REYTING */
+.ri{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 12px;margin-bottom:6px;transition:background .3s;cursor:pointer}
+.ri:active{background:var(--s3)}
+.rn{width:28px;height:28px;border-radius:8px;background:var(--s3);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.rb{width:100%;background:var(--s3);border-radius:4px;height:5px;margin-top:5px}
+.rbf{height:5px;border-radius:4px;transition:width .5s}
+/* TARIX */
+.calw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);background:var(--s2);margin-bottom:10px}
+.calt{border-collapse:collapse;font-size:11px;width:100%}
+.calt th{padding:8px 4px;color:var(--text2);font-weight:700;text-align:center;white-space:nowrap;border-bottom:1px solid var(--border);background:var(--s2)}
+.calt th:first-child{position:sticky;left:0;z-index:2;text-align:left;min-width:100px;padding-left:8px;background:var(--s2)}
+.calt td{padding:5px 3px;text-align:center;min-width:28px;border-bottom:1px solid var(--border)}
+.calt td:first-child{position:sticky;left:0;z-index:1;text-align:left;padding-left:8px;font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;background:var(--s2)}
+.dot{display:inline-block;width:22px;height:22px;border-radius:6px;font-size:10px;font-weight:800;line-height:22px;text-align:center}
+.dot.K{background:rgba(0,201,122,.15);color:var(--green)}.dot.KCH{background:rgba(255,176,32,.15);color:var(--yellow)}.dot.YO{background:rgba(255,64,96,.15);color:var(--red)}.dot.em{color:var(--text3)}.dot.ND{background:var(--s3);color:var(--text3);font-size:8px}
+/* TO'LOV */
+.tog{width:46px;height:27px;border-radius:14px;flex-shrink:0;cursor:pointer;border:none;transition:background .2s;position:relative}
+.tog.on{background:var(--green)}.tog.off{background:var(--s4)}
+.tog::after{content:'';position:absolute;top:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .2s}
+.tog.on::after{left:22px}.tog.off::after{left:3px}
+/* O'QUVCHILAR */
+.st-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.st-card:active{background:var(--s3)}
+.st-card-info{flex:1;min-width:0}
+.st-card-name{font-size:14px;font-weight:700}
+.st-card-meta{font-size:11px;color:var(--text2);margin-top:2px}
+/* PROFIL */
+.prof-hero{background:linear-gradient(135deg,var(--s3),var(--s2));border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:12px}
+.info-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-lbl{font-size:12px;color:var(--text2);font-weight:600;width:90px;flex-shrink:0}
+.info-val{font-size:13px;font-weight:700;flex:1}
+.tel-link{color:var(--accent);text-decoration:none;font-size:13px;font-weight:700}
+/* TESTLAR */
+.test-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.test-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.test-title{font-size:15px;font-weight:800}
+.test-meta{font-size:11px;color:var(--text2);margin-top:3px}
+.active-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(0,201,122,.12);color:var(--green);border:1px solid rgba(0,201,122,.2)}
+.inactive-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--s3);color:var(--text2);border:1px solid var(--border)}
+.q-item{background:var(--s3);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:8px}
+.q-num{font-size:11px;font-weight:800;color:var(--text2);margin-bottom:8px}
+.opt-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.opt-lbl{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+.opt-lbl.A{background:rgba(61,127,255,.15);color:var(--accent)}.opt-lbl.B{background:rgba(0,201,122,.15);color:var(--green)}.opt-lbl.C{background:rgba(255,176,32,.15);color:var(--yellow)}.opt-lbl.D{background:rgba(255,64,96,.15);color:var(--red)}
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dc-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;transition:background .3s}
+.dc-num{font-size:30px;font-weight:900;font-family:var(--mono);line-height:1}
+.dc-lbl{font-size:11px;color:var(--text2);font-weight:700;margin-top:4px}
+.today-grp{background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:background .3s}
+.tg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* GURUHLAR */
+.grp-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.grp-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.grp-card-name{font-size:16px;font-weight:800}
+.grp-card-course{font-size:12px;color:var(--accent);font-weight:600;margin-top:2px}
+.grp-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.grp-meta-item{background:var(--s3);border-radius:var(--rxs);padding:8px 10px}
+.gmi-label{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.gmi-val{font-size:13px;font-weight:700;margin-top:2px}
+/* COPY */
+.cpanel{background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:10px;transition:background .3s}
+.ctxt{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:10px;font-family:var(--mono)}
+.cbtn{width:100%;padding:12px;border-radius:var(--rs);background:var(--teal);color:#000;font-size:14px;font-weight:800;border:none;cursor:pointer}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.on{opacity:1;pointer-events:all}
+.modal{background:var(--s2);border-radius:22px 22px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom,0px)+28px);width:100%;position:relative;border-top:1px solid var(--border2);transform:translateY(100%);transition:background .3s,transform .3s cubic-bezier(.34,1.56,.64,1);max-height:92dvh;overflow-y:auto}
+.ov.on .modal{transform:translateY(0)}
+.mh{width:36px;height:4px;background:var(--s4);border-radius:2px;margin:0 auto 16px}
+.mtitle{font-size:18px;font-weight:900;margin-bottom:14px}
+.mclose{position:absolute;top:18px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s4);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:200;opacity:0;transition:all .25s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--text3);padding:28px 16px;font-size:14px;font-weight:600}
+.no-class{text-align:center;padding:40px 16px}
+.no-class .nc-icon{font-size:48px;margin-bottom:12px}
+.no-class .nc-title{font-size:17px;font-weight:800;margin-bottom:6px}
+.no-class .nc-sub{font-size:13px;color:var(--text2);font-weight:500}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spin"></div><div style="color:var(--text2);font-size:14px;font-weight:600">iHuquq yuklanmoqda...</div></div>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="logo">⚖️</div>
+      <div class="brand">iHuquq</div>
+    </div>
+    <div class="hdr-r">
+      <div class="hdr-date" id="hdr-date">—</div>
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    </div>
+  </div>
+  <div class="nav">
+    <div class="ni on" data-p="dash"><span class="ic">📊</span>Bosh</div>
+    <div class="ni" data-p="dav"><span class="ic">✅</span>Davomat</div>
+    <div class="ni" data-p="rey"><span class="ic">🏆</span>Reyting</div>
+    <div class="ni" data-p="tar"><span class="ic">📅</span>Tarix</div>
+    <div class="ni" data-p="tol"><span class="ic">💳</span>To'lov</div>
+    <div class="ni" data-p="stud"><span class="ic">👤</span>O'quvchilar</div>
+    <div class="ni" data-p="test"><span class="ic">📝</span>Testlar</div>
+    <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
+  </div>
+  <div class="pages">
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-dash">
+      <div class="sec">📅 Bugun — <span id="dash-day-name">—</span></div>
+      <div class="dash-grid">
+        <div class="dc-card"><div class="dc-num" id="d-keldi" style="color:var(--green)">—</div><div class="dc-lbl">Keldi bugun</div></div>
+        <div class="dc-card"><div class="dc-num" id="d-kelmadi" style="color:var(--red)">—</div><div class="dc-lbl">Kelmadi</div></div>
+        <div class="dc-card"><div class="dc-num" id="d-students" style="color:var(--accent)">—</div><div class="dc-lbl">Jami o'quvchi</div></div>
+        <div class="dc-card"><div class="dc-num" id="d-groups" style="color:var(--accent2)">—</div><div class="dc-lbl">Guruhlar</div></div>
+        <div class="dc-card"><div class="dc-num" id="d-paid" style="color:var(--green)">—</div><div class="dc-lbl">To'lagan (oy)</div></div>
+        <div class="dc-card"><div class="dc-num" id="d-tests" style="color:var(--yellow)">—</div><div class="dc-lbl">Faol testlar</div></div>
+      </div>
+      <div class="sec">📚 Bugungi darslar</div>
+      <div id="d-today-grps"></div>
+      <div class="sec">⚠️ Bugun kelmagan</div>
+      <div id="d-absent"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- DAVOMAT -->
+    <div class="page" id="page-dav">
+      <div class="dnav">
+        <button class="dnbtn" id="prev-day">‹</button>
+        <div class="dc"><div class="dm" id="disp-date">—</div><div class="dd" id="disp-day">—</div></div>
+        <button class="dnbtn" id="next-day">›</button>
+      </div>
+      <div id="dav-content"></div>
+      <div class="sec" id="copy-sec" style="display:none">📋 Ota-onalarga xabar</div>
+      <div class="cpanel" id="cpanel" style="display:none">
+        <div class="ctxt" id="copy-txt"></div>
+        <button class="cbtn" onclick="copyMsg()">📋 Nusxalash</button>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- REYTING -->
+    <div class="page" id="page-rey">
+      <div class="chips" id="rey-chips"></div>
+      <div id="rey-list"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- TARIX -->
+    <div class="page" id="page-tar">
+      <div class="dnav" style="margin-bottom:10px">
+        <button class="dnbtn" id="prev-month">‹</button>
+        <div class="dc"><div class="dm" id="month-title">—</div></div>
+        <button class="dnbtn" id="next-month">›</button>
+      </div>
+      <div class="chips" id="tar-chips"></div>
+      <div class="calw"><table class="calt" id="cal-table"></table></div>
+      <div class="sec">Kunlik xulosa</div>
+      <div id="daily-sum"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- TO'LOV -->
+    <div class="page" id="page-tol">
+      <div class="dnav" style="margin-bottom:10px">
+        <button class="dnbtn" id="prev-pm">‹</button>
+        <div class="dc"><div class="dm" id="pay-month-title">—</div></div>
+        <button class="dnbtn" id="next-pm">›</button>
+      </div>
+      <div id="tol-content"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- O'QUVCHILAR -->
+    <div class="page" id="page-stud">
+      <div class="srch"><span style="color:var(--text3)">🔍</span><input id="stud-srch" placeholder="Ism, telefon yoki ID..."></div>
+      <div class="chips" id="stud-chips"></div>
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="s-total">0</div><div class="l">Jami</div></div>
+        <div class="sbox g"><div class="v" id="s-paid">0</div><div class="l">To'lagan</div></div>
+        <div class="sbox r"><div class="v" id="s-debt">0</div><div class="l">Qarzdor</div></div>
+      </div>
+      <div id="stud-list"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- TESTLAR -->
+    <div class="page" id="page-test">
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="t-total">0</div><div class="l">Jami</div></div>
+        <div class="sbox g"><div class="v" id="t-active">0</div><div class="l">Faol</div></div>
+        <div class="sbox y"><div class="v" id="t-done">0</div><div class="l">Tugagan</div></div>
+      </div>
+      <div id="test-list"></div>
+      <div style="height:10px"></div>
+    </div>
+    <!-- BOSHQARUV -->
+    <div class="page" id="page-bosh">
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">📚 Kurs qo'shish</h3>
+        <div class="fr">
+          <input class="fi" id="nc-title" placeholder="Kurs nomi">
+          <input class="fi" id="nc-price" placeholder="Narxi" type="number" style="max-width:110px">
+          <button class="abtn gr" onclick="addCourse()">+</button>
+        </div>
+        <div id="course-list"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">👥 Guruh qo'shish</h3>
+        <div class="fr"><input class="fi" id="ng-name" placeholder="Guruh nomi (A-101)"></div>
+        <div class="fr">
+          <select class="fsel" id="ng-course"><option value="">Kurs tanlang</option></select>
+          <select class="fsel" id="ng-days">
+            <option value="odd">Toq (Du,Chor,Ju)</option>
+            <option value="even">Juft (Se,Pay,Sha)</option>
+            <option value="daily">Har kun (Du-Sha)</option>
+          </select>
+        </div>
+        <div class="fr">
+          <input class="fi" id="ng-time" type="time">
+          <input class="fi" id="ng-room" placeholder="Xona">
+          <input class="fi" id="ng-cap" type="number" placeholder="Sig'im" style="max-width:80px">
+        </div>
+        <div class="fr" style="align-items:center;gap:10px;padding:10px;background:var(--s3);border-radius:var(--rxs)">
+          <label style="font-size:13px;font-weight:700;flex:1">⭐ Reytingli guruh</label>
+          <input type="checkbox" id="ng-rated" checked style="width:18px;height:18px;accent-color:var(--green);cursor:pointer">
+        </div>
+        <button class="abtn" style="width:100%;padding:12px;margin-top:8px" onclick="addGroup()">Guruh qo'shish</button>
+        <div id="grp-list" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">👤 O'quvchi qo'shish</h3>
+        <div class="fr"><input class="fi" id="ns-name" placeholder="Ism Familiya *"></div>
+        <div class="fr">
+          <input class="fi" id="ns-phone" placeholder="📱 Telefon" type="tel">
+          <input class="fi" id="ns-home" placeholder="☎️ Ota-ona tel" type="tel">
+        </div>
+        <div class="fr"><input class="fi" id="ns-addr" placeholder="📍 Manzil"></div>
+        <div class="fr">
+          <select class="fsel" id="ns-grp"><option value="">Guruh tanlang *</option></select>
+          <input class="fi" id="ns-fee" placeholder="💰 To'lov" type="number" style="max-width:120px">
+        </div>
+        <button class="abtn" style="width:100%;padding:12px" onclick="addStudent()">O'quvchi qo'shish</button>
+        <div id="st-mgmt" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:10px">🗑️ Tozalash</h3>
+        <button class="abtn re" style="width:100%;padding:12px" onclick="if(confirm('Barcha davomatni tozalash?'))clearAtt()">Barcha davomatni tozalash</button>
+      </div>
+    </div>
+  </div>
+  <div class="botbar" id="botbar" style="display:none">
+    <button class="mbtn" id="bot-btn"></button>
+  </div>
+</div>
+<div class="ov" id="ov"><div class="modal" id="modal">
+  <div class="mh"></div>
+  <button class="mclose" onclick="closeModal()">✕</button>
+  <div id="modal-body"></div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const SB='https://lwpimllflhpcxtehkgjb.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3cGltbGxmbGhwY3h0ZWhrZ2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzMzNDYsImV4cCI6MjA4OTM0OTM0Nn0.yq2XHQBE6nyfHtRWbbo4C7V5sma5DaCEwzCu9wS1f9M';
+const TG_TOKEN='8772643167:AAFQtJZrtayonVdX7JJ-HV0dBlLm0Q1nXtE';
+const TG_CHAT='-1001850350557';
+const H={'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=representation'};
+
+async function sb(m,t,b,p=''){
+  const r=await fetch(`${SB}/rest/v1/${t}${p}`,{method:m,headers:{...H},body:b?JSON.stringify(b):undefined});
+  if(!r.ok)throw new Error(await r.text());
+  const tx=await r.text();return tx?JSON.parse(tx):[];
+}
+const GET=(t,p)=>sb('GET',t,null,p);
+const POST=(t,b)=>sb('POST',t,b);
+const PATCH=(t,b,p)=>sb('PATCH',t,b,p);
+const DEL=(t,p)=>sb('DELETE',t,null,p);
+async function UPSERT(t,b){
+  const r=await fetch(`${SB}/rest/v1/${t}`,{method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(b)});
+  if(!r.ok)throw new Error(await r.text());
+  const tx=await r.text();return tx?JSON.parse(tx):[];
+}
+
+// ── STATE ──
+let groups=[],students=[],courses=[],tests=[],groupStudents=[];
+let att={},scores={},payments={};
+let curDate=todayStr();
+let reyGrp='all',tarGrp='all',studGrp='all',tolView='groups';
+let hYear=new Date().getFullYear(),hMonth=new Date().getMonth();
+let pYear=new Date().getFullYear(),pMonth=new Date().getMonth();
+
+const DAYS=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+const DT={odd:'Toq (Du,Chor,Ju)',even:'Juft (Se,Pay,Sha)',daily:'Har kun (Du-Sha)'};
+
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function mstr(y,m){return y+'-'+String(m+1).padStart(2,'0')}
+function avl(n){return(n||'').split(' ').slice(0,2).map(w=>(w[0]||'').toUpperCase()).join('')}
+function avCls(i){return 'av'+(i%8)}
+function isFuture(d){return d>todayStr()}
+
+function getDayType(ds){
+  const dow=new Date(ds+'T12:00:00').getDay();
+  if(dow===0)return null;
+  return[1,3,5].includes(dow)?'odd':[2,4,6].includes(dow)?'even':null;
+}
+function getTodayGroups(ds){
+  const dt=getDayType(ds);
+  if(!dt)return[];
+  return groups.filter(g=>g.days===dt||g.days==='daily');
+}
+function getStudentGroups(sid){
+  return groupStudents.filter(gs=>gs.student_id===sid)
+    .map(gs=>({...gs,group:groups.find(g=>g.id===gs.group_id)}))
+    .filter(x=>x.group);
+}
+function getGroupStudents(gid){
+  return groupStudents.filter(gs=>gs.group_id===gid)
+    .map(gs=>({...gs,student:students.find(s=>s.id===gs.student_id)}))
+    .filter(x=>x.student);
+}
+
+// ── INIT ──
+async function init(){
+  try{
+    [courses,groups,students,groupStudents,tests]=await Promise.all([
+      GET('courses','?order=title'),
+      GET('groups','?order=name&select=*,courses(title,price)'),
+      GET('students','?order=name&select=*'),
+      GET('group_students','?select=*'),
+      GET('tests','?order=created_at.desc&select=*,groups(name)')
+    ]);
+    await Promise.all([loadAtt(curDate),loadScores(),loadPay()]);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='flex';
+    document.getElementById('hdr-date').textContent=todayStr();
+    renderDash();
+  }catch(e){
+    document.getElementById('loading').innerHTML=`<div style="color:var(--red);font-weight:700;padding:20px;text-align:center">Xatolik: ${e.message}</div>`;
+  }
+}
+
+async function loadAtt(date){
+  const rows=await GET('attendance',`?date=eq.${date}&select=*`);
+  att[date]={};rows.forEach(r=>{att[date][r.student_id]={status:r.status,id:r.id}});
+}
+async function loadScores(){
+  const rows=await GET('scores','?order=created_at.desc&select=*');
+  scores={};rows.forEach(r=>{if(!scores[r.student_id])scores[r.student_id]=[];scores[r.student_id].push(r)});
+}
+async function loadPay(){
+  const month=mstr(pYear,pMonth);
+  const rows=await GET('payments',`?month=eq.${month}&select=*`);
+  payments={};rows.forEach(r=>{payments[`${r.student_id}_${r.group_id||0}`]=r});
+}
+
+// ── NAV ──
+document.querySelectorAll('.ni').forEach(el=>{
+  el.onclick=()=>{
+    const p=el.dataset.p;
+    document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('page-'+p).classList.add('on');
+    const bb=document.getElementById('botbar');bb.style.display='none';
+    ({
+      dash:renderDash,
+      dav:()=>{renderDav();bb.style.display='block';document.getElementById('bot-btn').textContent='💾 Davomatni saqlash';document.getElementById('bot-btn').onclick=saveDav},
+      rey:renderRey,
+      tar:renderTar,
+      tol:()=>loadPay().then(renderTol),
+      stud:()=>{renderStudents();bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi o\'quvchi';document.getElementById('bot-btn').onclick=()=>document.querySelector('[data-p="bosh"]').click()},
+      test:()=>{renderTests();bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi test';document.getElementById('bot-btn').onclick=openNewTest},
+      bosh:renderBosh
+    })[p]?.();
+  };
+});
+
+// ── THEME ──
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'🌙':'☀️';
+  localStorage.setItem('ihuquq_theme',isDark?'light':'dark');
+}
+const _st=localStorage.getItem('ihuquq_theme');
+if(_st){document.documentElement.setAttribute('data-theme',_st);document.getElementById('theme-btn').textContent=_st==='light'?'🌙':'☀️'}
+
+// ── DASHBOARD ──
+function renderDash(){
+  const today=todayStr();
+  const dt=new Date(today+'T12:00:00');
+  document.getElementById('dash-day-name').textContent=DAYS[dt.getDay()]+', '+dt.getDate()+' '+MONTHS[dt.getMonth()];
+  const todayAtt=att[today]||{};
+  const todayGrps=getTodayGroups(today);
+  const todaySids=new Set(groupStudents.filter(gs=>todayGrps.some(g=>g.id===gs.group_id)).map(gs=>gs.student_id));
+  let k=0,km=0;
+  todaySids.forEach(sid=>{const s=todayAtt[sid]?.status;if(s==='keldi'||s==='kechikdi')k++;else if(s==='kelmadi')km++});
+  document.getElementById('d-keldi').textContent=k;
+  document.getElementById('d-kelmadi').textContent=km;
+  document.getElementById('d-students').textContent=students.length;
+  document.getElementById('d-groups').textContent=groups.length;
+  const paid=new Set(Object.values(payments).filter(p=>p.paid).map(p=>p.student_id)).size;
+  document.getElementById('d-paid').textContent=paid+'/'+students.length;
+  document.getElementById('d-tests').textContent=tests.filter(t=>t.is_active).length;
+  document.getElementById('d-today-grps').innerHTML=todayGrps.length?todayGrps.map(g=>{
+    const gSts=getGroupStudents(g.id);
+    const kCnt=gSts.filter(gs=>todayAtt[gs.student_id]?.status==='keldi').length;
+    return`<div class="today-grp">
+      <div class="tg-dot" style="background:${g.is_rated?'var(--green)':'var(--text2)'}"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${g.name}${!g.is_rated?' <span style="font-size:10px;color:var(--text2)">(reytingsiz)</span>':''}</div>
+        <div style="font-size:11px;color:var(--text2)">${g.courses?.title||'—'} · ${g.start_time||'—'} · Xona ${g.room||'—'}</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--green)">${kCnt}/${gSts.length}</div>
+    </div>`;
+  }).join(''):'<div class="empty">Bugun dars yo\'q</div>';
+  const absentSids=[...todaySids].filter(sid=>todayAtt[sid]?.status==='kelmadi');
+  document.getElementById('d-absent').innerHTML=absentSids.length?absentSids.map(sid=>{
+    const s=students.find(x=>x.id===sid);if(!s)return'';
+    const sG=getStudentGroups(sid).map(x=>x.group?.name).filter(Boolean).join(', ');
+    return`<div class="lr">
+      <div class="lt"><div class="ln">${s.name}</div><div class="ls">${sG}</div></div>
+      ${s.phone?`<a href="tel:${s.phone}" style="color:var(--accent);font-size:20px;text-decoration:none">📞</a>`:''}
+    </div>`;
+  }).join(''):'<div class="empty">Hamma kelgan yoki belgilanmagan</div>';
+}
+
+// ── DAVOMAT ──
+function renderDav(){
+  const dt=new Date(curDate+'T12:00:00');
+  document.getElementById('disp-date').textContent=dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
+  document.getElementById('disp-day').textContent=DAYS[dt.getDay()];
+  const todayGrps=getTodayGroups(curDate);
+  const cont=document.getElementById('dav-content');
+  if(!todayGrps.length){
+    cont.innerHTML=`<div class="no-class"><div class="nc-icon">🌅</div><div class="nc-title">Bugun dars yo'q</div><div class="nc-sub">${DAYS[dt.getDay()]} — dam olish kuni</div></div>`;
+    document.getElementById('copy-sec').style.display='none';
+    document.getElementById('cpanel').style.display='none';return;
+  }
+  document.getElementById('copy-sec').style.display='block';
+  document.getElementById('cpanel').style.display='block';
+  cont.innerHTML=todayGrps.map(g=>{
+    const gSts=getGroupStudents(g.id);
+    const a=att[curDate]||{};
+    let k=0,kch=0,km=0;
+    gSts.forEach(gs=>{const s=a[gs.student_id]?.status;if(s==='keldi')k++;else if(s==='kechikdi')kch++;else if(s==='kelmadi')km++});
+    const stRows=gSts.map(gs=>{
+      const s=gs.student;if(!s)return'';
+      const idx=students.indexOf(s);
+      const st=a[s.id]?.status||'';
+      const cls=st==='keldi'?'k':st==='kechikdi'?'kch':st==='kelmadi'?'km':'';
+      const todaySc=(scores[s.id]||[]).filter(r=>r.date===curDate).reduce((x,b)=>x+b.points,0);
+      const autoSc=g.is_rated&&gs.is_rated?(st==='kelmadi'?-30:st==='kechikdi'?-10:0):0;
+      const tot=autoSc+todaySc;
+      const bc=tot>0?'p':tot<0?'n':'z';
+      return`<div class="sc ${cls}">
+        <div class="av ${avCls(idx)}" style="width:38px;height:38px;font-size:13px">${avl(s.name)}</div>
+        <div class="si">
+          <div class="sn-row">
+            <span class="sname">${s.name}</span>
+            <span class="sid-b">#${s.student_id||'—'}</span>
+            ${g.is_rated?`<span class="bdg ${bc}">${tot>=0?'+':''}${tot}</span>`:''}
+          </div>
+          <div class="stbtns">
+            <button class="stbtn k ${st==='keldi'?'on':''}" onclick="setSt(${s.id},'keldi')">✓ Keldi</button>
+            <button class="stbtn kch ${st==='kechikdi'?'on':''}" onclick="setSt(${s.id},'kechikdi')">⏰ Kechikdi</button>
+            <button class="stbtn km ${st==='kelmadi'?'on':''}" onclick="setSt(${s.id},'kelmadi')">✗ Kelmadi</button>
+          </div>
+          ${g.is_rated?`<div class="sinl">
+            <input type="number" placeholder="+ball" id="si-${s.id}" onclick="event.stopPropagation()">
+            <input type="text" placeholder="Izoh" id="sn-${s.id}" onclick="event.stopPropagation()">
+            <button class="sadd" onclick="addScore(${s.id});event.stopPropagation()">➕</button>
+          </div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    return`<div class="grp-block">
+      <div class="grp-hdr">
+        <div class="grp-hdr-l">
+          <div class="grp-hdr-name">${g.name}${!g.is_rated?' <span style="font-size:10px;color:var(--text2);font-weight:600">(reytingsiz)</span>':''}</div>
+          <div class="grp-hdr-meta">${g.courses?.title||'—'} · ${g.start_time||'—'} · Xona ${g.room||'—'} · ${gSts.length} o'quvchi</div>
+        </div>
+        <div class="grp-stats">
+          <span class="gstat g">✓${k}</span>
+          <span class="gstat y">⏰${kch}</span>
+          <span class="gstat r">✗${km}</span>
+        </div>
+      </div>
+      ${stRows||'<div class="empty">Bu guruhda o\'quvchi yo\'q</div>'}
+      <button class="save-grp-btn" onclick="saveGrpDav(${g.id})">💾 ${g.name} davomatini saqlash</button>
+    </div>`;
+  }).join('');
+  buildCopyTxt();
+}
+
+function setSt(sid,status){
+  if(!att[curDate])att[curDate]={};
+  if(att[curDate][sid]?.status===status)delete att[curDate][sid];
+  else att[curDate][sid]={...att[curDate][sid],status};
+  renderDav();
+}
+
+async function saveGrpDav(grpId){
+  showLoad();
+  try{
+    const gSts=getGroupStudents(grpId);
+    const a=att[curDate]||{};
+    const sids=gSts.map(gs=>gs.student_id);
+    if(!sids.length){hideLoad();return}
+    const existing=await GET('attendance',`?date=eq.${curDate}&student_id=in.(${sids.join(',')})&select=id,student_id`);
+    const exMap={};existing.forEach(r=>exMap[r.student_id]=r.id);
+    for(const gs of gSts){
+      if(exMap[gs.student_id]&&!a[gs.student_id])
+        await DEL('attendance',`?student_id=eq.${gs.student_id}&date=eq.${curDate}`);
+    }
+    const grp=groups.find(g=>g.id===grpId);
+    const ups=gSts.filter(gs=>a[gs.student_id]).map(gs=>({
+      student_id:gs.student_id,date:curDate,status:a[gs.student_id].status,
+      auto_score:grp?.is_rated&&gs.is_rated?(a[gs.student_id].status==='kelmadi'?-30:a[gs.student_id].status==='kechikdi'?-10:0):0
+    }));
+    if(ups.length)await UPSERT('attendance',ups);
+    const keldi=gSts.filter(gs=>a[gs.student_id]?.status==='keldi').map(gs=>gs.student).filter(Boolean);
+    const kechikdi=gSts.filter(gs=>a[gs.student_id]?.status==='kechikdi').map(gs=>gs.student).filter(Boolean);
+    const kelmadi=gSts.filter(gs=>a[gs.student_id]?.status==='kelmadi').map(gs=>gs.student).filter(Boolean);
+    hideLoad();showToast('✅ Saqlandi!');
+    await tgSend(grp?.name||'Guruh',keldi,kechikdi,kelmadi,gSts.length);
+  }catch(e){hideLoad();showToast('❌ '+e.message)}
+}
+
+async function saveDav(){
+  const todayGrps=getTodayGroups(curDate);
+  for(const g of todayGrps)await saveGrpDav(g.id);
+}
+
+async function addScore(sid){
+  const pts=parseInt(document.getElementById('si-'+sid)?.value);
+  const note=document.getElementById('sn-'+sid)?.value||null;
+  if(!pts||isNaN(pts))return showToast('⚠️ Ball kiriting');
+  try{
+    const r=await POST('scores',{student_id:sid,date:curDate,points:pts,note});
+    if(!scores[sid])scores[sid]=[];scores[sid].push(r[0]);
+    document.getElementById('si-'+sid).value='';
+    if(document.getElementById('sn-'+sid))document.getElementById('sn-'+sid).value='';
+    renderDav();showToast(`✅ ${pts>0?'+':''}${pts} ball`);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+function buildCopyTxt(){
+  const a=att[curDate]||{};
+  const todayGrps=getTodayGroups(curDate);
+  const todaySids=new Set(groupStudents.filter(gs=>todayGrps.some(g=>g.id===gs.group_id)).map(gs=>gs.student_id));
+  const km=students.filter(s=>todaySids.has(s.id)&&a[s.id]?.status==='kelmadi');
+  const kch=students.filter(s=>todaySids.has(s.id)&&a[s.id]?.status==='kechikdi');
+  const dt=new Date(curDate+'T12:00:00');
+  let txt=`📅 ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()} — Davomat\n\n`;
+  if(km.length){txt+=`❌ Kelmadi (${km.length} ta):\n`;km.forEach((s,i)=>txt+=`${i+1}. ${s.name}\n`);txt+='\n'}
+  if(kch.length){txt+=`⏰ Kechikdi (${kch.length} ta):\n`;kch.forEach((s,i)=>txt+=`${i+1}. ${s.name}\n`)}
+  if(!km.length&&!kch.length)txt+='✅ Barcha o\'quvchilar keldi!';
+  document.getElementById('copy-txt').textContent=txt.trim();
+}
+function copyMsg(){copy(document.getElementById('copy-txt').textContent)}
+
+document.getElementById('prev-day').onclick=async()=>{
+  const d=new Date(curDate);d.setDate(d.getDate()-1);curDate=d.toISOString().slice(0,10);
+  if(!att[curDate])await loadAtt(curDate);renderDav();
+};
+document.getElementById('next-day').onclick=async()=>{
+  const d=new Date(curDate);d.setDate(d.getDate()+1);
+  const next=d.toISOString().slice(0,10);
+  if(isFuture(next)){showToast('⚠️ Kelajak kunlarga davomat belgilab bo\'lmaydi!');return}
+  curDate=next;
+  if(!att[curDate])await loadAtt(curDate);renderDav();
+};
+
+// ── REYTING ──
+function getScored(filterGrp='all'){
+  const sts=filterGrp==='all'?students:students.filter(s=>getStudentGroups(s.id).some(x=>x.group?.name===filterGrp));
+  return sts.map(s=>{
+    const sc=scores[s.id]||[];
+    const manual=sc.reduce((a,b)=>a+b.points,0);
+    let auto=0;
+    const ratedGrpIds=new Set(getStudentGroups(s.id).filter(x=>x.is_rated&&x.group?.is_rated).map(x=>x.group_id));
+    if(ratedGrpIds.size>0){
+      Object.values(att).forEach(d=>{
+        const st=d[s.id]?.status;
+        if(st==='kelmadi')auto-=30;
+        else if(st==='kechikdi')auto-=10;
+      });
+    }
+    return{...s,total:manual+auto,manual,auto};
+  });
+}
+
+function renderRey(){
+  document.getElementById('botbar').style.display='none';
+  buildChips('rey-chips',reyGrp,g=>{reyGrp=g;renderReyList()});
+  renderReyList();
+}
+function renderReyList(){
+  const ranked=getScored(reyGrp).sort((a,b)=>b.total-a.total);
+  if(!ranked.length){document.getElementById('rey-list').innerHTML='<div class="empty">O\'quvchi yo\'q</div>';return}
+  document.getElementById('rey-list').innerHTML=ranked.map((s,i)=>{
+    const idx=students.findIndex(x=>x.id===s.id);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+    const col=s.total>=0?'var(--green)':'var(--red)';
+    const sG=getStudentGroups(s.id).map(x=>x.group?.name).filter(Boolean).join(', ');
+    return`<div class="ri" onclick="openStudentProfile(${s.id})">
+      <div class="rn">${medal}</div>
+      <div class="av ${avCls(idx)}" style="width:36px;height:36px;font-size:12px">${avl(s.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text2)">${sG}</div>
+        <div class="rb"><div class="rbf" style="width:${Math.min(100,Math.max(2,((s.total+300)/600)*100))}%;background:${col}"></div></div>
+      </div>
+      <div style="font-size:16px;font-weight:900;font-family:var(--mono);color:${col};flex-shrink:0">${s.total>=0?'+':''}${s.total}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── TARIX ──
+async function renderTar(){
+  document.getElementById('botbar').style.display='none';
+  document.getElementById('month-title').textContent=MONTHS[hMonth]+' '+hYear;
+  buildChips('tar-chips',tarGrp,g=>{tarGrp=g;renderTarTable()});
+  const mp=mstr(hYear,hMonth);
+  const rows=await GET('attendance',`?date=like.${mp}%&select=*`);
+  rows.forEach(r=>{if(!att[r.date])att[r.date]={};att[r.date][r.student_id]={status:r.status}});
+  renderTarTable();
+}
+function renderTarTable(){
+  const dim=new Date(hYear,hMonth+1,0).getDate();
+  const allDates=[];
+  for(let d=1;d<=dim;d++)allDates.push(hYear+'-'+String(hMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'));
+  const active=allDates.filter(ds=>att[ds]&&Object.keys(att[ds]).length>0);
+  const sts=tarGrp==='all'?students:students.filter(s=>getStudentGroups(s.id).some(x=>x.group?.name===tarGrp));
+  if(!active.length){
+    document.getElementById('cal-table').innerHTML='<tr><td class="empty" colspan="99">Bu oyda ma\'lumot yo\'q</td></tr>';
+    document.getElementById('daily-sum').innerHTML='';return;
+  }
+  let th='<tr><th>O\'quvchi</th>';
+  active.forEach(ds=>{
+    const d=new Date(ds+'T12:00:00');
+    th+=`<th>${d.getDate()}<br><span style="font-weight:400;font-size:9px">${DAYS[d.getDay()].slice(0,2)}</span></th>`;
+  });
+  th+='<th>%</th></tr>';
+  let tb='';
+  sts.forEach(s=>{
+    const sGrpIds=new Set(getStudentGroups(s.id).map(x=>x.group_id));
+    let row=`<tr><td title="${s.name}">${s.name}</td>`;let bc=0,total=0;
+    active.forEach(ds=>{
+      const dtype=getDayType(ds);
+      const hasClass=groups.some(g=>sGrpIds.has(g.id)&&(g.days===dtype||g.days==='daily')&&dtype!==null);
+      const st=att[ds]?.[s.id]?.status;
+      if(!hasClass){row+=`<td><span class="dot ND">—</span></td>`;return}
+      total++;
+      if(st==='keldi'){row+=`<td><span class="dot K">K</span></td>`;bc++}
+      else if(st==='kechikdi'){row+=`<td><span class="dot KCH">⏰</span></td>`;bc+=.5}
+      else if(st==='kelmadi'){row+=`<td><span class="dot YO">✗</span></td>`}
+      else row+=`<td><span class="dot em">·</span></td>`;
+    });
+    const pct=total?Math.round((bc/total)*100):0;
+    const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+    row+=`<td style="color:${col};font-weight:800;font-family:var(--mono)">${pct}%</td></tr>`;tb+=row;
+  });
+  document.getElementById('cal-table').innerHTML=th+tb;
+  let ds2='';
+  active.slice().reverse().forEach(ds=>{
+    const d=new Date(ds+'T12:00:00');let k=0,kch=0,km=0;
+    sts.forEach(s=>{const st=att[ds]?.[s.id]?.status;if(st==='keldi')k++;else if(st==='kechikdi')kch++;else if(st==='kelmadi')km++});
+    ds2+=`<div class="lr"><div class="lt">
+      <div class="ln">${d.getDate()} ${MONTHS[d.getMonth()]} — ${DAYS[d.getDay()]}</div>
+      <div class="ls"><span style="color:var(--green)">✓${k}</span> &nbsp;<span style="color:var(--yellow)">⏰${kch}</span> &nbsp;<span style="color:var(--red)">✗${km}</span></div>
+    </div></div>`;
+  });
+  document.getElementById('daily-sum').innerHTML=ds2||'<div class="empty">Ma\'lumot yo\'q</div>';
+}
+document.getElementById('prev-month').onclick=()=>{hMonth--;if(hMonth<0){hMonth=11;hYear--}renderTar()};
+document.getElementById('next-month').onclick=()=>{hMonth++;if(hMonth>11){hMonth=0;hYear++}renderTar()};
+
+// ── TO'LOV ──
+async function renderTol(){
+  document.getElementById('botbar').style.display='none';
+  document.getElementById('pay-month-title').textContent=MONTHS[pMonth]+' '+pYear;
+  tolView==='groups'?renderTolGroups():renderTolStudents(tolView);
+}
+
+function renderTolGroups(){
+  let html='',totalPaid=0,totalDebt=0,totalSum=0;
+  groups.forEach(g=>{
+    const gSts=getGroupStudents(g.id);
+    let paid=0,debt=0,sum=0;
+    gSts.forEach(gs=>{
+      const p=payments[`${gs.student_id}_${g.id}`];
+      if(p?.paid){paid++;sum+=p.amount||gs.monthly_fee||0}else debt++;
+    });
+    totalPaid+=paid;totalDebt+=debt;totalSum+=sum;
+    const fill=gSts.length?Math.round((paid/gSts.length)*100):0;
+    const col=fill>=80?'var(--green)':fill>=50?'var(--yellow)':'var(--red)';
+    html+=`<div class="card" style="cursor:pointer" onclick="tolView=${g.id};renderTol()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:15px;font-weight:800">${g.name}</div>
+          <div style="font-size:11px;color:var(--text2)">${g.courses?.title||'—'} · ${gSts.length} o'quvchi</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;font-weight:800;color:${col}">${paid}/${gSts.length}</div>
+          <div style="font-size:11px;color:var(--text2)">${Math.round(sum/1000)}K so'm</div>
+        </div>
+      </div>
+      <div style="background:var(--s3);border-radius:6px;height:6px;overflow:hidden">
+        <div style="width:${fill}%;height:100%;background:${col};border-radius:6px;transition:width .5s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="font-size:11px;color:var(--green);font-weight:700">✅ To'ladi: ${paid}</span>
+        <span style="font-size:11px;color:var(--red);font-weight:700">❌ Qarzdor: ${debt}</span>
+      </div>
+    </div>`;
+  });
+  const debtors=[];
+  groups.forEach(g=>getGroupStudents(g.id).forEach(gs=>{
+    if(!payments[`${gs.student_id}_${g.id}`]?.paid&&gs.student)
+      debtors.push({s:gs.student,g,fee:gs.monthly_fee||0});
+  }));
+  let debtTxt=`💳 ${MONTHS[pMonth]} ${pYear} — Qarzdorlar\n\n`;
+  if(debtors.length)debtors.forEach((x,i)=>debtTxt+=`${i+1}. ${x.s.name} (${x.g.name}) — ${x.fee.toLocaleString()} so'm\n`);
+  else debtTxt='✅ Barcha to\'lov qilgan!';
+  document.getElementById('tol-content').innerHTML=`
+    <div class="srow">
+      <div class="sbox g"><div class="v">${totalPaid}</div><div class="l">To'ladi</div></div>
+      <div class="sbox r"><div class="v">${totalDebt}</div><div class="l">Qarzdor</div></div>
+      <div class="sbox t"><div class="v">${Math.round(totalSum/1000)}K</div><div class="l">Tushum</div></div>
+    </div>
+    <div class="sec">📂 Guruhlar bo'yicha</div>
+    ${html||'<div class="empty">Guruh yo\'q</div>'}
+    <div class="sec">📋 Qarzdorlar ro'yxati</div>
+    <div class="cpanel">
+      <div class="ctxt">${debtTxt}</div>
+      <button class="cbtn" onclick="copy(this.previousElementSibling.textContent)">📋 Nusxalash</button>
+    </div>
+    <div style="height:10px"></div>`;
+}
+
+function renderTolStudents(grpId){
+  const g=groups.find(x=>x.id===grpId);if(!g)return;
+  const gSts=getGroupStudents(grpId);
+  let paid=0,debt=0,sum=0;
+  gSts.forEach(gs=>{
+    const p=payments[`${gs.student_id}_${grpId}`];
+    if(p?.paid){paid++;sum+=p.amount||gs.monthly_fee||0}else debt++;
+  });
+  const rows=gSts.map(gs=>{
+    const s=gs.student;if(!s)return'';
+    const idx=students.indexOf(s);
+    const p=payments[`${s.id}_${grpId}`];
+    const isPaid=p?.paid||false;
+    const amt=(p?.amount||gs.monthly_fee||0).toLocaleString();
+    return`<div class="lr" style="border-left:3px solid ${isPaid?'var(--green)':'var(--red)'}">
+      <div class="av ${avCls(idx)}" style="width:36px;height:36px;font-size:12px">${avl(s.name)}</div>
+      <div class="lt"><div class="ln">${s.name}</div><div class="ls">${amt} so'm</div></div>
+      ${s.phone?`<a href="tel:${s.phone}" style="color:var(--accent);font-size:20px;text-decoration:none;margin-right:4px">📞</a>`:''}
+      <button class="tog ${isPaid?'on':'off'}" onclick="togglePay(${s.id},${grpId},${isPaid})"></button>
+    </div>`;
+  }).join('');
+  document.getElementById('tol-content').innerHTML=`
+    <button onclick="tolView='groups';renderTol()" style="display:flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px">← Orqaga</button>
+    <div class="srow">
+      <div class="sbox g"><div class="v">${paid}</div><div class="l">To'ladi</div></div>
+      <div class="sbox r"><div class="v">${debt}</div><div class="l">Qarzdor</div></div>
+      <div class="sbox t"><div class="v">${Math.round(sum/1000)}K</div><div class="l">Tushum</div></div>
+    </div>
+    <div class="sec">👥 ${g.name} — ${MONTHS[pMonth]} ${pYear}</div>
+    ${rows||'<div class="empty">O\'quvchi yo\'q</div>'}
+    <div style="height:10px"></div>`;
+}
+
+async function togglePay(sid,grpId,wasPaid){
+  const month=mstr(pYear,pMonth);
+  const gs=groupStudents.find(x=>x.student_id===sid&&x.group_id===grpId);
+  const newPaid=!wasPaid;
+  try{
+    await UPSERT('payments',[{student_id:sid,group_id:grpId,month,paid:newPaid,amount:gs?.monthly_fee||0,paid_at:newPaid?new Date().toISOString():null}]);
+    payments[`${sid}_${grpId}`]={...payments[`${sid}_${grpId}`],paid:newPaid,month,amount:gs?.monthly_fee||0};
+    renderTolStudents(grpId);
+    showToast(newPaid?'✅ To\'lov qilindi':'↩️ Bekor qilindi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+document.getElementById('prev-pm').onclick=()=>{pMonth--;if(pMonth<0){pMonth=11;pYear--}loadPay().then(renderTol)};
+document.getElementById('next-pm').onclick=()=>{pMonth++;if(pMonth>11){pMonth=0;pYear++}loadPay().then(renderTol)};
+
+// ── O'QUVCHILAR ──
+function renderStudents(){
+  const srch=(document.getElementById('stud-srch')?.value||'').toLowerCase();
+  buildChips('stud-chips',studGrp,g=>{studGrp=g;renderStudents()});
+  const fil=students.filter(s=>{
+    const grpOk=studGrp==='all'||getStudentGroups(s.id).some(x=>x.group?.name===studGrp);
+    const srchOk=!srch||s.name.toLowerCase().includes(srch)||(s.phone||'').includes(srch)||(s.student_id||'').includes(srch);
+    return grpOk&&srchOk;
+  });
+  let paid=0,debt=0;
+  fil.forEach(s=>{
+    const hasPaid=getStudentGroups(s.id).some(x=>payments[`${s.id}_${x.group_id}`]?.paid);
+    if(hasPaid)paid++;else debt++;
+  });
+  document.getElementById('s-total').textContent=fil.length;
+  document.getElementById('s-paid').textContent=paid;
+  document.getElementById('s-debt').textContent=debt;
+  document.getElementById('stud-list').innerHTML=fil.map(s=>{
+    const idx=students.indexOf(s);
+    const sGrps=getStudentGroups(s.id);
+    const scored=getScored('all').find(x=>x.id===s.id)||{total:0};
+    const col=scored.total>=0?'var(--green)':'var(--red)';
+    const allPaid=sGrps.length>0&&sGrps.every(x=>payments[`${s.id}_${x.group_id}`]?.paid);
+    return`<div class="st-card" onclick="openStudentProfile(${s.id})">
+      <div class="av ${avCls(idx)}" style="width:42px;height:42px;font-size:14px">${avl(s.name)}</div>
+      <div class="st-card-info">
+        <div class="st-card-name">${s.name} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span></div>
+        <div class="st-card-meta">${sGrps.map(x=>`<span style="color:${x.is_rated&&x.group?.is_rated?'var(--accent)':'var(--text2)'}">${x.group?.name||'—'}</span>`).join(', ')||'Guruh yo\'q'}</div>
+        ${s.phone?`<div style="font-size:11px;color:var(--text2);margin-top:2px">${s.phone}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span style="font-size:14px;font-weight:900;font-family:var(--mono);color:${col}">${scored.total>=0?'+':''}${scored.total}</span>
+        <span style="font-size:11px;font-weight:700;color:${allPaid?'var(--green)':'var(--red)'}">${allPaid?'✅':'❌'}</span>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">O\'quvchi topilmadi</div>';
+}
+document.getElementById('stud-srch').oninput=()=>renderStudents();
+
+function openStudentProfile(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  const idx=students.indexOf(s);
+  const sGrps=getStudentGroups(id);
+  const scored=getScored('all').find(x=>x.id===id)||{total:0,manual:0,auto:0};
+  const ranked=getScored('all').sort((a,b)=>b.total-a.total);
+  const rank=ranked.findIndex(x=>x.id===id)+1;
+  const today=todayStr();
+  const y=new Date().getFullYear(),m=new Date().getMonth();
+  const dInM=new Date(y,m+1,0).getDate();
+  const sGrpIds=new Set(sGrps.map(x=>x.group_id));
+  const allDates=[];
+  for(let d=1;d<=dInM;d++)allDates.push(y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'));
+  const classDays=allDates.filter(ds=>{
+    const dtype=getDayType(ds);
+    return groups.some(g=>sGrpIds.has(g.id)&&(g.days===dtype||g.days==='daily')&&dtype!==null)&&ds<=today;
+  });
+  let present=0;
+  classDays.forEach(ds=>{const st=att[ds]?.[id]?.status;if(st==='keldi')present++;else if(st==='kechikdi')present+=.5});
+  const attPct=classDays.length?Math.round((present/classDays.length)*100):null;
+  const recentScores=(scores[id]||[]).slice(0,5);
+  openModal(`
+    <div class="prof-hero">
+      <div class="av ${avCls(idx)}" style="width:64px;height:64px;font-size:22px;margin:0 auto 10px;border:2px solid var(--border2)">${avl(s.name)}</div>
+      <div style="font-size:18px;font-weight:900">${s.name}</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:2px">ID: #${s.student_id||'—'}</div>
+      <div style="margin-top:12px;display:flex;justify-content:center;gap:16px">
+        <div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:${scored.total>=0?'var(--green)':'var(--red)'}">${scored.total>=0?'+':''}${scored.total}</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:700">BALL</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--accent)">#${rank}</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:700">REYTING</div>
+        </div>
+        ${attPct!==null?`<div style="text-align:center">
+          <div style="font-size:22px;font-weight:900;font-family:var(--mono);color:${attPct>=80?'var(--green)':attPct>=60?'var(--yellow)':'var(--red)'}">${attPct}%</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:700">DAVOMAT</div>
+        </div>`:''}
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">📋 Shaxsiy ma'lumotlar</div>
+      ${s.phone?`<div class="info-row"><div class="info-lbl">📱 Telefon</div><a href="tel:${s.phone}" class="tel-link">${s.phone}</a></div>`:''}
+      ${s.home_phone?`<div class="info-row"><div class="info-lbl">☎️ Ota-ona</div><a href="tel:${s.home_phone}" class="tel-link">${s.home_phone}</a></div>`:''}
+      ${s.address?`<div class="info-row"><div class="info-lbl">📍 Manzil</div><div class="info-val">${s.address}</div></div>`:''}
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">📚 Guruhlari</div>
+      ${sGrps.map(gs=>{
+        const g=gs.group;if(!g)return'';
+        const p=payments[`${id}_${g.id}`];const isPaid=p?.paid||false;
+        return`<div style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--s3);border-radius:var(--rxs);margin-bottom:6px;border:1px solid var(--border)">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">${g.name} ${gs.is_rated&&g.is_rated?'<span style="font-size:10px;color:var(--green)">⭐</span>':''}</div>
+            <div style="font-size:11px;color:var(--text2)">${DT[g.days]||g.days} · ${g.start_time||'—'} · ${(gs.monthly_fee||0).toLocaleString()} so'm</div>
+          </div>
+          <span style="font-size:12px;font-weight:700;color:${isPaid?'var(--green)':'var(--red)'}">${isPaid?'✅':'❌'}</span>
+        </div>`;
+      }).join('')||'<div class="empty">Guruh yo\'q</div>'}
+    </div>
+    ${recentScores.length?`<div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">📊 So'nggi balllar</div>
+      ${recentScores.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text2);font-family:var(--mono)">${r.date}</span>
+        <span style="flex:1;font-size:12px;color:var(--text2)">${r.note||'—'}</span>
+        <span style="font-weight:800;font-family:var(--mono);color:${r.points>=0?'var(--green)':'var(--red)'}">${r.points>=0?'+':''}${r.points}</span>
+      </div>`).join('')}
+    </div>`:''}
+    <button class="abtn" style="width:100%;padding:12px;margin-bottom:8px" onclick="closeModal();openEditStudent(${id})">✏️ Ma'lumotlarni tahrirlash</button>
+    <button class="abtn gr" style="width:100%;padding:12px" onclick="closeModal();addStudentToGroup(${id})">➕ Boshqa guruhga qo'shish</button>
+  `);
+}
+
+function openEditStudent(id){
+  const s=students.find(x=>x.id===id);if(!s)return;
+  openModal(`
+    <div class="mtitle">✏️ O'quvchini tahrirlash</div>
+    <div class="fr"><input class="fi" id="e-name" value="${s.name||''}" placeholder="Ism *"></div>
+    <div class="fr">
+      <input class="fi" id="e-phone" value="${s.phone||''}" placeholder="📱 Telefon" type="tel">
+      <input class="fi" id="e-home" value="${s.home_phone||''}" placeholder="☎️ Ota-ona" type="tel">
+    </div>
+    <div class="fr"><input class="fi" id="e-addr" value="${s.address||''}" placeholder="📍 Manzil"></div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="saveEditStudent(${id})">💾 Saqlash</button>
+  `);
+}
+async function saveEditStudent(id){
+  const name=document.getElementById('e-name').value.trim();
+  if(!name)return showToast('⚠️ Ism kiriting');
+  try{
+    const body={name,phone:document.getElementById('e-phone').value||null,home_phone:document.getElementById('e-home').value||null,address:document.getElementById('e-addr').value||null};
+    await PATCH('students',body,`?id=eq.${id}`);
+    const idx=students.findIndex(s=>s.id===id);
+    students[idx]={...students[idx],...body};
+    closeModal();renderStudents();showToast('✅ Saqlandi!');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+function addStudentToGroup(sid){
+  const existing=new Set(groupStudents.filter(gs=>gs.student_id===sid).map(gs=>gs.group_id));
+  const available=groups.filter(g=>!existing.has(g.id));
+  if(!available.length)return showToast('O\'quvchi barcha guruhlarda bor');
+  openModal(`
+    <div class="mtitle">➕ Guruhga qo'shish</div>
+    <div class="fr"><select class="fsel" id="atg-grp"><option value="">Guruh tanlang</option>${available.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}</select></div>
+    <div class="fr"><input class="fi" id="atg-fee" placeholder="💰 Bu guruh uchun to'lov" type="number"></div>
+    <div class="fr" style="align-items:center;gap:10px;padding:10px;background:var(--s3);border-radius:var(--rxs)">
+      <label style="font-size:13px;font-weight:700;flex:1">Reytingli</label>
+      <input type="checkbox" id="atg-rated" checked style="width:18px;height:18px;accent-color:var(--green);cursor:pointer">
+    </div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:8px" onclick="confirmAddToGroup(${sid})">➕ Qo'shish</button>
+  `);
+}
+async function confirmAddToGroup(sid){
+  const gid=parseInt(document.getElementById('atg-grp').value)||null;
+  const fee=parseInt(document.getElementById('atg-fee').value)||0;
+  const rated=document.getElementById('atg-rated').checked;
+  if(!gid)return showToast('⚠️ Guruh tanlang');
+  try{
+    const r=await POST('group_students',{student_id:sid,group_id:gid,is_rated:rated,monthly_fee:fee});
+    groupStudents.push(r[0]);closeModal();renderStudents();showToast('✅ Guruhga qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ── TESTLAR ──
+function renderTests(){
+  document.getElementById('t-total').textContent=tests.length;
+  document.getElementById('t-active').textContent=tests.filter(t=>t.is_active).length;
+  document.getElementById('t-done').textContent=tests.filter(t=>!t.is_active&&t.ends_at&&new Date(t.ends_at)<new Date()).length;
+  document.getElementById('test-list').innerHTML=tests.map(t=>`
+    <div class="test-card">
+      <div class="test-card-hdr">
+        <div>
+          <div class="test-title">${t.title}</div>
+          <div class="test-meta">${t.groups?.name||'Barcha guruhlar'} · ${t.duration_minutes} daqiqa · ${t.max_score} ball</div>
+          ${t.ends_at?`<div style="font-size:11px;color:var(--yellow);margin-top:3px">⏰ ${new Date(t.ends_at).toLocaleString('uz-UZ',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>`:''}
+        </div>
+        <span class="${t.is_active?'active-badge':'inactive-badge'}">${t.is_active?'Faol':'Nofaol'}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="abtn ${t.is_active?'re':'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active?'⏹ To\'xtatish':'▶️ Faollashtirish'}</button>
+        <button class="abtn" style="padding:7px 12px;font-size:12px;background:var(--accent2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
+        <button class="abtn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
+        <button class="dbtn" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
+      </div>
+    </div>`).join('')||'<div class="empty">Test yo\'q. Yangi test yarating!</div>';
+}
+
+function openNewTest(){
+  openModal(`
+    <div class="mtitle">📝 Yangi test yaratish</div>
+    <div class="fr"><input class="fi" id="nt-title" placeholder="Test nomi *"></div>
+    <div class="fr">
+      <select class="fsel" id="nt-group">
+        <option value="">Barcha guruhlar</option>
+        ${groups.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fr">
+      <input class="fi" id="nt-dur" type="number" value="30" placeholder="Vaqt (daqiqa)">
+      <input class="fi" id="nt-score" type="number" value="100" placeholder="Maks. ball">
+    </div>
+    <div class="fr">
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:700">Boshlanish vaqti</div>
+        <input class="fi" id="nt-start" type="datetime-local">
+      </div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:700">Tugash vaqti</div>
+        <input class="fi" id="nt-end" type="datetime-local">
+      </div>
+    </div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="createTest()">✅ Yaratish</button>
+  `);
+}
+
+async function createTest(){
+  const title=document.getElementById('nt-title').value.trim();
+  if(!title)return showToast('⚠️ Test nomini kiriting');
+  const gid=parseInt(document.getElementById('nt-group').value)||null;
+  const start=document.getElementById('nt-start').value;
+  const end=document.getElementById('nt-end').value;
+  try{
+    const r=await POST('tests',{title,group_id:gid,
+      duration_minutes:parseInt(document.getElementById('nt-dur').value)||30,
+      max_score:parseInt(document.getElementById('nt-score').value)||100,
+      is_active:false,
+      starts_at:start?new Date(start).toISOString():null,
+      ends_at:end?new Date(end).toISOString():null});
+    const grp=groups.find(g=>g.id===gid);
+    tests.unshift({...r[0],groups:{name:grp?.name||''}});
+    closeModal();renderTests();showToast('✅ Test yaratildi!');
+    setTimeout(()=>openTestEditor(r[0].id),300);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function toggleTest(id,isActive){
+  try{
+    await PATCH('tests',{is_active:!isActive},`?id=eq.${id}`);
+    const t=tests.find(x=>x.id===id);if(t)t.is_active=!isActive;
+    renderTests();showToast(isActive?'⏹ To\'xtatildi':'▶️ Faollashtirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function deleteTest(id){
+  if(!confirm('Testni o\'chirasizmi?'))return;
+  try{
+    await DEL('tests',`?id=eq.${id}`);
+    tests=tests.filter(t=>t.id!==id);renderTests();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function openTestEditor(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num`);
+  openModal(`
+    <div class="mtitle">✏️ ${t.title} — Savollar</div>
+    <div id="q-list">${questions.map((q,i)=>`
+      <div class="q-item">
+        <div class="q-num">${i+1}-savol · ${q.score} ball</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">${q.question_text}</div>
+        ${['A','B','C','D'].map(opt=>`
+          <div class="opt-row">
+            <div class="opt-lbl ${opt}">${opt}</div>
+            <div style="flex:1;font-size:13px">${q['option_'+opt.toLowerCase()]}</div>
+            ${q.correct_answer===opt?'<span style="color:var(--green);font-size:16px">✓</span>':''}
+          </div>`).join('')}
+        <button class="dbtn" style="width:auto;padding:6px 12px;border-radius:var(--rxs);margin-top:8px" onclick="deleteQuestion(${q.id},${testId})">🗑 O'chirish</button>
+      </div>`).join('')||'<div class="empty">Savol yo\'q</div>'}</div>
+    <div style="background:var(--s3);border-radius:var(--r);padding:14px;margin-top:10px">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">➕ Yangi savol qo'shish</div>
+      <div class="fr"><input class="fi" id="nq-text" placeholder="Savol matni *"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl A">A</div><input class="fi" id="nq-a" placeholder="A variant"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl B">B</div><input class="fi" id="nq-b" placeholder="B variant"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl C">C</div><input class="fi" id="nq-c" placeholder="C variant"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl D">D</div><input class="fi" id="nq-d" placeholder="D variant"></div>
+      <div class="fr" style="align-items:center">
+        <div style="font-size:13px;font-weight:700;flex:1">To'g'ri javob:</div>
+        <select class="fsel" id="nq-correct" style="max-width:80px">
+          <option value="A">A</option><option value="B">B</option>
+          <option value="C">C</option><option value="D">D</option>
+        </select>
+        <input class="fi" id="nq-score" type="number" value="1" placeholder="Ball" style="max-width:70px">
+      </div>
+      <button class="abtn gr" style="width:100%;padding:12px;margin-top:8px" onclick="addQuestion(${testId})">➕ Savol qo'shish</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);text-align:center;margin-top:10px">Jami: ${questions.length} ta savol</div>
+  `);
+}
+
+async function addQuestion(testId){
+  const text=document.getElementById('nq-text').value.trim();
+  const a=document.getElementById('nq-a').value.trim();
+  const b=document.getElementById('nq-b').value.trim();
+  const c=document.getElementById('nq-c').value.trim();
+  const d=document.getElementById('nq-d').value.trim();
+  if(!text||!a||!b||!c||!d)return showToast('⚠️ Barcha maydonlarni to\'ldiring');
+  try{
+    const allQ=await GET('questions',`?test_id=eq.${testId}&select=id`);
+    await POST('questions',{test_id:testId,question_text:text,option_a:a,option_b:b,option_c:c,option_d:d,
+      correct_answer:document.getElementById('nq-correct').value,
+      score:parseInt(document.getElementById('nq-score').value)||1,
+      order_num:allQ.length+1});
+    showToast('✅ Savol qo\'shildi');openTestEditor(testId);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function deleteQuestion(qid,testId){
+  if(!confirm('Savolni o\'chirasizmi?'))return;
+  try{await DEL('questions',`?id=eq.${qid}`);openTestEditor(testId);showToast('🗑 O\'chirildi')}
+  catch(e){showToast('❌ '+e.message)}
+}
+
+async function openTestResults(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const results=await GET('test_results',`?test_id=eq.${testId}&select=*`);
+  openModal(`
+    <div class="mtitle">📊 ${t.title} — Natijalar</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${results.length} ta o'quvchi topshirdi</div>
+    ${results.length?results.sort((a,b)=>b.score-a.score).map((r,i)=>{
+      const s=students.find(x=>x.id===r.student_id);
+      const pct=r.total_score?Math.round((r.score/r.total_score)*100):0;
+      const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+      return`<div class="ri">
+        <div class="rn">${i+1}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700">${s?.name||'Noma\'lum'}</div>
+          <div style="font-size:11px;color:var(--text2)">${r.finished_at?new Date(r.finished_at).toLocaleString('uz-UZ',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>
+          <div class="rb"><div class="rbf" style="width:${pct}%;background:${col}"></div></div>
+        </div>
+        <div style="font-size:16px;font-weight:900;font-family:var(--mono);color:${col}">${r.score}/${r.total_score}</div>
+      </div>`;
+    }).join(''):'<div class="empty">Hali hech kim topshirmadi</div>'}
+  `);
+}
+
+// ── BOSHQARUV ──
+function renderBosh(){
+  document.getElementById('botbar').style.display='none';
+  document.getElementById('course-list').innerHTML=courses.map(c=>`
+    <div class="lr">
+      <div class="lt"><div class="ln">${c.title}</div><div class="ls">${(c.price||0).toLocaleString()} so'm/oy</div></div>
+      <button class="dbtn" onclick="deleteCourse(${c.id})">🗑</button>
+    </div>`).join('')||'<div class="empty">Kurs yo\'q</div>';
+  const sel=document.getElementById('ng-course');
+  sel.innerHTML='<option value="">Kurs tanlang</option>'+courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+  document.getElementById('grp-list').innerHTML=groups.map(g=>{
+    const cnt=getGroupStudents(g.id).length;
+    return`<div class="lr">
+      <div class="lt">
+        <div class="ln">${g.name} ${g.is_rated?'⭐':''}</div>
+        <div class="ls">${g.courses?.title||'—'} · ${DT[g.days]||g.days} · ${cnt} o'quvchi</div>
+      </div>
+      <button class="ebtn" onclick="editGroup(${g.id})">✏️</button>
+      <button class="dbtn" onclick="deleteGroup(${g.id})">🗑</button>
+    </div>`;
+  }).join('')||'<div class="empty">Guruh yo\'q</div>';
+  const nsel=document.getElementById('ns-grp');
+  nsel.innerHTML='<option value="">Guruh tanlang *</option>'+groups.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  document.getElementById('st-mgmt').innerHTML=students.map((s,i)=>{
+    const sGrps=getStudentGroups(s.id).map(x=>x.group?.name).filter(Boolean).join(', ');
+    return`<div class="lr">
+      <div class="av ${avCls(i)}" style="width:32px;height:32px;font-size:11px;flex-shrink:0">${avl(s.name)}</div>
+      <div class="lt">
+        <div class="ln">${s.name} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span></div>
+        <div class="ls">${sGrps||'Guruh yo\'q'} · ${s.phone||'tel yo\'q'}</div>
+      </div>
+      <button class="ebtn" onclick="openStudentProfile(${s.id})">👁</button>
+      <button class="dbtn" onclick="deleteSt(${s.id})">🗑</button>
+    </div>`;
+  }).join('')||'<div class="empty">O\'quvchi yo\'q</div>';
+}
+
+async function addCourse(){
+  const title=document.getElementById('nc-title').value.trim();
+  const price=parseInt(document.getElementById('nc-price').value)||0;
+  if(!title)return showToast('⚠️ Kurs nomini kiriting');
+  try{
+    const r=await POST('courses',{title,price});courses.push(r[0]);
+    document.getElementById('nc-title').value='';document.getElementById('nc-price').value='';
+    renderBosh();showToast('✅ Kurs qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function deleteCourse(id){
+  if(!confirm('Kursni o\'chirasizmi?'))return;
+  try{await DEL('courses',`?id=eq.${id}`);courses=courses.filter(c=>c.id!==id);renderBosh();showToast('🗑 O\'chirildi')}
+  catch(e){showToast('❌ '+e.message)}
+}
+async function addGroup(){
+  const name=document.getElementById('ng-name').value.trim();
+  const course_id=parseInt(document.getElementById('ng-course').value)||null;
+  const days=document.getElementById('ng-days').value;
+  const start_time=document.getElementById('ng-time').value||null;
+  const room=document.getElementById('ng-room').value||null;
+  const capacity=parseInt(document.getElementById('ng-cap').value)||20;
+  const is_rated=document.getElementById('ng-rated').checked;
+  if(!name)return showToast('⚠️ Guruh nomini kiriting');
+  try{
+    const r=await POST('groups',{name,course_id,days,start_time,room,capacity,is_rated});
+    groups.push({...r[0],courses:courses.find(c=>c.id===course_id)||null});
+    groups.sort((a,b)=>a.name.localeCompare(b.name));
+    ['ng-name','ng-time','ng-room','ng-cap'].forEach(id=>document.getElementById(id).value='');
+    renderBosh();showToast('✅ Guruh qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+function editGroup(id){
+  const g=groups.find(x=>x.id===id);if(!g)return;
+  openModal(`
+    <div class="mtitle">✏️ Guruhni tahrirlash</div>
+    <div class="fr"><input class="fi" id="eg-name" value="${g.name||''}" placeholder="Guruh nomi"></div>
+    <div class="fr">
+      <select class="fsel" id="eg-course">
+        <option value="">Kurs tanlang</option>
+        ${courses.map(c=>`<option value="${c.id}" ${c.id===g.course_id?'selected':''}>${c.title}</option>`).join('')}
+      </select>
+      <select class="fsel" id="eg-days">
+        <option value="odd" ${g.days==='odd'?'selected':''}>Toq</option>
+        <option value="even" ${g.days==='even'?'selected':''}>Juft</option>
+        <option value="daily" ${g.days==='daily'?'selected':''}>Har kun</option>
+      </select>
+    </div>
+    <div class="fr">
+      <input class="fi" id="eg-time" value="${g.start_time||''}" type="time">
+      <input class="fi" id="eg-room" value="${g.room||''}" placeholder="Xona">
+      <input class="fi" id="eg-cap" value="${g.capacity||20}" type="number" style="max-width:80px">
+    </div>
+    <div class="fr" style="align-items:center;gap:10px;padding:10px;background:var(--s3);border-radius:var(--rxs)">
+      <label style="font-size:13px;font-weight:700;flex:1">⭐ Reytingli guruh</label>
+      <input type="checkbox" id="eg-rated" ${g.is_rated?'checked':''} style="width:18px;height:18px;accent-color:var(--green);cursor:pointer">
+    </div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:8px" onclick="saveGroup(${id})">💾 Saqlash</button>
+  `);
+}
+async function saveGroup(id){
+  const name=document.getElementById('eg-name').value.trim();
+  if(!name)return showToast('⚠️ Nom kiriting');
+  const course_id=parseInt(document.getElementById('eg-course').value)||null;
+  try{
+    const body={name,course_id,days:document.getElementById('eg-days').value,
+      start_time:document.getElementById('eg-time').value||null,
+      room:document.getElementById('eg-room').value||null,
+      capacity:parseInt(document.getElementById('eg-cap').value)||20,
+      is_rated:document.getElementById('eg-rated').checked};
+    await PATCH('groups',body,`?id=eq.${id}`);
+    const idx=groups.findIndex(g=>g.id===id);
+    groups[idx]={...groups[idx],...body,courses:courses.find(c=>c.id===course_id)||null};
+    closeModal();renderBosh();showToast('✅ Saqlandi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function deleteGroup(id){
+  if(!confirm('Guruhni o\'chirasizmi?'))return;
+  try{
+    await DEL('groups',`?id=eq.${id}`);
+    groups=groups.filter(g=>g.id!==id);
+    groupStudents=groupStudents.filter(gs=>gs.group_id!==id);
+    renderBosh();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function addStudent(){
+  const name=document.getElementById('ns-name').value.trim();
+  const phone=document.getElementById('ns-phone').value||null;
+  const home=document.getElementById('ns-home').value||null;
+  const addr=document.getElementById('ns-addr').value||null;
+  const fee=parseInt(document.getElementById('ns-fee').value)||0;
+  const gid=parseInt(document.getElementById('ns-grp').value)||null;
+  if(!name)return showToast('⚠️ Ism kiriting');
+  if(!gid)return showToast('⚠️ Guruh tanlang');
+  const grp=groups.find(g=>g.id===gid);
+  if(grp&&getGroupStudents(gid).length>=(grp.capacity||20))return showToast('⚠️ Guruh to\'lib ketgan!');
+  try{
+    const r=await POST('students',{name,phone,home_phone:home,address:addr});
+    students.push({...r[0]});students.sort((a,b)=>a.name.localeCompare(b.name));
+    const gsR=await POST('group_students',{student_id:r[0].id,group_id:gid,is_rated:grp?.is_rated??true,monthly_fee:fee});
+    groupStudents.push(gsR[0]);
+    ['ns-name','ns-phone','ns-home','ns-addr','ns-fee'].forEach(id=>document.getElementById(id).value='');
+    renderBosh();showToast('✅ O\'quvchi qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function deleteSt(id){
+  if(!confirm('O\'quvchini o\'chirasizmi?'))return;
+  try{
+    await DEL('students',`?id=eq.${id}`);
+    students=students.filter(s=>s.id!==id);
+    groupStudents=groupStudents.filter(gs=>gs.student_id!==id);
+    renderBosh();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function clearAtt(){
+  try{await DEL('attendance','?id=gt.0');att={};showToast('🗑 Tozalandi')}
+  catch(e){showToast('❌ '+e.message)}
+}
+
+// ── CHIPS ──
+function buildChips(cid,active,cb){
+  const c=document.getElementById(cid);c.innerHTML='';
+  const mk=(label,val)=>{
+    const el=document.createElement('div');
+    el.className='chip'+(active===val?' on':'');el.textContent=label;
+    el.onclick=()=>{active=val;cb(val);buildChips(cid,val,cb)};c.appendChild(el);
+  };
+  mk('Hammasi','all');groups.forEach(g=>mk(g.name,g.name));
+}
+
+// ── MODAL ──
+function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('ov').classList.add('on')}
+function closeModal(){document.getElementById('ov').classList.remove('on')}
+document.getElementById('ov').onclick=e=>{if(e.target===e.currentTarget)closeModal()};
+
+// ── TELEGRAM ──
+async function tgSend(grpName,keldi,kechikdi,kelmadi,total){
+  const dt=new Date(curDate+'T12:00:00');
+  let msg=`📋 Davomat hisoboti\n📅 ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()} — ${DAYS[dt.getDay()]}\n👥 Guruh: ${grpName}\n────────────────\n`;
+  msg+=`✅ Keldi: ${keldi.length} ta\n`;
+  if(kechikdi.length)msg+=`⏰ Kechikdi: ${kechikdi.length} ta\n`;
+  msg+=`❌ Kelmadi: ${kelmadi.length} ta\n👥 Jami: ${total} ta`;
+  if(kelmadi.length){msg+=`\n\n────────────────\n❌ Kelmagan:\n`;kelmadi.forEach((s,i)=>msg+=`${i+1}. ${s.name}\n`)}
+  if(kechikdi.length){msg+=`\n────────────────\n⏰ Kechikkan:\n`;kechikdi.forEach((s,i)=>msg+=`${i+1}. ${s.name}\n`)}
+  if(!kelmadi.length&&!kechikdi.length)msg+=`\n\n🎉 Barcha o'quvchilar o'z vaqtida keldi!`;
+  try{await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:msg})})}
+  catch(e){console.log('TG:',e)}
+}
+
+// ── UTILS ──
+let _tt;
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2500)}
+function showLoad(){document.getElementById('loading').style.display='flex'}
+function hideLoad(){document.getElementById('loading').style.display='none'}
+function copy(txt){
+  navigator.clipboard?.writeText(txt).then(()=>showToast('📋 Nusxalandi!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 Nusxalandi!');
+  });
+}
+
+init();
+</script>
+</body>
+</html>
