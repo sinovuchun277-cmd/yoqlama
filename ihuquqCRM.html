@@ -1041,7 +1041,10 @@ async function saveEditStudent(id){
   const name=document.getElementById('e-name').value.trim();
   if(!name)return showToast('⚠️ Ism kiriting');
   try{
-    const body={name,phone:document.getElementById('e-phone').value||null,home_phone:document.getElementById('e-home').value||null,address:document.getElementById('e-addr').value||null};
+const oldPhone=students.find(s=>s.id===id)?.phone;
+const newPhone=document.getElementById('e-phone').value||null;
+const body={name,phone:newPhone,home_phone:document.getElementById('e-home').value||null,address:document.getElementById('e-addr').value||null};
+if(oldPhone!==newPhone){body.telegram_id=null;body.tg_username=null;}
     await PATCH('students',body,`?id=eq.${id}`);
     const idx=students.findIndex(s=>s.id===id);
     students[idx]={...students[idx],...body};
