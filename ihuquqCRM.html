@@ -1541,23 +1541,22 @@ function toggleMode() {
   applyMode();
 }
 
-function applyMode() {
+ffunction applyMode() {
   const isOnline = currentMode === 'online';
   document.getElementById('nav-offline').style.display = isOnline ? 'none' : 'grid';
   document.getElementById('nav-online').style.display = isOnline ? 'grid' : 'none';
   document.getElementById('mode-btn').textContent = isOnline ? '💻 Onlayn' : '🏫 Oflayn';
 
-  // Sahifalarni ko'rsatish/yashirish
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
 
   if (isOnline) {
     document.getElementById('page-on-dash').classList.add('on');
-    document.querySelector('[data-p="on-dash"]').classList.add('on');
+    document.querySelector('#nav-online [data-p="on-dash"]').classList.add('on');
     renderOnlineDash();
   } else {
     document.getElementById('page-dash').classList.add('on');
-    document.querySelector('[data-p="dash"]').classList.add('on');
+    document.querySelector('#nav-offline [data-p="dash"]').classList.add('on');
     renderDash();
   }
 }
