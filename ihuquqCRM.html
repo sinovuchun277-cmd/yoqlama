@@ -20,7 +20,7 @@ button,input,select,textarea{font-family:var(--font)}
 .spin{width:44px;height:44px;border:3px solid var(--s4);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* APP */
-#app{display:none;flex-direction:column;height:100dvh}
+#app{display:none;flex-direction:column;height:100dvh;height:100svh}
 /* HEADER */
 .hdr{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(env(safe-area-inset-top,0px)+10px);display:flex;align-items:center;justify-content:space-between;transition:background .3s}
 .hdr-l{display:flex;align-items:center;gap:10px}
@@ -31,10 +31,10 @@ button,input,select,textarea{font-family:var(--font)}
 .icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .icon-btn:active{background:var(--s4)}
 /* NAV 2 QATOR 4x2 */
-.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 6px 2px;gap:2px;transition:background .3s}
+.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:2px 4px;gap:1px;transition:background .3s}
 #nav-online{grid-template-columns:repeat(3,1fr)}
-.ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
-.ni .ic{font-size:22px;line-height:1}
+.ni{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;cursor:pointer;font-size:8px;font-weight:700;color:var(--text3);border-radius:8px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
+.ni .ic{font-size:18px;line-height:1}
 .ni.on{color:var(--accent);background:rgba(61,127,255,.08)}
 .ni:active{background:var(--s3)}
 /* PAGES */
@@ -1563,26 +1563,28 @@ let currentMode = 'offline';
 
 function toggleMode() {
   currentMode = currentMode === 'offline' ? 'online' : 'offline';
-  localStorage.setItem('ihuquq_mode', currentMode);
+  localStorage.removeItem('ihuquq_mode');
   applyMode();
 }
 
 function applyMode() {
   const isOnline = currentMode === 'online';
-  document.getElementById('nav-offline').style.display = isOnline ? 'none' : 'grid';
-  document.getElementById('nav-online').style.display = isOnline ? 'grid' : 'none';
+  const navOff = document.getElementById('nav-offline');
+  const navOn = document.getElementById('nav-online');
+  if(navOff) navOff.style.display = isOnline ? 'none' : 'grid';
+  if(navOn) navOn.style.display = isOnline ? 'grid' : 'none';
   document.getElementById('mode-btn').textContent = isOnline ? '💻 Onlayn' : '🏫 Oflayn';
-
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
   document.querySelectorAll('#nav-offline .ni, #nav-online .ni').forEach(n => n.classList.remove('on'));
-
   if (isOnline) {
     document.getElementById('page-on-dash').classList.add('on');
-    document.querySelector('#nav-online [data-p="on-dash"]').classList.add('on');
+    const onDash = document.querySelector('#nav-online [data-p="on-dash"]');
+    if(onDash) onDash.classList.add('on');
     renderOnlineDash();
   } else {
     document.getElementById('page-dash').classList.add('on');
-    document.querySelector('#nav-offline [data-p="dash"]').classList.add('on');
+    const dash = document.querySelector('#nav-offline [data-p="dash"]');
+    if(dash) dash.classList.add('on');
     renderDash();
   }
 }
