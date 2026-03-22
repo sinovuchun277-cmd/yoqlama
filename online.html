@@ -1053,10 +1053,12 @@ function saveBotSettings(){
   showToast('✅ Saqlandi!');renderBot();
 }
 
-function saveOfflineInfo(){
+async function saveOfflineInfo(){
   const info=document.getElementById('offline-info').value.trim();
-  localStorage.setItem('offline_info',info);
-  showToast('✅ Saqlandi! Botdagi "🏫 Oflayn kurslar" yangilandi.');
+  try{
+    await UPSERT('settings',[{key:'offline_info',value:info}]);
+    showToast('✅ Saqlandi! Bot yangilandi.');
+  }catch(e){showToast('❌ '+e.message)}
 }
 
 async function setWebhook(){
