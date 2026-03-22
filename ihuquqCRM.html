@@ -227,13 +227,14 @@ button,input,select,textarea{font-family:var(--font)}
   <div class="ni" data-p="tar"><span class="ic">📅</span>Tarix</div>
   <div class="ni" data-p="tol"><span class="ic">💳</span>To'lov</div>
   <div class="ni" data-p="stud"><span class="ic">👤</span>O'quvchilar</div>
+  <div class="ni" data-p="grps"><span class="ic">👥</span>Guruhlar</div>
   <div class="ni" data-p="test"><span class="ic">📝</span>Testlar</div>
   <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
 </div>
 <div class="nav" id="nav-online" style="display:none">
   <div class="ni on" data-p="on-dash"><span class="ic">📊</span>Bosh</div>
-  <div class="ni" data-p="on-kurslar"><span class="ic">📚</span>Kurslar</div>
-  <div class="ni" data-p="on-rey"><span class="ic">🏆</span>Reyting</div>
+  <div class="ni" data-p="on-stud"><span class="ic">👤</span>O'quvchilar</div>
+  <div class="ni" data-p="on-grps"><span class="ic">👥</span>Guruhlar</div>
   <div class="ni" data-p="on-test"><span class="ic">📝</span>Testlar</div>
   <div class="ni" data-p="on-tolov"><span class="ic">💳</span>To'lovlar</div>
   <div class="ni" data-p="on-bosh"><span class="ic">⚙️</span>Sozlama</div>
@@ -322,6 +323,13 @@ button,input,select,textarea{font-family:var(--font)}
       <div id="test-list"></div>
       <div style="height:10px"></div>
     </div>
+    <!-- GURUHLAR -->
+    <div class="page" id="page-grps">
+      <div class="chips" id="grps-chips"></div>
+      <div id="grps-list"></div>
+      <div style="height:10px"></div>
+    </div>
+
     <!-- BOSHQARUV -->
     <div class="page" id="page-bosh">
       <div class="card">
@@ -393,6 +401,23 @@ button,input,select,textarea{font-family:var(--font)}
 
 <div class="page" id="page-on-kurslar">
   <div id="on-kurs-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-stud">
+  <div class="srch"><span style="color:var(--text3)">🔍</span><input id="on-stud-srch" placeholder="Ism, telefon..."></div>
+  <div class="srow">
+    <div class="sbox b"><div class="v" id="on-s-total">0</div><div class="l">Jami</div></div>
+    <div class="sbox g"><div class="v" id="on-s-paid">0</div><div class="l">To'lagan</div></div>
+    <div class="sbox r"><div class="v" id="on-s-debt">0</div><div class="l">Qarzdor</div></div>
+  </div>
+  <div id="on-stud-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-grps">
+  <div class="chips" id="on-grps-chips"></div>
+  <div id="on-grps-list"></div>
   <div style="height:10px"></div>
 </div>
 
@@ -575,6 +600,7 @@ document.querySelectorAll('.ni').forEach(el=>{
       tar:renderTar,
       tol:()=>loadPay().then(renderTol),
       stud:()=>{renderStudents();bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi o\'quvchi';document.getElementById('bot-btn').onclick=()=>document.querySelector('[data-p="bosh"]').click()},
+      grps:()=>{renderGrpPage();bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi guruh';document.getElementById('bot-btn').onclick=()=>document.querySelector('[data-p="bosh"]').click()},
       test:()=>{renderTests();bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi test';document.getElementById('bot-btn').onclick=openNewTest},
       bosh:renderBosh
     })[p]?.();
@@ -1573,14 +1599,240 @@ document.getElementById('nav-online').addEventListener('click', e => {
   const bb = document.getElementById('botbar'); bb.style.display = 'none';
   const map = {
     'on-dash': renderOnlineDash,
-    'on-kurslar': renderOnlineKurslar,
-    'on-rey': renderOnlineReyting,
+    'on-stud': ()=>{renderOnlineStudents();const bb=document.getElementById('botbar');bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi o\'quvchi';document.getElementById('bot-btn').onclick=openNewOnlineStudent},
+    'on-grps': ()=>{renderOnlineGrps();const bb=document.getElementById('botbar');bb.style.display='block';document.getElementById('bot-btn').textContent='➕ Yangi guruh';document.getElementById('bot-btn').onclick=openNewOnlineGroup},
     'on-test': renderOnlineTests,
     'on-tolov': renderOnlineTolov,
     'on-bosh': renderOnlineBosh
   };
   map[p]?.();
 });
+
+// ── OFLAYN GURUHLAR ──
+function renderGrpPage(){
+  document.getElementById('botbar').style.display='block';
+  let grpFilter='all';
+  const buildGrpChips=()=>{
+    const c=document.getElementById('grps-chips');c.innerHTML='';
+    [{id:'all',title:'Hammasi'},...courses].forEach(cf=>{
+      const el=document.createElement('div');
+      el.className='chip'+(grpFilter===cf.id?' on':'');
+      el.textContent=cf.title;
+      el.onclick=()=>{grpFilter=cf.id;buildGrpChips();renderGrpList()};
+      c.appendChild(el);
+    });
+  };
+  const renderGrpList=()=>{
+    const fil=grpFilter==='all'?groups:groups.filter(g=>g.course_id===grpFilter);
+    document.getElementById('grps-list').innerHTML=fil.map(g=>{
+      const cnt=getGroupStudents(g.id).length;
+      const cap=g.capacity||20;
+      const fill=Math.round((cnt/cap)*100);
+      const col=fill>=90?'var(--red)':fill>=70?'var(--yellow)':'var(--green)';
+      return`<div class="grp-card">
+        <div class="grp-card-hdr">
+          <div>
+            <div class="grp-card-name">${g.name} ${g.is_rated?'⭐':''}</div>
+            <div class="grp-card-course">${g.courses?.title||'—'}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:13px;font-weight:800;color:${col}">${cnt}/${cap}</div>
+            <div style="font-size:10px;color:var(--text2)">o'quvchi</div>
+          </div>
+        </div>
+        <div class="grp-meta-grid">
+          <div class="grp-meta-item"><div class="gmi-label">Kun</div><div class="gmi-val">${DT[g.days]||g.days||'—'}</div></div>
+          <div class="grp-meta-item"><div class="gmi-label">Vaqt</div><div class="gmi-val">${g.start_time||'—'}</div></div>
+          <div class="grp-meta-item"><div class="gmi-label">Xona</div><div class="gmi-val">${g.room||'—'}</div></div>
+          <div class="grp-meta-item"><div class="gmi-label">To'lganlik</div><div class="gmi-val" style="color:${col}">${fill}%</div></div>
+        </div>
+        <div style="margin-top:10px;background:var(--s3);border-radius:6px;height:6px;overflow:hidden">
+          <div style="width:${fill}%;height:100%;background:${col};border-radius:6px;transition:width .5s"></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="abtn" style="flex:1;padding:8px;font-size:12px" onclick="showGrpStudents(${g.id},'${g.name}')">👤 O'quvchilar (${cnt})</button>
+          <button class="ebtn" onclick="editGroup(${g.id})">✏️</button>
+          <button class="dbtn" onclick="deleteGroup(${g.id})">🗑</button>
+        </div>
+      </div>`;
+    }).join('')||'<div class="empty">Guruh yo\'q</div>';
+  };
+  buildGrpChips();renderGrpList();
+}
+
+function showGrpStudents(grpId,grpName){
+  const gSts=getGroupStudents(grpId);
+  openModal(`
+    <div class="mtitle">👥 ${grpName}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${gSts.length} ta o'quvchi</div>
+    ${gSts.map(gs=>{
+      const s=gs.student;if(!s)return'';
+      const idx=students.indexOf(s);
+      return`<div class="lr">
+        <div class="av ${avCls(idx)}" style="width:36px;height:36px;font-size:12px">${avl(s.name)}</div>
+        <div class="lt"><div class="ln">${s.name}</div><div class="ls">${s.phone||'—'}</div></div>
+        ${s.phone?`<a href="tel:${s.phone}" style="color:var(--accent);font-size:20px;text-decoration:none">📞</a>`:''}
+        <button class="ebtn" onclick="closeModal();openStudentProfile(${s.id})">👁</button>
+      </div>`;
+    }).join('')||'<div class="empty">O\'quvchi yo\'q</div>'}
+  `);
+}
+
+// ── ONLAYN O'QUVCHILAR ──
+let onlineStudentsData=[];
+
+async function renderOnlineStudents(){
+  const srch=(document.getElementById('on-stud-srch')?.value||'').toLowerCase();
+  onlineStudentsData=await GET('online_students','?order=full_name&select=*');
+
+  // To'lov ma'lumotlari
+  const month=mstr(pYear,pMonth);
+  const onPays=await GET('payments',`?month=eq.${month}&select=*`);
+  const onPayMap={};onPays.forEach(p=>{onPayMap[`${p.student_id}_${p.group_id||0}`]=p});
+
+  const fil=onlineStudentsData.filter(s=>{
+    return !srch||
+      (s.full_name||'').toLowerCase().includes(srch)||
+      (s.phone||'').includes(srch);
+  });
+
+  document.getElementById('on-s-total').textContent=fil.length;
+  let paid=0,debt=0;
+  fil.forEach(s=>{
+    // Onlayn o'quvchi uchun enrollment approved bo'lgan kurslar
+    const hasPaid=onPays.some(p=>p.tg_id===s.tg_id&&p.paid);
+    if(hasPaid)paid++;else debt++;
+  });
+  document.getElementById('on-s-paid').textContent=paid;
+  document.getElementById('on-s-debt').textContent=debt;
+
+  document.getElementById('on-stud-list').innerHTML=fil.map((s,i)=>`
+    <div class="st-card" onclick="openOnlineStudentProfile(${s.id})">
+      <div class="av av${i%8}" style="width:42px;height:42px;font-size:14px">${avl(s.full_name||'?')}</div>
+      <div class="st-card-info">
+        <div class="st-card-name">${s.full_name||'Noma\'lum'}</div>
+        <div class="st-card-meta">${s.phone||'—'} · @${s.tg_username||'—'}</div>
+      </div>
+      <div style="font-size:11px;color:var(--text2)">${new Date(s.created_at).toLocaleDateString('uz-UZ')}</div>
+    </div>`).join('')||'<div class="empty">O\'quvchi yo\'q</div>';
+}
+
+function openOnlineStudentProfile(id){
+  const s=onlineStudentsData.find(x=>x.id===id);if(!s)return;
+  openModal(`
+    <div class="prof-hero">
+      <div class="av av0" style="width:64px;height:64px;font-size:22px;margin:0 auto 10px;border:2px solid var(--border2)">${avl(s.full_name||'?')}</div>
+      <div style="font-size:18px;font-weight:900">${s.full_name||'Noma\'lum'}</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:2px">@${s.tg_username||'—'} · ID: ${s.tg_id}</div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">📋 Ma'lumotlar</div>
+      ${s.phone?`<div class="info-row"><div class="info-lbl">📱 Telefon</div><a href="tel:${s.phone}" class="tel-link">${s.phone}</a></div>`:''}
+      <div class="info-row"><div class="info-lbl">📅 Qo'shildi</div><div class="info-val">${new Date(s.created_at).toLocaleDateString('uz-UZ')}</div></div>
+    </div>
+    <button class="abtn re" style="width:100%;padding:12px" onclick="deleteOnlineStudent(${id})">🗑 O'chirish</button>
+  `);
+}
+
+async function deleteOnlineStudent(id){
+  if(!confirm('O\'chirasizmi?'))return;
+  try{
+    await DEL('online_students',`?id=eq.${id}`);
+    onlineStudentsData=onlineStudentsData.filter(s=>s.id!==id);
+    closeModal();renderOnlineStudents();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+function openNewOnlineStudent(){
+  openModal(`
+    <div class="mtitle">➕ Onlayn o'quvchi qo'shish</div>
+    <div class="fr"><input class="fi" id="on-ns-name" placeholder="Ism Familiya *"></div>
+    <div class="fr">
+      <input class="fi" id="on-ns-phone" placeholder="📱 Telefon" type="tel">
+      <input class="fi" id="on-ns-tg" placeholder="Telegram ID" type="number">
+    </div>
+    <div class="fr"><input class="fi" id="on-ns-username" placeholder="@username"></div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="addOnlineStudent()">➕ Qo'shish</button>
+  `);
+}
+
+async function addOnlineStudent(){
+  const name=document.getElementById('on-ns-name').value.trim();
+  if(!name)return showToast('⚠️ Ism kiriting');
+  try{
+    const r=await POST('online_students',{
+      full_name:name,
+      phone:document.getElementById('on-ns-phone').value||null,
+      tg_id:parseInt(document.getElementById('on-ns-tg').value)||null,
+      tg_username:document.getElementById('on-ns-username').value||null
+    });
+    onlineStudentsData.push(r[0]);
+    closeModal();renderOnlineStudents();showToast('✅ Qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+document.getElementById('on-stud-srch').oninput=()=>renderOnlineStudents();
+
+// ── ONLAYN GURUHLAR ──
+let onlineGroups=[];
+
+async function renderOnlineGrps(){
+  // Onlayn guruhlar — courses jadvalidan olinadi (har kurs = guruh)
+  onlineGroups=await GET('courses','?order=title&select=*');
+
+  const c=document.getElementById('on-grps-chips');c.innerHTML='';
+
+  document.getElementById('on-grps-list').innerHTML=onlineGroups.map(g=>{
+    return`<div class="grp-card">
+      <div class="grp-card-hdr">
+        <div>
+          <div class="grp-card-name">${g.title}</div>
+          <div class="grp-card-course">${(g.price||0).toLocaleString()} so'm/oy</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="ebtn" onclick="editOnlineCourse(${g.id})">✏️</button>
+          <button class="dbtn" onclick="deleteOnlineCourse(${g.id})">🗑</button>
+        </div>
+      </div>
+      <div class="grp-meta-grid">
+        <div class="grp-meta-item">
+          <div class="gmi-label">Karta</div>
+          <div class="gmi-val" style="font-size:11px">${g.card_number||'Kiritilmagan'}</div>
+        </div>
+        <div class="grp-meta-item">
+          <div class="gmi-label">Karta egasi</div>
+          <div class="gmi-val" style="font-size:11px">${g.card_owner||'—'}</div>
+        </div>
+        <div class="grp-meta-item">
+          <div class="gmi-label">TG guruh</div>
+          <div class="gmi-val" style="font-size:11px;color:${g.tg_group_id?'var(--green)':'var(--red)'}">${g.tg_group_id?'✅ Ulangan':'❌ Ulanmagan'}</div>
+        </div>
+      </div>
+      <button class="abtn" style="width:100%;padding:8px;font-size:12px;margin-top:10px" onclick="showOnlineGrpStudents(${g.id},'${g.title}')">👤 O'quvchilar ro'yxati</button>
+    </div>`;
+  }).join('')||'<div class="empty">Kurs/guruh yo\'q. Sozlamadan qo\'shing!</div>';
+}
+
+async function showOnlineGrpStudents(courseId,courseName){
+  const reqs=await GET('enrollment_requests',`?course_id=eq.${courseId}&status=eq.approved&select=*`);
+  openModal(`
+    <div class="mtitle">📚 ${courseName}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">${reqs.length} ta faol o'quvchi</div>
+    ${reqs.map((r,i)=>`
+      <div class="lr">
+        <div class="av av${i%8}" style="width:36px;height:36px;font-size:12px">${avl(r.full_name||'?')}</div>
+        <div class="lt">
+          <div class="ln">${r.full_name||'Noma\'lum'}</div>
+          <div class="ls">${r.phone||'—'} · @${r.tg_username||'—'}</div>
+        </div>
+        ${r.phone?`<a href="tel:${r.phone}" style="color:var(--accent);font-size:20px;text-decoration:none">📞</a>`:''}
+      </div>`).join('')||'<div class="empty">O\'quvchi yo\'q</div>'}
+  `);
+}
+
+function openNewOnlineGroup(){
+  document.querySelector('[data-p="on-bosh"]').click();
+}
 
 // ── ONLAYN DASHBOARD ──
 async function renderOnlineDash() {
