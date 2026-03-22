@@ -231,15 +231,15 @@ button,input,select,textarea{font-family:var(--font)}
   <div class="ni" data-p="grps"><span class="ic">👥</span>Guruhlar</div>
   <div class="ni" data-p="test"><span class="ic">📝</span>Testlar</div>
   <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
-</div>
-<div class="nav" id="nav-online" style="display:none">
+  </div>
+  <div class="nav" id="nav-online" style="display:none">
   <div class="ni on" data-p="on-dash" onclick="onNav(this,'on-dash')"><span class="ic">📊</span>Bosh</div>
   <div class="ni" data-p="on-stud" onclick="onNav(this,'on-stud')"><span class="ic">👤</span>O'quvchilar</div>
   <div class="ni" data-p="on-grps" onclick="onNav(this,'on-grps')"><span class="ic">👥</span>Guruhlar</div>
   <div class="ni" data-p="on-test" onclick="onNav(this,'on-test')"><span class="ic">📝</span>Testlar</div>
   <div class="ni" data-p="on-tolov" onclick="onNav(this,'on-tolov')"><span class="ic">💳</span>To'lovlar</div>
   <div class="ni" data-p="on-bosh" onclick="onNav(this,'on-bosh')"><span class="ic">⚙️</span>Sozlama</div>
-</div>
+  </div>
   <div class="pages">
     <!-- DASHBOARD -->
     <div class="page on" id="page-dash">
@@ -564,7 +564,6 @@ async function init(){
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='flex';
     document.getElementById('hdr-date').textContent=todayStr();
-    renderDash();
     applyMode();
   }catch(e){
     document.getElementById('loading').innerHTML=`<div style="color:var(--red);font-weight:700;padding:20px;text-align:center">Xatolik: ${e.message}</div>`;
@@ -1560,7 +1559,7 @@ function copy(txt){
   });
 }
 // ── REJIM ──
-let currentMode = localStorage.getItem('ihuquq_mode') || 'offline';
+let currentMode = 'offline';
 
 function toggleMode() {
   currentMode = currentMode === 'offline' ? 'online' : 'offline';
