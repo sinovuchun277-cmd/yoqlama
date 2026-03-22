@@ -22,14 +22,17 @@ button,input,select,textarea{font-family:var(--font)}
 /* APP */
 #app{display:none;flex-direction:column;height:100dvh}
 /* HEADER */
-.hdr{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(env(safe-area-inset-top,0px)+10px);display:flex;align-items:center;justify-content:space-between;transition:background .3s}
-.hdr-l{display:flex;align-items:center;gap:10px}
-.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 14px rgba(61,127,255,.4);flex-shrink:0}
-.brand{font-family:var(--brand);font-size:20px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hdr-r{display:flex;align-items:center;gap:6px}
-.hdr-date{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text2);background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
-.icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.icon-btn:active{background:var(--s4)}
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="logo">⚖️</div>
+    <div class="brand">iHuquq</div>
+  </div>
+  <div class="hdr-r">
+    <button class="icon-btn" id="mode-btn" onclick="toggleMode()" style="font-size:11px;font-weight:800;width:auto;padding:0 10px;color:var(--text)">🏫 Oflayn</button>
+    <div class="hdr-date" id="hdr-date">—</div>
+    <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+  </div>
+</div>
 /* NAV 2 QATOR 4x2 */
 .nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 6px 2px;gap:2px;transition:background .3s}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
@@ -219,16 +222,24 @@ button,input,select,textarea{font-family:var(--font)}
       <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     </div>
   </div>
-  <div class="nav">
-    <div class="ni on" data-p="dash"><span class="ic">📊</span>Bosh</div>
-    <div class="ni" data-p="dav"><span class="ic">✅</span>Davomat</div>
-    <div class="ni" data-p="rey"><span class="ic">🏆</span>Reyting</div>
-    <div class="ni" data-p="tar"><span class="ic">📅</span>Tarix</div>
-    <div class="ni" data-p="tol"><span class="ic">💳</span>To'lov</div>
-    <div class="ni" data-p="stud"><span class="ic">👤</span>O'quvchilar</div>
-    <div class="ni" data-p="test"><span class="ic">📝</span>Testlar</div>
-    <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
-  </div>
+  <div class="nav" id="nav-offline">
+  <div class="ni on" data-p="dash"><span class="ic">📊</span>Bosh</div>
+  <div class="ni" data-p="dav"><span class="ic">✅</span>Davomat</div>
+  <div class="ni" data-p="rey"><span class="ic">🏆</span>Reyting</div>
+  <div class="ni" data-p="tar"><span class="ic">📅</span>Tarix</div>
+  <div class="ni" data-p="tol"><span class="ic">💳</span>To'lov</div>
+  <div class="ni" data-p="stud"><span class="ic">👤</span>O'quvchilar</div>
+  <div class="ni" data-p="test"><span class="ic">📝</span>Testlar</div>
+  <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
+</div>
+<div class="nav" id="nav-online" style="display:none">
+  <div class="ni on" data-p="on-dash"><span class="ic">📊</span>Bosh</div>
+  <div class="ni" data-p="on-kurslar"><span class="ic">📚</span>Kurslar</div>
+  <div class="ni" data-p="on-rey"><span class="ic">🏆</span>Reyting</div>
+  <div class="ni" data-p="on-test"><span class="ic">📝</span>Testlar</div>
+  <div class="ni" data-p="on-tolov"><span class="ic">💳</span>To'lovlar</div>
+  <div class="ni" data-p="on-bosh"><span class="ic">⚙️</span>Sozlama</div>
+</div>
   <div class="pages">
     <!-- DASHBOARD -->
     <div class="page on" id="page-dash">
@@ -368,6 +379,82 @@ button,input,select,textarea{font-family:var(--font)}
       </div>
     </div>
   </div>
+ <!-- ONLAYN SAHIFALAR -->
+<div class="page" id="page-on-dash">
+  <div class="sec">📅 Bugun — Onlayn platform</div>
+  <div class="dash-grid">
+    <div class="dc-card"><div class="dc-num" id="on-d-obuna" style="color:var(--green)">—</div><div class="dc-lbl">Obunachi</div></div>
+    <div class="dc-card"><div class="dc-num" id="on-d-kurs" style="color:var(--accent)">—</div><div class="dc-lbl">Kurslar</div></div>
+    <div class="dc-card"><div class="dc-num" id="on-d-pending" style="color:var(--yellow)">—</div><div class="dc-lbl">Kutayotgan</div></div>
+    <div class="dc-card"><div class="dc-num" id="on-d-test" style="color:var(--accent2)">—</div><div class="dc-lbl">Faol testlar</div></div>
+  </div>
+  <div class="sec">⏳ Kutayotgan to'lovlar</div>
+  <div id="on-pending-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-kurslar">
+  <div id="on-kurs-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-rey">
+  <div class="chips" id="on-rey-chips"></div>
+  <div id="on-rey-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-test">
+  <div class="srow">
+    <div class="sbox b"><div class="v" id="on-t-total">0</div><div class="l">Jami</div></div>
+    <div class="sbox g"><div class="v" id="on-t-active">0</div><div class="l">Faol</div></div>
+    <div class="sbox y"><div class="v" id="on-t-pub">0</div><div class="l">Ommaviy</div></div>
+  </div>
+  <div id="on-test-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-tolov">
+  <div class="srow">
+    <div class="sbox y"><div class="v" id="on-tr-pending">0</div><div class="l">Kutmoqda</div></div>
+    <div class="sbox g"><div class="v" id="on-tr-approved">0</div><div class="l">Tasdiqlangan</div></div>
+    <div class="sbox r"><div class="v" id="on-tr-rejected">0</div><div class="l">Rad etilgan</div></div>
+  </div>
+  <div class="chips" id="on-tr-chips"></div>
+  <div id="on-tr-list"></div>
+  <div style="height:10px"></div>
+</div>
+
+<div class="page" id="page-on-bosh">
+  <div class="card">
+    <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">📚 Kurs qo'shish / tahrirlash</h3>
+    <div class="fr"><input class="fi" id="on-nc-title" placeholder="Kurs nomi *"></div>
+    <div class="fr">
+      <input class="fi" id="on-nc-price" placeholder="Narxi" type="number">
+      <input class="fi" id="on-nc-card" placeholder="💳 Karta raqami">
+    </div>
+    <div class="fr"><input class="fi" id="on-nc-owner" placeholder="Karta egasi"></div>
+    <div class="fr"><input class="fi" id="on-nc-tggroup" placeholder="Telegram guruh ID (-100...)" type="number"></div>
+    <button class="abtn" style="width:100%;padding:12px" onclick="addOnlineCourse()">Kurs qo'shish</button>
+    <div id="on-course-list" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:14px;font-weight:800;margin-bottom:12px">📝 Ommaviy test qo'shish</h3>
+    <div class="fr"><input class="fi" id="on-nt-title" placeholder="Test nomi *"></div>
+    <div class="fr">
+      <input class="fi" id="on-nt-cat" placeholder="Kategoriya (Huquq, Ingliz...)">
+      <select class="fsel" id="on-nt-type">
+        <option value="once">1️⃣ Bir marta</option>
+        <option value="open">🔄 Doimiy ochiq</option>
+      </select>
+    </div>
+    <div class="fr">
+      <input class="fi" id="on-nt-dur" type="number" value="30" placeholder="Vaqt (daq)">
+      <input class="fi" id="on-nt-pass" type="number" value="60" placeholder="O'tish % (60)">
+    </div>
+    <button class="abtn" style="width:100%;padding:12px" onclick="addOnlineTest()">Test yaratish</button>
+  </div>
+</div>
   <div class="botbar" id="botbar" style="display:none">
     <button class="mbtn" id="bot-btn"></button>
   </div>
@@ -454,6 +541,7 @@ async function init(){
     document.getElementById('app').style.display='flex';
     document.getElementById('hdr-date').textContent=todayStr();
     renderDash();
+    applyMode();
   }catch(e){
     document.getElementById('loading').innerHTML=`<div style="color:var(--red);font-weight:700;padding:20px;text-align:center">Xatolik: ${e.message}</div>`;
   }
@@ -1446,7 +1534,388 @@ function copy(txt){
     const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 Nusxalandi!');
   });
 }
+// ── REJIM ──
+let currentMode = localStorage.getItem('ihuquq_mode') || 'offline';
 
+function toggleMode() {
+  currentMode = currentMode === 'offline' ? 'online' : 'offline';
+  localStorage.setItem('ihuquq_mode', currentMode);
+  applyMode();
+}
+
+function applyMode() {
+  const isOnline = currentMode === 'online';
+  document.getElementById('nav-offline').style.display = isOnline ? 'none' : 'grid';
+  document.getElementById('nav-online').style.display = isOnline ? 'grid' : 'none';
+  document.getElementById('mode-btn').textContent = isOnline ? '💻 Onlayn' : '🏫 Oflayn';
+
+  // Sahifalarni ko'rsatish/yashirish
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
+
+  if (isOnline) {
+    document.getElementById('page-on-dash').classList.add('on');
+    document.querySelector('[data-p="on-dash"]').classList.add('on');
+    renderOnlineDash();
+  } else {
+    document.getElementById('page-dash').classList.add('on');
+    document.querySelector('[data-p="dash"]').classList.add('on');
+    renderDash();
+  }
+}
+
+// Onlayn nav
+document.getElementById('nav-online').addEventListener('click', e => {
+  const ni = e.target.closest('.ni');
+  if (!ni) return;
+  const p = ni.dataset.p;
+  document.querySelectorAll('#nav-online .ni').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+  ni.classList.add('on');
+  document.getElementById('page-' + p).classList.add('on');
+  const bb = document.getElementById('botbar'); bb.style.display = 'none';
+  const map = {
+    'on-dash': renderOnlineDash,
+    'on-kurslar': renderOnlineKurslar,
+    'on-rey': renderOnlineReyting,
+    'on-test': renderOnlineTests,
+    'on-tolov': renderOnlineTolov,
+    'on-bosh': renderOnlineBosh
+  };
+  map[p]?.();
+});
+
+// ── ONLAYN DASHBOARD ──
+async function renderOnlineDash() {
+  document.getElementById('botbar').style.display = 'none';
+  const [onSts, courses, reqs, tests] = await Promise.all([
+    GET('online_students', '?select=id'),
+    GET('courses', '?select=id'),
+    GET('enrollment_requests', '?select=status'),
+    GET('tests', '?is_public=eq.true&is_active=eq.true&select=id')
+  ]);
+  document.getElementById('on-d-obuna').textContent = onSts.length;
+  document.getElementById('on-d-kurs').textContent = courses.length;
+  document.getElementById('on-d-pending').textContent = reqs.filter(r => r.status === 'pending').length;
+  document.getElementById('on-d-test').textContent = tests.length;
+
+  // Kutayotgan to'lovlar
+  const pending = await GET('enrollment_requests', '?status=eq.pending&order=created_at.desc&select=*,courses(title)');
+  document.getElementById('on-pending-list').innerHTML = pending.length
+    ? pending.map(r => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-size:14px;font-weight:800">${r.full_name || 'Noma\'lum'}</div>
+            <div style="font-size:11px;color:var(--text2)">${r.phone || '—'} · @${r.tg_username || r.tg_id}</div>
+            <div style="font-size:12px;color:var(--accent);margin-top:2px">${r.courses?.title || '—'} · ${(r.amount || 0).toLocaleString()} so'm</div>
+          </div>
+          <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,176,32,.12);color:var(--yellow);border:1px solid rgba(255,176,32,.2)">⏳ Kutmoqda</span>
+        </div>
+        ${r.screenshot_file_id ? `<div style="margin-bottom:8px">
+          <a href="https://api.telegram.org/bot8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues/${r.screenshot_file_id}" target="_blank"
+            style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--s3);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-size:12px;font-weight:700;text-decoration:none">
+            🖼 Skrinshotni ko'rish
+          </a>
+        </div>` : ''}
+        <div style="display:flex;gap:8px">
+          <button class="abtn gr" style="flex:1;padding:10px" onclick="approveOnlineReq(${r.id},${r.tg_id},'${r.full_name || ''}',${r.course_id})">✅ Tasdiqlash</button>
+          <button class="abtn re" style="flex:1;padding:10px" onclick="rejectOnlineReq(${r.id},${r.tg_id})">❌ Rad etish</button>
+        </div>
+      </div>`).join('')
+    : '<div class="empty">Kutayotgan to\'lov yo\'q</div>';
+}
+
+// ── ONLAYN KURSLAR ──
+async function renderOnlineKurslar() {
+  document.getElementById('botbar').style.display = 'block';
+  document.getElementById('bot-btn').textContent = '➕ Yangi kurs';
+  document.getElementById('bot-btn').onclick = () => document.querySelector('[data-p="on-bosh"]').click();
+  const courses = await GET('courses', '?order=title&select=*');
+  document.getElementById('on-kurs-list').innerHTML = courses.map(c => {
+    const cnt = 0;
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-size:15px;font-weight:800">${c.title}</div>
+          <div style="font-size:12px;color:var(--accent);margin-top:2px">${(c.price || 0).toLocaleString()} so'm/oy</div>
+          ${c.card_number ? `<div style="font-size:11px;color:var(--text2);margin-top:2px">💳 ${c.card_number} · ${c.card_owner || ''}</div>` : ''}
+          ${c.tg_group_id ? `<div style="font-size:11px;color:var(--green);margin-top:2px">✅ Telegram guruh ulangan</div>` : `<div style="font-size:11px;color:var(--red);margin-top:2px">⚠️ Telegram guruh ulanmagan</div>`}
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="ebtn" onclick="editOnlineCourse(${c.id})">✏️</button>
+          <button class="dbtn" onclick="deleteOnlineCourse(${c.id})">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">Kurs yo\'q</div>';
+}
+
+// ── ONLAYN REYTING ──
+async function renderOnlineReyting() {
+  document.getElementById('botbar').style.display = 'none';
+  const [results, onSts] = await Promise.all([
+    GET('test_results', '?finished_at=not.is.null&select=tg_id,participant_name,score,total_score'),
+    GET('online_students', '?select=*')
+  ]);
+
+  // Ball hisoblash
+  const scoreMap = {};
+  results.forEach(r => {
+    if (!r.tg_id) return;
+    if (!scoreMap[r.tg_id]) scoreMap[r.tg_id] = { name: r.participant_name, total: 0, count: 0 };
+    scoreMap[r.tg_id].total += r.score || 0;
+    scoreMap[r.tg_id].count++;
+  });
+
+  const ranked = Object.entries(scoreMap)
+    .map(([tgId, d]) => ({ tgId, ...d }))
+    .sort((a, b) => b.total - a.total);
+
+  const chips = document.getElementById('on-rey-chips');
+  chips.innerHTML = '';
+
+  document.getElementById('on-rey-list').innerHTML = ranked.length
+    ? ranked.map((s, i) => {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : String(i + 1);
+        return `<div class="ri">
+          <div class="rn">${medal}</div>
+          <div class="av av${i % 8}" style="width:36px;height:36px;font-size:12px">${(s.name || '?').slice(0, 2).toUpperCase()}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700">${s.name || 'Noma\'lum'}</div>
+            <div style="font-size:11px;color:var(--text2)">${s.count} ta test</div>
+            <div class="rb"><div class="rbf" style="width:${Math.min(100, (s.total / 100) * 100)}%;background:var(--accent)"></div></div>
+          </div>
+          <div style="font-size:16px;font-weight:900;font-family:var(--mono);color:var(--accent)">${s.total}</div>
+        </div>`;
+      }).join('')
+    : '<div class="empty">Hali hech kim test topshirmagan</div>';
+}
+
+// ── ONLAYN TESTLAR ──
+async function renderOnlineTests() {
+  document.getElementById('botbar').style.display = 'block';
+  document.getElementById('bot-btn').textContent = '➕ Yangi ommaviy test';
+  document.getElementById('bot-btn').onclick = () => document.querySelector('[data-p="on-bosh"]').click();
+  const tests = await GET('tests', '?is_public=eq.true&order=created_at.desc&select=*');
+  document.getElementById('on-t-total').textContent = tests.length;
+  document.getElementById('on-t-active').textContent = tests.filter(t => t.is_active).length;
+  document.getElementById('on-t-pub').textContent = tests.filter(t => t.is_public).length;
+  document.getElementById('on-test-list').innerHTML = tests.map(t => `
+    <div class="test-card">
+      <div class="test-card-hdr">
+        <div>
+          <div class="test-title">${t.title}</div>
+          <div class="test-meta">${t.category || 'Umumiy'} · ${t.test_type === 'once' ? '1️⃣ Bir marta' : '🔄 Doimiy'} · ${t.duration_minutes} daq</div>
+        </div>
+        <span class="${t.is_active ? 'active-badge' : 'inactive-badge'}">${t.is_active ? 'Faol' : 'Nofaol'}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="abtn ${t.is_active ? 're' : 'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active ? '⏹ To\'xtatish' : '▶️ Faollashtirish'}</button>
+        <button class="abtn" style="padding:7px 12px;font-size:12px;background:var(--accent2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
+        <button class="abtn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
+        <button class="dbtn" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
+      </div>
+    </div>`).join('') || '<div class="empty">Ommaviy test yo\'q</div>';
+}
+
+// ── ONLAYN TO'LOV SO'ROVLARI ──
+async function renderOnlineTolov() {
+  document.getElementById('botbar').style.display = 'none';
+  const reqs = await GET('enrollment_requests', '?order=created_at.desc&select=*,courses(title)');
+  const pending = reqs.filter(r => r.status === 'pending');
+  const approved = reqs.filter(r => r.status === 'approved');
+  const rejected = reqs.filter(r => r.status === 'rejected');
+  document.getElementById('on-tr-pending').textContent = pending.length;
+  document.getElementById('on-tr-approved').textContent = approved.length;
+  document.getElementById('on-tr-rejected').textContent = rejected.length;
+
+  let onTrFilter = 'pending';
+  const chips = document.getElementById('on-tr-chips'); chips.innerHTML = '';
+  [{ k: 'all', l: 'Hammasi' }, { k: 'pending', l: '⏳ Kutmoqda' }, { k: 'approved', l: '✅ Tasdiqlangan' }, { k: 'rejected', l: '❌ Rad etilgan' }].forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'chip' + (onTrFilter === s.k ? ' on' : '');
+    el.textContent = s.l;
+    el.onclick = () => { onTrFilter = s.k; renderOnlineTrList(reqs, onTrFilter); chips.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); el.classList.add('on'); };
+    chips.appendChild(el);
+  });
+  renderOnlineTrList(reqs, onTrFilter);
+}
+
+function renderOnlineTrList(reqs, filter) {
+  const fil = filter === 'all' ? reqs : reqs.filter(r => r.status === filter);
+  document.getElementById('on-tr-list').innerHTML = fil.map(r => {
+    const statusColor = r.status === 'approved' ? 'var(--green)' : r.status === 'rejected' ? 'var(--red)' : 'var(--yellow)';
+    const statusTxt = r.status === 'approved' ? '✅ Tasdiqlangan' : r.status === 'rejected' ? '❌ Rad etilgan' : '⏳ Kutmoqda';
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:800">${r.full_name || 'Noma\'lum'}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">${r.phone || '—'} · @${r.tg_username || r.tg_id}</div>
+          <div style="font-size:12px;color:var(--accent);margin-top:2px">${r.courses?.title || '—'} · ${(r.amount || 0).toLocaleString()} so'm</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${new Date(r.created_at).toLocaleString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${statusColor}20;color:${statusColor};border:1px solid ${statusColor}40">${statusTxt}</span>
+      </div>
+      ${r.screenshot_file_id ? `<div style="margin-bottom:10px">
+        <a href="https://api.telegram.org/bot8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues/${r.screenshot_file_id}" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--s3);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-size:12px;font-weight:700;text-decoration:none">
+          🖼 Skrinshotni ko'rish
+        </a>
+      </div>` : ''}
+      ${r.status === 'pending' ? `<div style="display:flex;gap:8px">
+        <button class="abtn gr" style="flex:1;padding:10px" onclick="approveOnlineReq(${r.id},${r.tg_id},'${r.full_name || ''}',${r.course_id})">✅ Tasdiqlash</button>
+        <button class="abtn re" style="flex:1;padding:10px" onclick="rejectOnlineReq(${r.id},${r.tg_id})">❌ Rad etish</button>
+      </div>` : ''}
+    </div>`;
+  }).join('') || '<div class="empty">So\'rov yo\'q</div>';
+}
+
+// ── ONLAYN BOSHQARUV ──
+async function renderOnlineBosh() {
+  document.getElementById('botbar').style.display = 'none';
+  const courses = await GET('courses', '?order=title&select=*');
+  document.getElementById('on-course-list').innerHTML = courses.map(c => `
+    <div class="lr">
+      <div class="lt">
+        <div class="ln">${c.title}</div>
+        <div class="ls">${(c.price || 0).toLocaleString()} so'm · ${c.card_number || 'Karta yo\'q'}</div>
+      </div>
+      <button class="ebtn" onclick="editOnlineCourse(${c.id})">✏️</button>
+      <button class="dbtn" onclick="deleteOnlineCourse(${c.id})">🗑</button>
+    </div>`).join('') || '<div class="empty">Kurs yo\'q</div>';
+}
+
+async function addOnlineCourse() {
+  const title = document.getElementById('on-nc-title').value.trim();
+  if (!title) return showToast('⚠️ Kurs nomi kiriting');
+  try {
+    const r = await POST('courses', {
+      title,
+      price: parseInt(document.getElementById('on-nc-price').value) || 0,
+      card_number: document.getElementById('on-nc-card').value || null,
+      card_owner: document.getElementById('on-nc-owner').value || null,
+      tg_group_id: parseInt(document.getElementById('on-nc-tggroup').value) || null
+    });
+    courses.push(r[0]);
+    ['on-nc-title', 'on-nc-price', 'on-nc-card', 'on-nc-owner', 'on-nc-tggroup'].forEach(id => document.getElementById(id).value = '');
+    renderOnlineBosh();
+    showToast('✅ Kurs qo\'shildi');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function deleteOnlineCourse(id) {
+  if (!confirm('Kursni o\'chirasizmi?')) return;
+  try {
+    await DEL('courses', `?id=eq.${id}`);
+    courses = courses.filter(c => c.id !== id);
+    renderOnlineBosh();
+    showToast('🗑 O\'chirildi');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+function editOnlineCourse(id) {
+  const c = courses.find(x => x.id === id); if (!c) return;
+  openModal(`
+    <div class="mtitle">✏️ Kursni tahrirlash</div>
+    <div class="fr"><input class="fi" id="ec-title" value="${c.title}" placeholder="Kurs nomi *"></div>
+    <div class="fr">
+      <input class="fi" id="ec-price" value="${c.price || ''}" placeholder="Narxi" type="number">
+      <input class="fi" id="ec-card" value="${c.card_number || ''}" placeholder="💳 Karta">
+    </div>
+    <div class="fr"><input class="fi" id="ec-owner" value="${c.card_owner || ''}" placeholder="Karta egasi"></div>
+    <div class="fr"><input class="fi" id="ec-tggroup" value="${c.tg_group_id || ''}" placeholder="Telegram guruh ID" type="number"></div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="saveOnlineCourse(${id})">💾 Saqlash</button>
+  `);
+}
+
+async function saveOnlineCourse(id) {
+  const title = document.getElementById('ec-title').value.trim();
+  if (!title) return showToast('⚠️ Nom kiriting');
+  try {
+    const body = {
+      title,
+      price: parseInt(document.getElementById('ec-price').value) || 0,
+      card_number: document.getElementById('ec-card').value || null,
+      card_owner: document.getElementById('ec-owner').value || null,
+      tg_group_id: parseInt(document.getElementById('ec-tggroup').value) || null
+    };
+    await PATCH('courses', body, `?id=eq.${id}`);
+    const idx = courses.findIndex(c => c.id === id);
+    courses[idx] = { ...courses[idx], ...body };
+    closeModal(); renderOnlineBosh(); showToast('✅ Saqlandi');
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+async function addOnlineTest() {
+  const title = document.getElementById('on-nt-title').value.trim();
+  if (!title) return showToast('⚠️ Test nomi kiriting');
+  try {
+    const r = await POST('tests', {
+      title,
+      category: document.getElementById('on-nt-cat').value || 'Umumiy',
+      test_type: document.getElementById('on-nt-type').value,
+      duration_minutes: parseInt(document.getElementById('on-nt-dur').value) || 30,
+      pass_score: parseInt(document.getElementById('on-nt-pass').value) || 60,
+      is_public: true,
+      is_active: false,
+      max_score: 100
+    });
+    tests.unshift({ ...r[0] });
+    ['on-nt-title', 'on-nt-cat'].forEach(id => document.getElementById(id).value = '');
+    showToast('✅ Test yaratildi! Savollar qo\'shing.');
+    setTimeout(() => openTestEditor(r[0].id), 300);
+  } catch (e) { showToast('❌ ' + e.message); }
+}
+
+// ── TO'LOV TASDIQLASH (ONLAYN) ──
+async function approveOnlineReq(reqId, tgId, name, courseId) {
+  if (!confirm(`"${name}" tasdiqlaysizmi?`)) return;
+  showLoad();
+  try {
+    await PATCH('enrollment_requests',
+      { status: 'approved', reviewed_at: new Date().toISOString() },
+      `?id=eq.${reqId}`
+    );
+    const coursesData = await GET('courses', `?id=eq.${courseId}&select=*`);
+    const course = coursesData[0];
+    let inviteLink = null;
+    if (course?.tg_group_id) {
+      try {
+        const res = await fetch(`https://api.telegram.org/bot8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues/createChatInviteLink`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: course.tg_group_id, member_limit: 1 })
+        });
+        const data = await res.json();
+        inviteLink = data.result?.invite_link;
+      } catch (e) { }
+    }
+    let msg = `🎉 To'lovingiz tasdiqlandi!\n\n📖 ${course?.title || 'Kurs'} ga xush kelibsiz!\n\n`;
+    msg += inviteLink ? `Telegram guruhga qo'shilish:\n${inviteLink}` : `Admin tez orada sizni guruhga qo'shadi.`;
+    await fetch(`https://api.telegram.org/bot8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: tgId, text: msg })
+    });
+    hideLoad(); showToast('✅ Tasdiqlandi! Foydalanuvchiga xabar yuborildi.');
+    renderOnlineTolov();
+  } catch (e) { hideLoad(); showToast('❌ ' + e.message); }
+}
+
+async function rejectOnlineReq(reqId, tgId) {
+  if (!confirm('Rad etasizmi?')) return;
+  showLoad();
+  try {
+    await PATCH('enrollment_requests',
+      { status: 'rejected', reviewed_at: new Date().toISOString() },
+      `?id=eq.${reqId}`
+    );
+    await fetch(`https://api.telegram.org/bot8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: tgId, text: '❌ To\'lovingiz rad etildi.\n\nQayta urinib ko\'ring:\n/kurslar' })
+    });
+    hideLoad(); showToast('❌ Rad etildi'); renderOnlineTolov();
+  } catch (e) { hideLoad(); showToast('❌ ' + e.message); }
+}
 init();
 </script>
 </body>
