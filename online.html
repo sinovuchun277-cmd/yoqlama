@@ -186,13 +186,15 @@ textarea.fi{resize:none}
     </div>
     <!-- TESTLAR -->
     <div class="page" id="page-tests">
-      <div class="chips" id="test-type-chips"></div>
-      <div class="srow">
-        <div class="sbox b"><div class="v" id="t-all">0</div><div class="l">Jami</div></div>
-        <div class="sbox b"><div class="v" id="t-rated">0</div><div class="l">Reytingli</div></div>
-        <div class="sbox g"><div class="v" id="t-unrated">0</div><div class="l">Reytingsiz</div></div>
-        <div class="sbox t"><div class="v" id="t-public">0</div><div class="l">Ommaviy</div></div>
+      <div style="text-align:center;padding:20px 0 12px">
+        <div style="font-size:48px;margin-bottom:12px">📝</div>
+        <div style="font-size:17px;font-weight:900;margin-bottom:6px">Test Platformasi</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Test yaratish, import, natijalar va statistika</div>
+        <a href="test.html?admin=1" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:var(--r);font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 6px 20px rgba(79,142,255,.3)">
+          📝 Test platformasini ochish →
+        </a>
       </div>
+      <div class="sec-title">📋 So'nggi testlar</div>
       <div id="test-list"></div>
       <div style="height:16px"></div>
     </div>
@@ -675,41 +677,17 @@ async function addStudent(){
 //  TESTLAR
 // ══════════════════════════════
 function renderTests(){
-  const tc=document.getElementById('test-type-chips');tc.innerHTML='';
-  [['all','Hammasi'],['rated','⭐ Reytingli'],['unrated','📖 Reytingsiz'],['public','🌐 Ommaviy'],['active','✅ Faol']].forEach(([v,l])=>{
-    const el=document.createElement('div');el.className='chip'+(testFilter===v?' on':'');el.textContent=l;
-    el.onclick=()=>{testFilter=v;renderTests()};tc.appendChild(el);
-  });
-  let fil=tests;
-  if(testFilter==='rated')fil=fil.filter(t=>t.rated&&!t.is_public);
-  else if(testFilter==='unrated')fil=fil.filter(t=>!t.rated&&!t.is_public);
-  else if(testFilter==='public')fil=fil.filter(t=>t.is_public);
-  else if(testFilter==='active')fil=fil.filter(t=>t.is_active);
-  document.getElementById('t-all').textContent=tests.length;
-  document.getElementById('t-rated').textContent=tests.filter(t=>t.rated&&!t.is_public).length;
-  document.getElementById('t-unrated').textContent=tests.filter(t=>!t.rated&&!t.is_public).length;
-  document.getElementById('t-public').textContent=tests.filter(t=>t.is_public).length;
-  document.getElementById('test-list').innerHTML=fil.map(t=>{
-    const tb=t.is_public?'<span class="bdg bdg-b">🌐 Ommaviy</span>':t.rated?'<span class="bdg bdg-g">⭐ Reytingli</span>':'<span class="bdg bdg-n">📖 Reytingsiz</span>';
-    const ab=t.is_active?'<span class="act-badge on">Faol</span>':'<span class="act-badge off">Nofaol</span>';
-    return`<div class="test-card">
-      <div class="test-top">
-        <div style="flex:1;min-width:0">
-          <div class="test-title">${t.title}</div>
-          <div class="test-meta">${t.test_category||'Umumiy'} · ${t.duration_minutes||30} daq · Har to\'g\'ri = 2 ball</div>
-          ${t.ends_at?'<div style="font-size:11px;color:var(--yellow);margin-top:2px">⏰ '+fmtDT(t.ends_at)+'</div>':''}
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${tb}${ab}</div>
+  document.getElementById('test-list').innerHTML=tests.map((t,i)=>{
+    const badge=t.is_public?'🌐':t.rated?'⭐':'📖';
+    return`<div class="lrow" style="cursor:pointer" onclick="window.location.href='test.html?admin=1'">
+      <div class="av av${i%8}" style="width:40px;height:40px;font-size:18px">📝</div>
+      <div class="lrow-info">
+        <div class="lrow-name">${badge} ${t.title}</div>
+        <div class="lrow-sub">${t.duration_minutes||30} daq · ${t.is_active?'✅ Faol':'⏸ Nofaol'}</div>
       </div>
-      <div class="test-btns">
-        <button class="btn ${t.is_active?'re':'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active?'⏹ To\'xtatish':'▶️ Faollashtirish'}</button>
-        <button class="btn" style="padding:7px 12px;font-size:12px;background:var(--acc2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
-        <button class="btn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
-        ${t.rated&&!t.is_active?'<button class="btn" style="padding:7px 12px;font-size:12px;background:var(--teal);color:#000" onclick="makeUnrated('+t.id+')">📖 Reytingsizga</button>':''}
-        <button class="ibtn dl" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
-      </div>
+      <span style="color:var(--text3);font-size:18px">›</span>
     </div>`;
-  }).join('')||'<div class="empty">Test yo\'q</div>';
+  }).join('')||'<div class="empty">Test yo\'q.<br><a href="test.html?admin=1" style="color:var(--acc);font-weight:700">Test platformasiga o\'ting →</a></div>';
 }
 
 function openNewTest(){
