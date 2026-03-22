@@ -425,7 +425,7 @@ async function renderDash(){
   const results=await GET('test_results','?select=id');
   const pending=enrollRequests.filter(r=>r.status==='pending');
   const approved=enrollRequests.filter(r=>r.status==='approved');
-  document.getElementById('d-stud').textContent=onlineStudents.length;
+  document.getElementById('d-stud').textContent=enrollRequests.filter(r=>r.status==='approved').length;
   document.getElementById('d-test').textContent=tests.length;
   document.getElementById('d-active').textContent=tests.filter(t=>t.is_active).length;
   document.getElementById('d-results').textContent=results.length;
@@ -802,25 +802,26 @@ async function renderReyting(){
 // ══════════════════════════════
 function renderStudents(){
   const srch=(document.getElementById('stud-srch').value||'').toLowerCase();
-  const fil=onlineStudents.filter(s=>
-    !srch||(s.full_name||'').toLowerCase().includes(srch)||(s.phone||'').includes(srch)
+  // Faqat to'lovi tasdiqlangan o'quvchilar
+  const approved=enrollRequests.filter(r=>r.status==='approved');
+  const fil=approved.filter(r=>
+    !srch||(r.full_name||'').toLowerCase().includes(srch)||(r.phone||'').includes(srch)
   );
-  const paid=fil.filter(s=>enrollRequests.some(r=>r.tg_id===s.tg_id&&r.status==='approved')).length;
   document.getElementById('s-total').textContent=fil.length;
-  document.getElementById('s-paid').textContent=paid;
-  document.getElementById('s-debt').textContent=fil.length-paid;
-  document.getElementById('stud-list').innerHTML=fil.map((s,i)=>`
-    <div class="lr" style="cursor:pointer" onclick="openStudentDetail(${s.id})">
-      <div class="av av${i%8}" style="width:40px;height:40px;font-size:13px">${avl(s.full_name)}</div>
+  document.getElementById('s-paid').textContent=fil.length;
+  document.getElementById('s-debt').textContent=0;
+  document.getElementById('stud-list').innerHTML=fil.map((r,i)=>`
+    <div class="lr">
+      <div class="av av${i%8}" style="width:40px;height:40px;font-size:13px">${avl(r.full_name||'?')}</div>
       <div class="lt">
-        <div class="ln">${s.full_name||'Noma\'lum'}</div>
-        <div class="ls">${s.phone||'—'} · @${s.tg_username||'—'}</div>
+        <div class="ln">${r.full_name||'Noma\'lum'} <span style="font-size:10px;color:var(--green);font-weight:700">✅</span></div>
+        <div class="ls">${r.phone||'—'} · @${r.tg_username||'—'} · ${r.courses?.title||'—'}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        ${s.phone?`<a href="tel:${s.phone}" style="color:var(--accent);font-size:18px;text-decoration:none" onclick="event.stopPropagation()">📞</a>`:''}
-        <button class="dbtn" onclick="event.stopPropagation();deleteStudent(${s.id})">🗑</button>
+        ${r.phone?`<a href="tel:${r.phone}" style="color:var(--accent);font-size:18px;text-decoration:none" onclick="event.stopPropagation()">📞</a>`:''}
+        ${r.tg_id?`<button class="abtn" style="padding:5px 8px;font-size:11px" onclick="sendToUser(${r.tg_id},'${r.full_name||''}')">✉️</button>`:''}
       </div>
-    </div>`).join('')||'<div class="empty">O\'quvchi yo\'q</div>';
+    </div>`).join('')||'<div class="empty">To\'lagan o\'quvchi yo\'q</div>';
 }
 
 document.getElementById('stud-srch').oninput=()=>renderStudents();
