@@ -22,17 +22,14 @@ button,input,select,textarea{font-family:var(--font)}
 /* APP */
 #app{display:none;flex-direction:column;height:100dvh}
 /* HEADER */
-<div class="hdr">
-  <div class="hdr-l">
-    <div class="logo">⚖️</div>
-    <div class="brand">iHuquq</div>
-  </div>
-  <div class="hdr-r">
-    <button class="icon-btn" id="mode-btn" onclick="toggleMode()" style="font-size:11px;font-weight:800;width:auto;padding:0 10px;color:var(--text)">🏫 Oflayn</button>
-    <div class="hdr-date" id="hdr-date">—</div>
-    <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
-  </div>
-</div>
+.hdr{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(env(safe-area-inset-top,0px)+10px);display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 14px rgba(61,127,255,.4);flex-shrink:0}
+.brand{font-family:var(--brand);font-size:20px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.hdr-date{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text2);background:var(--s3);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn:active{background:var(--s4)}
 /* NAV 2 QATOR 4x2 */
 .nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 6px 2px;gap:2px;transition:background .3s}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
@@ -218,6 +215,7 @@ button,input,select,textarea{font-family:var(--font)}
       <div class="brand">iHuquq</div>
     </div>
     <div class="hdr-r">
+      <button class="icon-btn" id="mode-btn" onclick="toggleMode()" style="font-size:11px;font-weight:800;width:auto;padding:0 10px;color:var(--text)">🏫 Oflayn</button>
       <div class="hdr-date" id="hdr-date">—</div>
       <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     </div>
