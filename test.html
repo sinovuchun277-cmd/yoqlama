@@ -247,7 +247,17 @@ textarea.fi{resize:none}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ── STATISTIKA ── */
-.chart-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.folder-card{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;min-width:120px}
+.folder-card:active{background:var(--s3);transform:scale(.98)}
+.folder-card-ico{font-size:24px;flex-shrink:0}
+.folder-card-info{flex:1;min-width:0}
+.folder-card-name{font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.folder-card-cnt{font-size:11px;color:var(--text2);margin-top:2px}
+.folder-card-actions{display:flex;gap:4px;flex-shrink:0}
+.breadcrumb-sep{color:var(--text3);font-size:14px}
+.breadcrumb-item{font-size:12px;font-weight:700;color:var(--acc);cursor:pointer;padding:4px 8px;border-radius:6px;background:rgba(79,142,255,.08)}
+.breadcrumb-item:active{background:rgba(79,142,255,.15)}
+
 .chart-lbl{font-size:12px;font-weight:700;width:60px;flex-shrink:0;color:var(--text2)}
 .chart-track{flex:1;background:var(--s3);border-radius:4px;height:20px;overflow:hidden;position:relative}
 .chart-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;padding-left:8px}
@@ -284,6 +294,14 @@ textarea.fi{resize:none}
 
     <!-- ── ADMIN: TESTLAR RO'YXATI ── -->
     <div class="page on" id="page-tests">
+      <!-- PAPKA NAVIGATSIYA -->
+      <div id="folder-nav" style="display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="chip on" id="folder-root-btn" onclick="enterFolder(null)">🏠 Barcha testlar</button>
+        <div id="folder-breadcrumb" style="display:flex;align-items:center;gap:4px"></div>
+      </div>
+      <!-- PAPKALAR -->
+      <div id="folder-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+      <!-- FILTER CHIPS -->
       <div class="chips" id="test-filter-chips"></div>
       <div class="srow">
         <div class="sbox b"><div class="v" id="st-all">0</div><div class="l">Jami</div></div>
@@ -324,6 +342,11 @@ textarea.fi{resize:none}
           <input class="fi" id="new-dur" type="number" value="30" placeholder="Vaqt (daq)" style="max-width:100px">
           <input class="fi" id="new-pass" type="number" value="60" placeholder="O'tish (%)">
         </div>
+        <div class="frow">
+          <select class="fsel" id="new-folder">
+            <option value="">📂 Papka tanlang (ixtiyoriy)</option>
+          </select>
+        </div>
         <div style="background:var(--s3);border-radius:var(--rxs);padding:12px;margin-bottom:8px">
           <div class="flbl" style="margin-bottom:8px">Test turi:</div>
           <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 0;border-bottom:1px solid var(--border)">
@@ -361,6 +384,9 @@ textarea.fi{resize:none}
             <option value="rated">⭐ Reytingli</option>
             <option value="unrated">📖 Reytingsiz</option>
             <option value="public">🌐 Ommaviy</option>
+          </select>
+          <select class="fsel" id="manual-folder">
+            <option value="">📂 Papka (ixtiyoriy)</option>
           </select>
         </div>
         <button class="btn" style="width:100%;padding:12px" onclick="createManualTest()">➕ Yaratish va savollar qo'shish</button>
@@ -512,8 +538,10 @@ const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sen
 let IS_ADMIN=false;
 let TG_ID=null;
 let offStudent=null, onStudent=null;
-let tests=[], importedQuestions=[], pendingTestId=null;
+let tests=[], folders=[], importedQuestions=[], pendingTestId=null;
 let testFilter='all', resultsTestId=null, studentFilter='all';
+let currentFolderId=null; // null = root
+let folderPath=[]; // breadcrumb uchun [{id, name}]
 
 // Test runner state
 let runner={
@@ -558,8 +586,11 @@ async function init(){
       IS_ADMIN=false;
     }
 
-    // Testlarni yuklash
-    tests=await GET('tests','?order=created_at.desc&select=*');
+    // Testlar va papkalarni yuklash
+    [tests, folders]=await Promise.all([
+      GET('tests','?order=created_at.desc&select=*'),
+      GET('test_folders','?order=name&select=*')
+    ]);
 
     // UI sozlash
     setupUI();
@@ -587,6 +618,20 @@ function setupUI(){
     document.getElementById('admin-nav').style.display='flex';
     document.getElementById('student-nav').style.display='none';
     document.getElementById('back-crm').style.display='flex';
+    // Folder select ni to'ldirish
+    const populateFolderSelects=()=>{
+      ['new-folder','manual-folder'].forEach(id=>{
+        const sel=document.getElementById(id);
+        if(!sel)return;
+        const cur=sel.value;
+        sel.innerHTML='<option value="">📂 Papka tanlang (ixtiyoriy)</option>';
+        folders.forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent='📁 '+f.name;sel.appendChild(o);});
+        if(cur)sel.value=cur;
+      });
+    };
+    // setupUI chaqirilganda ham to'ldirish
+    setTimeout(populateFolderSelects,100);
+    window._populateFolderSelects=populateFolderSelects;
     // Admin nav
     document.querySelectorAll('#admin-nav .ni').forEach(el=>{
       el.onclick=()=>{
@@ -647,9 +692,130 @@ const _t=localStorage.getItem('ihuquq_theme');
 if(_t){document.documentElement.setAttribute('data-theme',_t);document.getElementById('theme-btn').textContent=_t==='light'?'🌙':'☀️'}
 
 // ══════════════════════════════
+//  PAPKALAR (FOLDERS)
+// ══════════════════════════════
+function enterFolder(folderId, folderName){
+  currentFolderId=folderId;
+  if(folderId===null){
+    folderPath=[];
+  } else {
+    const idx=folderPath.findIndex(f=>f.id===folderId);
+    if(idx>=0) folderPath=folderPath.slice(0,idx+1);
+    else folderPath.push({id:folderId,name:folderName});
+  }
+  renderAdminTests();
+}
+
+function renderFolders(){
+  // Breadcrumb
+  const bc=document.getElementById('folder-breadcrumb');
+  const rootBtn=document.getElementById('folder-root-btn');
+  rootBtn.className='chip'+(currentFolderId===null?' on':'');
+  bc.innerHTML=folderPath.map((f,i)=>`
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-item" onclick="enterFolder(${f.id},'${f.name}')">${f.name}</span>
+  `).join('');
+
+  // Papkalar
+  const subFolders=folders.filter(f=>f.parent_id===(currentFolderId||null));
+  const fl=document.getElementById('folder-list');
+  fl.innerHTML=subFolders.map(f=>{
+    const cnt=tests.filter(t=>t.folder_id===f.id).length;
+    const subCnt=folders.filter(sf=>sf.parent_id===f.id).length;
+    return`<div class="folder-card" onclick="enterFolder(${f.id},'${f.name}')">
+      <div class="folder-card-ico">📁</div>
+      <div class="folder-card-info">
+        <div class="folder-card-name">${f.name}</div>
+        <div class="folder-card-cnt">${cnt} test${subCnt?' · '+subCnt+' papka':''}</div>
+      </div>
+      <div class="folder-card-actions" onclick="event.stopPropagation()">
+        <button class="ibtn ed" onclick="renameFolder(${f.id},'${f.name}')">✏️</button>
+        <button class="ibtn dl" onclick="deleteFolder(${f.id})">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Yangi papka tugmasi
+  fl.innerHTML+=`<div class="folder-card" style="border-style:dashed;opacity:.7;min-width:100px" onclick="createFolder()">
+    <div class="folder-card-ico">➕</div>
+    <div class="folder-card-info"><div class="folder-card-name">Yangi papka</div></div>
+  </div>`;
+}
+
+async function createFolder(){
+  const name=prompt('Papka nomi:');
+  if(!name?.trim())return;
+  try{
+    const [f]=await POST('test_folders',{name:name.trim(),parent_id:currentFolderId||null});
+    folders.push(f);
+    if(window._populateFolderSelects)window._populateFolderSelects();
+    renderAdminTests();showToast('📁 Papka yaratildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function renameFolder(id,oldName){
+  const name=prompt('Yangi nom:',oldName);
+  if(!name?.trim()||name===oldName)return;
+  try{
+    await PATCH('test_folders',{name:name.trim()},`?id=eq.${id}`);
+    const f=folders.find(x=>x.id===id);if(f)f.name=name.trim();
+    renderAdminTests();showToast('✅ Nom o\'zgartirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function deleteFolder(id){
+  const cnt=tests.filter(t=>t.folder_id===id).length;
+  const sub=folders.filter(f=>f.parent_id===id).length;
+  const msg=cnt||sub
+    ?`Bu papkada ${cnt} ta test${sub?' va '+sub+' ta papka':''} bor. O'chirsangiz testlar "Barcha testlar"ga ko'chadi. Davom etasizmi?`
+    :'Papkani o\'chirasizmi?';
+  if(!confirm(msg))return;
+  try{
+    // Testlarni root ga ko'chirish
+    if(cnt)await PATCH('tests',{folder_id:null},`?folder_id=eq.${id}`);
+    // Underpapkalarni root ga ko'chirish
+    if(sub)await PATCH('test_folders',{parent_id:null},`?parent_id=eq.${id}`);
+    await DEL('test_folders',`?id=eq.${id}`);
+    folders=folders.filter(f=>f.id!==id);
+    tests.forEach(t=>{if(t.folder_id===id)t.folder_id=null;});
+    if(currentFolderId===id){currentFolderId=null;folderPath=[];}
+    renderAdminTests();showToast('🗑 Papka o\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function moveTestToFolder(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const folderOpts=folders.map(f=>`<div class="lrow" style="cursor:pointer" onclick="doMoveTest(${testId},${f.id});closeModal()">
+    <div style="font-size:20px">📁</div>
+    <div class="lrow-info"><div class="lrow-name">${f.name}</div></div>
+    ${t.folder_id===f.id?'<span style="color:var(--green)">✓</span>':''}
+  </div>`).join('');
+  openModal(`
+    <div class="modal-title">📁 Papkaga ko'chirish</div>
+    <div class="lrow" style="cursor:pointer" onclick="doMoveTest(${testId},null);closeModal()">
+      <div style="font-size:20px">🏠</div>
+      <div class="lrow-info"><div class="lrow-name">Barcha testlar (root)</div></div>
+      ${!t.folder_id?'<span style="color:var(--green)">✓</span>':''}
+    </div>
+    ${folderOpts||'<div class="empty">Papka yo\'q</div>'}
+  `);
+}
+
+async function doMoveTest(testId,folderId){
+  try{
+    await PATCH('tests',{folder_id:folderId||null},`?id=eq.${testId}`);
+    const t=tests.find(x=>x.id===testId);if(t)t.folder_id=folderId||null;
+    renderAdminTests();showToast('✅ Ko\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ══════════════════════════════
 //  ADMIN: TESTLAR
 // ══════════════════════════════
 function renderAdminTests(){
+  // Papkalarni ko'rsatish
+  renderFolders();
+
   const chips=document.getElementById('test-filter-chips');chips.innerHTML='';
   [['all','Hammasi'],['active','✅ Faol'],['rated','⭐ Reytingli'],['unrated','📖 Reytingsiz'],['public','🌐 Ommaviy']].forEach(([v,l])=>{
     const el=document.createElement('div');
@@ -657,7 +823,12 @@ function renderAdminTests(){
     el.onclick=()=>{testFilter=v;renderAdminTests()};
     chips.appendChild(el);
   });
-  let fil=tests;
+
+  // Hozirgi papkadagi testlar
+  let fil=currentFolderId===null
+    ?tests.filter(t=>!t.folder_id)  // root: folder_id null bo'lganlar
+    :tests.filter(t=>t.folder_id===currentFolderId);
+
   if(testFilter==='active')fil=fil.filter(t=>t.is_active);
   else if(testFilter==='rated')fil=fil.filter(t=>t.rated&&!t.is_public);
   else if(testFilter==='unrated')fil=fil.filter(t=>!t.rated&&!t.is_public);
@@ -698,6 +869,7 @@ function renderAdminTests(){
         </button>
         <button class="btn pu" style="padding:7px 12px;font-size:12px" onclick="openQuestionEditor(${t.id})">✏️ Savollar</button>
         <button class="btn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natija</button>
+        <button class="btn sec" style="padding:7px 12px;font-size:12px" onclick="moveTestToFolder(${t.id})">📁</button>
         ${t.rated&&!t.is_active?`<button class="btn" style="padding:7px 12px;font-size:12px;background:var(--teal);color:#000" onclick="makeUnrated(${t.id})">📖 Reytingsizga</button>`:''}
         <button class="ibtn dl" style="width:auto;padding:7px 12px;border-radius:var(--rxs);font-size:12px" onclick="deleteTest(${t.id})">🗑</button>
       </div>
@@ -956,6 +1128,7 @@ async function saveImport(){
       is_public:type==='public',
       is_active:false,
       test_category:'Umumiy',
+      folder_id:parseInt(document.getElementById('new-folder')?.value)||currentFolderId||null,
       starts_at:startVal?new Date(startVal).toISOString():null,
       ends_at:endVal?new Date(endVal).toISOString():null
     });
@@ -987,7 +1160,8 @@ async function createManualTest(){
       duration_minutes:parseInt(document.getElementById('manual-dur').value)||30,
       pass_score:parseInt(document.getElementById('manual-pass').value)||60,
       max_score:100,rated:type==='rated',is_public:type==='public',
-      is_active:false,test_category:'Umumiy'
+      is_active:false,test_category:'Umumiy',
+      folder_id:parseInt(document.getElementById('manual-folder')?.value)||currentFolderId||null
     });
     tests.unshift(t);
     document.getElementById('manual-title').value='';
