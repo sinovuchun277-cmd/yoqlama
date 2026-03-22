@@ -222,10 +222,10 @@ async function loadMode(mode){
   document.getElementById('loading').style.display='flex';
   document.getElementById('select-screen').style.display='none';
   var b=document.getElementById('mode-bdg'),nA=document.getElementById('nav-att'),nP=document.getElementById('nav-pay');
-  if(mode==='offline'){b.className='mode-bdg off';b.textContent='&#x1F3EB; Oflayn';nA.style.display='';nP.style.display='';}
-  else{b.className='mode-bdg on';b.textContent='&#x1F4BB; Onlayn';nA.style.display='none';nP.style.display='none';}
+  if(mode==='offline'){b.className='mode-bdg off';b.innerHTML='🏫 Oflayn';nA.style.display='';nP.style.display='';}
+  else{b.className='mode-bdg on';b.innerHTML='💻 Onlayn';nA.style.display='none';nP.style.display='';}
   if(hasBoth)document.getElementById('switch-btn').style.display='flex';
-  var t=localStorage.getItem('ihuquq_theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='light'?'&#x1F319;':'&#x2600;&#xFE0F;';}
+  var t=localStorage.getItem('ihuquq_theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').innerHTML=t==='light'?'🌙':'☀️';}
   try{
     await loadProfile();
     document.getElementById('loading').style.display='none';
@@ -344,18 +344,28 @@ async function renderRey(){
     var sIds=[...new Set(allGS.map(function(g){return g.student_id}))];
     if(!sIds.length){cont.innerHTML='<div class="empty">Oquvchi topilmadi</div>';return;}
     var sts=await GET('students','?id=in.('+sIds.join(',')+')'+'&select=id,name');
-    var sc=await GET('scores','?student_id=in.('+sIds.join(',')+')'+'&select=student_id,points');
+    // Faqat source=offline balllar
+    var sc=await GET('scores','?student_id=in.('+sIds.join(',')+')'+'&source=eq.offline&select=student_id,points');
     var mp={};sts.forEach(function(s){mp[s.id]={name:s.name,id:s.id,total:0}});
     sc.forEach(function(s){if(mp[s.student_id])mp[s.student_id].total+=s.points||0});
     ranked=Object.values(mp).sort(function(a,b){return b.total-a.total});myKey=OFF.id;
   }else if(MODE==='online'&&ON){
     var sts2=await GET('online_students','?select=id,full_name,tg_id');
-    var sc2=await GET('scores','?select=student_id,points');
-    var tr=await GET('test_results','?finished_at=not.is.null&select=tg_id,score');
+    var onIds=sts2.map(function(s){return s.id});
+    // Faqat source=online balllar
+    var sc2=onIds.length?await GET('scores','?student_id=in.('+onIds.join(',')+')'+'&source=eq.online&select=student_id,points'):[];
+    // Faqat reytingli test natijalari
+    var tr=await GET('test_results','?finished_at=not.is.null&select=tg_id,score,test_id');
     var mp2={};
     sts2.forEach(function(s){mp2[s.id]={name:s.full_name||'Nomalum',id:s.id,tgId:s.tg_id,total:0}});
     sc2.forEach(function(s){if(mp2[s.student_id])mp2[s.student_id].total+=s.points||0});
-    tr.forEach(function(r){var s=sts2.find(function(x){return x.tg_id===r.tg_id});if(s&&mp2[s.id])mp2[s.id].total+=r.score||0;});
+    // Faqat onlayn o'quvchilarning test natijalari
+    var onlineTgIds=new Set(sts2.filter(function(s){return s.tg_id}).map(function(s){return s.tg_id}));
+    tr.forEach(function(r){
+      if(!r.tg_id||!onlineTgIds.has(r.tg_id))return;
+      var s=sts2.find(function(x){return x.tg_id===r.tg_id});
+      if(s&&mp2[s.id])mp2[s.id].total+=r.score||0;
+    });
     ranked=Object.values(mp2).sort(function(a,b){return b.total-a.total});myKey=ON.id;
   }
   var myR=ranked.findIndex(function(s){return s.id===myKey})+1;
@@ -446,18 +456,73 @@ async function doSubmit(){
 }
 function closeResult(){document.getElementById('result-screen').style.display='none';renderTests();}
 async function renderPay(){
-  if(MODE!=='offline'||!OFF)return;
-  var now=new Date();var html='';
-  for(var m=2;m>=0;m--){
-    var d=new Date(now.getFullYear(),now.getMonth()-m,1);
-    var ms=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    var res=await Promise.all([GET('payments','?student_id=eq.'+OFF.id+'&month=eq.'+ms+'&select=*'),GET('group_students','?student_id=eq.'+OFF.id+'&select=*,groups(name,courses(title))')]);
-    var pays=res[0],gs=res[1];
-    html+='<div class="sec">'+MO[d.getMonth()]+' '+d.getFullYear()+'</div>';
-    if(!gs.length){html+='<div class="empty">Guruh yoq</div>';continue;}
-    gs.forEach(function(g){var p=pays.find(function(x){return x.group_id===g.group_id});var paid=p&&p.paid||false;var col=paid?'var(--green)':'var(--red)';html+='<div class="card" style="border-left:3px solid '+col+'"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:14px;font-weight:800">'+(g.groups&&g.groups.name||'Guruh')+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">'+(g.groups&&g.groups.courses&&g.groups.courses.title||'--')+' - '+((g.monthly_fee||0).toLocaleString())+' som</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:900;color:'+col+'">'+(paid?'Tolangan':'Tolanmagan')+'</div>'+(p&&p.paid_at?'<div style="font-size:10px;color:var(--text3)">'+fD(p.paid_at)+'</div>':'')+'</div></div></div>';});
+  var now=new Date();
+  var html='';
+
+  if(MODE==='offline'&&OFF){
+    // Oflayn to'lov — oylik payments jadvali
+    for(var m=2;m>=0;m--){
+      var d=new Date(now.getFullYear(),now.getMonth()-m,1);
+      var ms=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      var res=await Promise.all([
+        GET('payments','?student_id=eq.'+OFF.id+'&month=eq.'+ms+'&select=*'),
+        GET('group_students','?student_id=eq.'+OFF.id+'&select=*,groups(name,courses(title))')
+      ]);
+      var pays=res[0],gs=res[1];
+      html+='<div class="sec">'+MO[d.getMonth()]+' '+d.getFullYear()+'</div>';
+      if(!gs.length){html+='<div class="empty">Guruh yoq</div>';continue;}
+      gs.forEach(function(g){
+        var p=pays.find(function(x){return x.group_id===g.group_id});
+        var paid=p&&p.paid||false;
+        var col=paid?'var(--green)':'var(--red)';
+        html+='<div class="card" style="border-left:3px solid '+col+'"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:14px;font-weight:800">'+(g.groups&&g.groups.name||'Guruh')+'</div><div style="font-size:12px;color:var(--text2);margin-top:2px">'+(g.groups&&g.groups.courses&&g.groups.courses.title||'--')+' - '+((g.monthly_fee||0).toLocaleString())+' som</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:900;color:'+col+'">'+(paid?'Tolangan':'Tolanmagan')+'</div>'+(p&&p.paid_at?'<div style="font-size:10px;color:var(--text3)">'+fD(p.paid_at)+'</div>':'')+'</div></div></div>';
+      });
+    }
+
+  } else if(MODE==='online'&&ON){
+    // Onlayn to'lov — enrollment_requests
+    var enrolls=await GET('enrollment_requests','?tg_id=eq.'+ON.tg_id+'&status=eq.approved&select=*,courses(title,price,card_number,card_owner)');
+    if(!enrolls.length){
+      document.getElementById('pay-content').innerHTML='<div class="empty">Hali kursga yozilmagansiz</div>';return;
+    }
+
+    // Har oy 1-sanaga necha kun qoldi
+    var dayOfMonth=now.getDate();
+    var daysLeft=1; // Keyingi oy 1-sanasiga
+    if(dayOfMonth>1){
+      var nextFirst=new Date(now.getFullYear(),now.getMonth()+1,1);
+      daysLeft=Math.ceil((nextFirst-now)/(1000*60*60*24));
+    }
+
+    // To'lov holati (vaqt bo'yicha)
+    var payStatus,payColor,payMsg;
+    if(dayOfMonth===1){
+      payStatus='⚠️ Bugun to\'lov kuni!';payColor='var(--yellow)';
+    } else if(dayOfMonth<=7){
+      payStatus='📅 To\'lov muddati: '+daysLeft+' kun';payColor='var(--yellow)';
+    } else {
+      payStatus='✅ Keyingi to\'lov: '+daysLeft+' kun';payColor='var(--green)';
+    }
+
+    html+='<div class="card" style="background:rgba(79,142,255,.05);border-color:rgba(79,142,255,.2);margin-bottom:14px"><div style="font-size:14px;font-weight:800;color:'+payColor+';margin-bottom:4px">'+payStatus+'</div><div style="font-size:12px;color:var(--text2)">Har oy 1-sanagacha to\'lov qilinishi kerak</div></div>';
+    html+='<div class="sec">Kurslarim</div>';
+
+    enrolls.forEach(function(e){
+      var c=e.courses;
+      html+='<div class="card"><div style="font-size:15px;font-weight:800;margin-bottom:8px">'+(c&&c.title||'Kurs')+'</div>';
+      html+='<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text2);font-size:12px">Oylik to\'lov</span><span style="font-weight:800;font-family:var(--mono)">'+((e.amount||c&&c.price||0).toLocaleString())+' so\'m</span></div>';
+      if(c&&c.card_number){
+        html+='<div style="background:var(--s3);border-radius:10px;padding:12px;margin-top:6px">';
+        html+='<div style="font-size:11px;color:var(--text2);margin-bottom:4px">To\'lov rekviziti:</div>';
+        html+='<div style="font-family:var(--mono);font-size:14px;font-weight:800">'+c.card_number+'</div>';
+        if(c.card_owner)html+='<div style="font-size:12px;color:var(--text2);margin-top:2px">'+c.card_owner+'</div>';
+        html+='</div>';
+      }
+      html+='</div>';
+    });
   }
-  document.getElementById('pay-content').innerHTML=html;
+
+  document.getElementById('pay-content').innerHTML=html||'<div class="empty">Ma\'lumot yoq</div>';
 }
 function toggleTheme(){var h=document.documentElement;var d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('theme-btn').textContent=d?'moon':'sun';localStorage.setItem('ihuquq_theme',d?'light':'dark')}
 function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('ov').classList.add('on')}
