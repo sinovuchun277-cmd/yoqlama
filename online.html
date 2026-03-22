@@ -1035,11 +1035,11 @@ async function renderBot(){
       <div class="lr">
         <div class="av av${i%8}" style="width:36px;height:36px;font-size:12px">${(u.full_name||'?').slice(0,2).toUpperCase()}</div>
         <div class="lt">
-          <div class="ln">${u.full_name||'Noma'lum'}</div>
+          <div class="ln">${u.full_name||'Noma\\\'lum'}</div>
           <div class="ls">${u.phone||'—'} · @${u.tg_username||'—'}</div>
         </div>
         ${u.tg_id?`<button class="abtn" style="padding:6px 10px;font-size:11px" onclick="sendToUser(${u.tg_id},'${u.full_name||''}')">✉️</button>`:''}
-      </div>`).join(''):'<div class="empty">Foydalanuvchi yo'q</div>';
+      </div>`).join(''):'<div class="empty">Foydalanuvchi yo\\\'q</div>';
   }catch(e){}
 }
 
@@ -1071,9 +1071,7 @@ async function testBot(){
   const chatId=document.getElementById('admin-chat-id').value.trim();
   if(!chatId)return showToast('⚠️ Admin ID kiriting');
   try{
-    await tgSend('sendMessage',{chat_id:chatId,text:'✅ <b>iHuquq Online</b> — bot ishlayapti!
-
-🕐 '+new Date().toLocaleString('uz-UZ'),parse_mode:'HTML'});
+    await tgSend('sendMessage',{chat_id:chatId,text:'✅ iHuquq Online — bot ishlayapti! '+new Date().toLocaleString('uz-UZ'),parse_mode:'HTML'});
     showToast('✅ Test xabari yuborildi!');
   }catch(e){showToast('❌ '+e.message)}
 }
