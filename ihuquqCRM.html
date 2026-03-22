@@ -31,7 +31,7 @@ button,input,select,textarea{font-family:var(--font)}
 .icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .icon-btn:active{background:var(--s4)}
 /* NAV 2 QATOR 4x2 */
-.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:2px 4px;gap:1px;transition:background .3s}
+.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:2px 4px;gap:1px;transition:background .3s;position:relative;z-index:10}
 #nav-online{grid-template-columns:repeat(3,1fr)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;cursor:pointer;font-size:8px;font-weight:700;color:var(--text3);border-radius:8px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
 .ni .ic{font-size:18px;line-height:1}
@@ -2038,14 +2038,13 @@ async function addOnlineCourse() {
   const title = document.getElementById('on-nc-title').value.trim();
   if (!title) return showToast('⚠️ Kurs nomi kiriting');
   try {
-    const r = await POST('courses', {
+    await POST('courses', {
       title,
       price: parseInt(document.getElementById('on-nc-price').value) || 0,
       card_number: document.getElementById('on-nc-card').value || null,
       card_owner: document.getElementById('on-nc-owner').value || null,
       tg_group_id: parseInt(document.getElementById('on-nc-tggroup').value) || null
     });
-    courses.push(r[0]);
     ['on-nc-title', 'on-nc-price', 'on-nc-card', 'on-nc-owner', 'on-nc-tggroup'].forEach(id => document.getElementById(id).value = '');
     renderOnlineBosh();
     showToast('✅ Kurs qo\'shildi');
@@ -2056,7 +2055,6 @@ async function deleteOnlineCourse(id) {
   if (!confirm('Kursni o\'chirasizmi?')) return;
   try {
     await DEL('courses', `?id=eq.${id}`);
-    courses = courses.filter(c => c.id !== id);
     renderOnlineBosh();
     showToast('🗑 O\'chirildi');
   } catch (e) { showToast('❌ ' + e.message); }
