@@ -220,26 +220,61 @@ button,input,select,textarea{font-family:var(--font)}
 
     <!-- BOT PANEL -->
     <div class="page" id="page-bot">
-      <div class="sec">🤖 Bot sozlamalari</div>
+      <!-- BOT HOLATI -->
+      <div id="bot-status-card"></div>
+
+      <!-- STATISTIKA -->
+      <div class="sec">📊 Statistika</div>
+      <div id="bot-stat-row"></div>
+
+      <!-- SOZLAMALAR -->
+      <div class="sec">⚙️ Bot sozlamalari</div>
       <div class="card">
-        <div style="font-size:13px;font-weight:800;margin-bottom:10px">Bot token</div>
+        <div style="font-size:12px;color:var(--text2);font-weight:700;margin-bottom:6px">Bot token</div>
         <div class="fr">
-          <input class="fi" id="bot-token" placeholder="Bot token..." value="8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues">
+          <input class="fi" id="bot-token" placeholder="Bot token..." value="8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues" style="font-size:12px">
           <button class="abtn" onclick="saveBotSettings()">💾</button>
         </div>
+        <div style="font-size:12px;color:var(--text2);font-weight:700;margin-bottom:6px">Admin Telegram ID</div>
         <div class="fr">
-          <input class="fi" id="admin-chat-id" placeholder="Admin Telegram ID...">
-          <button class="abtn gr" onclick="testBot()">Test</button>
+          <input class="fi" id="admin-chat-id" placeholder="123456789">
+          <button class="abtn gr" onclick="testBot()">📨 Test</button>
+        </div>
+        <button class="abtn" style="width:100%;padding:11px;margin-top:4px;background:var(--accent2)" onclick="setWebhook()">🔗 Webhook ulash</button>
+      </div>
+
+      <!-- OFLAYN KURS MA'LUMOTI -->
+      <div class="sec">🏫 Oflayn kurs ma'lumoti</div>
+      <div class="card">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Bu matn botda "🏫 Oflayn kurslar" bosilganda ko'rinadi</div>
+        <textarea class="fi" id="offline-info" placeholder="Masalan:&#10;&#10;🏫 Huquq kursi&#10;📅 Du, Chor, Ju — 14:00&#10;📍 Manzil&#10;💰 400,000 so'm/oy" style="height:140px;resize:none;width:100%;margin-bottom:8px"></textarea>
+        <button class="abtn gr" style="width:100%;padding:11px" onclick="saveOfflineInfo()">💾 Saqlash</button>
+      </div>
+
+      <!-- BROADCAST -->
+      <div class="sec">📢 Xabar yuborish</div>
+      <div class="card">
+        <div style="font-size:12px;color:var(--text2);font-weight:700;margin-bottom:6px">Kimga yuborish</div>
+        <div class="fr">
+          <input class="fi" id="broadcast-chat" placeholder="Chat ID (-100... yoki 123456789)">
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <button class="chip" onclick="document.getElementById('broadcast-chat').value='all_users'">👥 Barcha</button>
+          <button class="chip" onclick="document.getElementById('broadcast-chat').value='online'">💻 Onlayn</button>
+          <button class="chip" onclick="document.getElementById('broadcast-chat').value='offline'">🏫 Oflayn</button>
+        </div>
+        <div style="font-size:12px;color:var(--text2);font-weight:700;margin-bottom:6px">Xabar (HTML format)</div>
+        <textarea class="fi" id="broadcast-msg" placeholder="&lt;b&gt;Qalin&lt;/b&gt;, &lt;i&gt;kursiv&lt;/i&gt;, oddiy matn" style="height:100px;resize:none;width:100%;margin-bottom:8px"></textarea>
+        <div style="display:flex;gap:8px">
+          <button class="abtn" style="flex:1;padding:11px;background:var(--s4);color:var(--text)" onclick="previewMsg()">👁 Ko'rish</button>
+          <button class="abtn gr" style="flex:1;padding:11px" onclick="sendBroadcast()">📢 Yuborish</button>
         </div>
       </div>
-      <div class="sec">📢 Kanal/Guruhga xabar yuborish</div>
-      <div class="card">
-        <div class="fr"><input class="fi" id="broadcast-chat" placeholder="Chat ID (-100...)"></div>
-        <div class="fr"><textarea class="fi" id="broadcast-msg" placeholder="Xabar matni..." style="height:80px;resize:none"></textarea></div>
-        <button class="abtn" style="width:100%;padding:12px" onclick="sendBroadcast()">📢 Yuborish</button>
-      </div>
-      <div class="sec">📊 Bot statistikasi</div>
-      <div id="bot-stats"></div>
+
+      <!-- FOYDALANUVCHILAR -->
+      <div class="sec">👥 So'nggi foydalanuvchilar</div>
+      <div id="bot-users-list"></div>
+
       <div style="height:10px"></div>
     </div>
 
@@ -943,21 +978,69 @@ async function rejectReq(reqId,tgId){
 // ══════════════════════════════
 async function renderBot(){
   document.getElementById('botbar').style.display='none';
+  // Offline info yuklash
+  const savedInfo=localStorage.getItem('offline_info')||'';
+  document.getElementById('offline-info').value=savedInfo;
+  document.getElementById('admin-chat-id').value=ADMIN_ID;
+
+  // Bot holati
   try{
     const me=await tgSend('getMe',{});
-    document.getElementById('bot-stats').innerHTML=me.ok?`
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div style="font-size:32px">🤖</div>
-          <div>
+    document.getElementById('bot-status-card').innerHTML=me.ok?`
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:36px">🤖</div>
+          <div style="flex:1">
             <div style="font-size:15px;font-weight:800">@${me.result.username}</div>
-            <div style="font-size:12px;color:var(--green);font-weight:700">✅ Bot ishlayapti</div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;margin-top:2px">✅ Bot faol</div>
             <div style="font-size:11px;color:var(--text2)">${me.result.first_name}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10px;color:var(--text3);font-weight:700">ID</div>
+            <div style="font-family:var(--mono);font-size:11px">${me.result.id}</div>
           </div>
         </div>
       </div>`:
-      `<div class="empty">Bot ulanmagan</div>`;
-  }catch(e){document.getElementById('bot-stats').innerHTML='<div class="empty">Bot ulanmagan</div>'}
+      `<div class="card" style="border-left:3px solid var(--red)"><div style="color:var(--red);font-weight:700">❌ Bot ulanmagan. Tokenni tekshiring.</div></div>`;
+  }catch(e){
+    document.getElementById('bot-status-card').innerHTML=`<div class="card" style="border-left:3px solid var(--red)"><div style="color:var(--red);font-weight:700">❌ Xatolik: ${e.message}</div></div>`;
+  }
+
+  // Statistika
+  try{
+    const [onSts,offSts,reqs,results]=await Promise.all([
+      GET('online_students','?select=id'),
+      GET('students','?telegram_id=not.is.null&select=id'),
+      GET('enrollment_requests','?select=status'),
+      GET('test_results','?finished_at=not.is.null&select=id')
+    ]);
+    const pending=reqs.filter(r=>r.status==='pending').length;
+    const approved=reqs.filter(r=>r.status==='approved').length;
+    document.getElementById('bot-stat-row').innerHTML=`
+      <div class="srow">
+        <div class="sbox b"><div class="v">${onSts.length}</div><div class="l">Onlayn</div></div>
+        <div class="sbox g"><div class="v">${offSts.length}</div><div class="l">Oflayn</div></div>
+        <div class="sbox t"><div class="v">${results.length}</div><div class="l">Testlar</div></div>
+      </div>
+      <div class="srow">
+        <div class="sbox y"><div class="v">${pending}</div><div class="l">Kutmoqda</div></div>
+        <div class="sbox g"><div class="v">${approved}</div><div class="l">Tasdiqlangan</div></div>
+      </div>`;
+  }catch(e){}
+
+  // So'nggi foydalanuvchilar
+  try{
+    const users=await GET('online_students','?order=created_at.desc&limit=10&select=*');
+    document.getElementById('bot-users-list').innerHTML=users.length?users.map((u,i)=>`
+      <div class="lr">
+        <div class="av av${i%8}" style="width:36px;height:36px;font-size:12px">${(u.full_name||'?').slice(0,2).toUpperCase()}</div>
+        <div class="lt">
+          <div class="ln">${u.full_name||'Noma'lum'}</div>
+          <div class="ls">${u.phone||'—'} · @${u.tg_username||'—'}</div>
+        </div>
+        ${u.tg_id?`<button class="abtn" style="padding:6px 10px;font-size:11px" onclick="sendToUser(${u.tg_id},'${u.full_name||''}')">✉️</button>`:''}
+      </div>`).join(''):'<div class="empty">Foydalanuvchi yo'q</div>';
+  }catch(e){}
 }
 
 function saveBotSettings(){
@@ -968,24 +1051,89 @@ function saveBotSettings(){
   showToast('✅ Saqlandi!');renderBot();
 }
 
+function saveOfflineInfo(){
+  const info=document.getElementById('offline-info').value.trim();
+  localStorage.setItem('offline_info',info);
+  showToast('✅ Saqlandi! Botdagi "🏫 Oflayn kurslar" yangilandi.');
+}
+
+async function setWebhook(){
+  const vercelUrl=prompt('Vercel URL kiriting (masalan: https://ihuquq-bot.vercel.app):');
+  if(!vercelUrl)return;
+  try{
+    const r=await fetch(`https://api.telegram.org/bot${TG_TOKEN}/setWebhook?url=${vercelUrl}/api/webhook`);
+    const d=await r.json();
+    showToast(d.ok?'✅ Webhook ulandi!':'❌ Xatolik: '+d.description);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
 async function testBot(){
   const chatId=document.getElementById('admin-chat-id').value.trim();
   if(!chatId)return showToast('⚠️ Admin ID kiriting');
   try{
-    await tgSend('sendMessage',{chat_id:chatId,text:'✅ iHuquq Online — bot ishlayapti!'});
+    await tgSend('sendMessage',{chat_id:chatId,text:'✅ <b>iHuquq Online</b> — bot ishlayapti!
+
+🕐 '+new Date().toLocaleString('uz-UZ'),parse_mode:'HTML'});
     showToast('✅ Test xabari yuborildi!');
   }catch(e){showToast('❌ '+e.message)}
 }
 
-async function sendBroadcast(){
-  const chatId=document.getElementById('broadcast-chat').value.trim();
+function previewMsg(){
   const msg=document.getElementById('broadcast-msg').value.trim();
-  if(!chatId||!msg)return showToast('⚠️ Chat ID va xabar kiriting');
+  if(!msg)return showToast('⚠️ Xabar kiriting');
+  openModal(`<div class="mtitle">👁 Ko'rinish</div>
+    <div style="background:var(--s3);border-radius:12px;padding:14px;font-size:14px;line-height:1.6">${msg}</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px">* HTML teglar botda ishlaydi</div>`);
+}
+
+async function sendBroadcast(){
+  const target=document.getElementById('broadcast-chat').value.trim();
+  const msg=document.getElementById('broadcast-msg').value.trim();
+  if(!target||!msg)return showToast('⚠️ Kimga va xabar kiriting');
+
+  // Barcha foydalanuvchilarga
+  if(target==='all_users'||target==='online'||target==='offline'){
+    let users=[];
+    if(target==='all_users'||target==='online'){
+      const onSts=await GET('online_students','?tg_id=not.is.null&select=tg_id');
+      users=[...users,...onSts.map(s=>s.tg_id)];
+    }
+    if(target==='all_users'||target==='offline'){
+      const offSts=await GET('students','?telegram_id=not.is.null&select=telegram_id');
+      users=[...users,...offSts.map(s=>s.telegram_id)];
+    }
+    users=[...new Set(users)];
+    if(!users.length)return showToast('⚠️ Foydalanuvchi topilmadi');
+    showToast(`📢 ${users.length} ta foydalanuvchiga yuborilmoqda...`);
+    let success=0,fail=0;
+    for(const uid of users){
+      try{await tgSend('sendMessage',{chat_id:uid,text:msg,parse_mode:'HTML'});success++;}
+      catch(e){fail++;}
+      await new Promise(r=>setTimeout(r,100));
+    }
+    showToast(`✅ ${success} ta yuborildi${fail?', '+fail+' ta xatolik':''}`);
+  } else {
+    // Bitta chat
+    try{
+      await tgSend('sendMessage',{chat_id:target,text:msg,parse_mode:'HTML'});
+      showToast('✅ Xabar yuborildi!');
+      document.getElementById('broadcast-msg').value='';
+    }catch(e){showToast('❌ '+e.message)}
+  }
+}
+
+async function sendToUser(tgId,name){
+  const msg=prompt(`${name} ga xabar yozing:`);
+  if(!msg)return;
   try{
-    await tgSend('sendMessage',{chat_id:chatId,text:msg,parse_mode:'HTML'});
-    showToast('✅ Xabar yuborildi!');
-    document.getElementById('broadcast-msg').value='';
+    await tgSend('sendMessage',{chat_id:tgId,text:msg});
+    showToast('✅ Yuborildi!');
   }catch(e){showToast('❌ '+e.message)}
+}
+
+function getBotUsers(){
+  renderBot();
+  document.getElementById('bot-users-list').scrollIntoView({behavior:'smooth'});
 }
 
 // ══════════════════════════════
