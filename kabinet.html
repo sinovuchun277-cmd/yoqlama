@@ -194,6 +194,7 @@ function fD(d){if(!d)return'--';var dt=new Date(d);return dt.getDate()+' '+MO[dt
 function fDT(d){if(!d)return'--';var dt=new Date(d);return dt.getDate()+' '+MO[dt.getMonth()]+', '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0')}
 function tod(){return new Date().toISOString().slice(0,10)}
 async function init(){
+  try{
   var p=new URLSearchParams(window.location.search);
   TID=parseInt(p.get('tgid'))||null;
   var mP=p.get('mode');
@@ -212,6 +213,9 @@ async function init(){
   }else if(OFF)MODE='offline';
   else MODE='online';
   await loadMode(MODE);
+  }catch(e){
+    document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Xatolik: '+e.message+'</div>';
+  }
 }
 async function loadMode(mode){
   MODE=mode;
@@ -222,10 +226,14 @@ async function loadMode(mode){
   else{b.className='mode-bdg on';b.textContent='&#x1F4BB; Onlayn';nA.style.display='none';nP.style.display='none';}
   if(hasBoth)document.getElementById('switch-btn').style.display='flex';
   var t=localStorage.getItem('ihuquq_theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='light'?'&#x1F319;':'&#x2600;&#xFE0F;';}
-  await loadProfile();
-  document.getElementById('loading').style.display='none';
-  document.getElementById('app').style.display='flex';
-  renderHome();
+  try{
+    await loadProfile();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='flex';
+    renderHome();
+  }catch(e){
+    document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Xatolik: '+e.message+'</div>';
+  }
 }
 function switchMode(){
   var nm=MODE==='offline'?'online':'offline';
