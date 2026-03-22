@@ -585,10 +585,10 @@ async function loadPay(){
 }
 
 // ── NAV ──
-document.querySelectorAll('.ni').forEach(el=>{
+document.querySelectorAll('#nav-offline .ni').forEach(el=>{
   el.onclick=()=>{
     const p=el.dataset.p;
-    document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('#nav-offline .ni').forEach(x=>x.classList.remove('on'));
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
     el.classList.add('on');
     document.getElementById('page-'+p).classList.add('on');
@@ -1574,7 +1574,7 @@ function applyMode() {
   document.getElementById('mode-btn').textContent = isOnline ? '💻 Onlayn' : '🏫 Oflayn';
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(n => n.classList.remove('on'));
+  document.querySelectorAll('#nav-offline .ni, #nav-online .ni').forEach(n => n.classList.remove('on'));
 
   if (isOnline) {
     document.getElementById('page-on-dash').classList.add('on');
