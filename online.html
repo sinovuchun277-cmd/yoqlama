@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="iHuquq Online">
+<title>iHuquq — Onlayn Ta'lim</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#080c14;--s1:#0d1220;--s2:#131929;--s3:#1a2138;--s4:#222b45;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--text:#eef0f8;--text2:#7880a0;--text3:#4a5070;}
+[data-theme="light"]{--bg:#f0f4ff;--s1:#fff;--s2:#f7f9ff;--s3:#edf0fa;--s4:#e2e6f5;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);--text:#1a1d2e;--text2:#5a6080;--text3:#9098b8;}
+:root{--accent:#3d7fff;--accent2:#6c3dff;--green:#00c97a;--yellow:#ffb020;--red:#ff4060;--teal:#00d4c8;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;--brand:'Montserrat',sans-serif;--r:16px;--rs:12px;--rxs:8px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+button,input,select,textarea{font-family:var(--font)}
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.spin{width:44px;height:44px;border:3px solid var(--s4);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* APP */
+#app{display:none;flex-direction:column;height:100svh}
+/* HEADER */
+.hdr{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);padding:10px 14px;padding-top:calc(env(safe-area-inset-top,0px)+10px);display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.brand{font-family:var(--brand);font-size:18px;font-weight:900;letter-spacing:-0.5px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.back-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;text-decoration:none}
+/* NAV */
+.nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:4px 6px;gap:2px;scrollbar-width:none;height:56px;align-items:center}
+.nav::-webkit-scrollbar{display:none}
+.ni{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 10px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;text-transform:uppercase;height:48px}
+.ni .ic{font-size:20px;line-height:1}
+.ni.on{color:var(--accent);background:rgba(61,127,255,.1)}
+.ni:active{background:var(--s3)}
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative;min-height:0}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;padding:12px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+12px);-webkit-overflow-scrolling:touch}
+.page.on{display:block}
+/* BOTBAR */
+.botbar{flex-shrink:0;padding:10px 12px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+10px);background:var(--s1);border-top:1px solid var(--border);transition:background .3s}
+.mbtn{width:100%;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:15px;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(61,127,255,.35)}
+.mbtn:active{opacity:.85}
+/* COMMON */
+.card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;transition:background .3s}
+.sec{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin:16px 0 8px}
+.sec:first-child{margin-top:0}
+.srow{display:flex;gap:6px;margin-bottom:12px}
+.sbox{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 6px;text-align:center;transition:background .3s}
+.sbox .v{font-size:19px;font-weight:900;font-family:var(--mono)}
+.sbox .l{font-size:10px;color:var(--text2);font-weight:700;margin-top:2px}
+.sbox.g .v{color:var(--green)}.sbox.y .v{color:var(--yellow)}.sbox.r .v{color:var(--red)}.sbox.b .v{color:var(--accent)}.sbox.t .v{color:var(--teal)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;background:var(--s2);border:1px solid var(--border);color:var(--text2);transition:all .15s}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.srch{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px}
+.srch input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-weight:500}
+.srch input::placeholder{color:var(--text3)}
+.abtn{padding:10px 16px;border-radius:var(--rxs);background:var(--accent);color:#fff;font-size:13px;font-weight:800;border:none;cursor:pointer}
+.abtn.gr{background:var(--green)}.abtn.re{background:var(--red)}.abtn.ye{background:var(--yellow);color:#000}.abtn.te{background:var(--teal);color:#000}
+.abtn:active{opacity:.8}
+.fi{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:var(--rxs);padding:11px 12px;color:var(--text);font-size:14px;font-weight:600;outline:none;min-width:0}
+.fi:focus{border-color:var(--accent)}
+.fi::placeholder{color:var(--text3);font-weight:400}
+.fsel{flex:1;background:var(--s3);border:1px solid var(--border);border-radius:var(--rxs);padding:11px 12px;color:var(--text);font-size:14px;font-weight:600;outline:none;appearance:none;min-width:0}
+.fr{display:flex;gap:8px;margin-bottom:8px}
+.lr{display:flex;align-items:center;gap:8px;padding:10px;background:var(--s3);border-radius:var(--rxs);margin-bottom:6px;border:1px solid var(--border)}
+.lr .lt{flex:1;min-width:0}
+.lr .ln{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lr .ls{font-size:11px;color:var(--text2);margin-top:1px}
+.dbtn{width:30px;height:30px;border-radius:8px;background:rgba(255,64,96,.1);border:1px solid rgba(255,64,96,.15);color:var(--red);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ebtn{width:30px;height:30px;border-radius:8px;background:rgba(61,127,255,.1);border:1px solid rgba(61,127,255,.15);color:var(--accent);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* TEST CARDS */
+.test-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;transition:background .3s}
+.test-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+.test-card-title{font-size:15px;font-weight:800}
+.test-card-meta{font-size:11px;color:var(--text2);margin-top:3px}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0}
+.badge.rated{background:rgba(61,127,255,.12);color:var(--accent);border:1px solid rgba(61,127,255,.2)}
+.badge.unrated{background:var(--s3);color:var(--text2);border:1px solid var(--border)}
+.badge.public{background:rgba(0,212,200,.12);color:var(--teal);border:1px solid rgba(0,212,200,.2)}
+.badge.active{background:rgba(0,201,122,.12);color:var(--green);border:1px solid rgba(0,201,122,.2)}
+.badge.inactive{background:var(--s3);color:var(--text3);border:1px solid var(--border)}
+.test-btns{display:flex;gap:6px;flex-wrap:wrap}
+/* REYTING */
+.ri{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 12px;margin-bottom:6px;cursor:pointer}
+.rn{width:28px;height:28px;border-radius:8px;background:var(--s3);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.rb{width:100%;background:var(--s3);border-radius:4px;height:5px;margin-top:5px}
+.rbf{height:5px;border-radius:4px;transition:width .6s}
+/* AVATAR */
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.av0{background:rgba(61,127,255,.15);color:var(--accent)}.av1{background:rgba(108,61,255,.15);color:#6c3dff}
+.av2{background:rgba(0,201,122,.15);color:var(--green)}.av3{background:rgba(255,176,32,.15);color:var(--yellow)}
+.av4{background:rgba(255,64,96,.15);color:var(--red)}.av5{background:rgba(0,212,200,.15);color:var(--teal)}
+.av6{background:rgba(255,120,50,.15);color:#ff7832}.av7{background:rgba(255,61,154,.15);color:#ff3d9a}
+/* SAVOL EDITOR */
+.q-editor{background:var(--s3);border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-bottom:8px}
+.q-num{font-size:11px;font-weight:800;color:var(--text2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.opt-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.opt-lbl{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+.opt-lbl.A{background:rgba(61,127,255,.15);color:var(--accent)}
+.opt-lbl.B{background:rgba(0,201,122,.15);color:var(--green)}
+.opt-lbl.C{background:rgba(255,176,32,.15);color:var(--yellow)}
+.opt-lbl.D{background:rgba(255,64,96,.15);color:var(--red)}
+.correct-sel{width:20px;height:20px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+/* TO'LOV */
+.pay-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.status-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.status-pending{background:rgba(255,176,32,.12);color:var(--yellow);border:1px solid rgba(255,176,32,.2)}
+.status-approved{background:rgba(0,201,122,.12);color:var(--green);border:1px solid rgba(0,201,122,.2)}
+.status-rejected{background:rgba(255,64,96,.12);color:var(--red);border:1px solid rgba(255,64,96,.2)}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.on{opacity:1;pointer-events:all}
+.modal{background:var(--s2);border-radius:22px 22px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom,0px)+28px);width:100%;position:relative;border-top:1px solid var(--border2);transform:translateY(100%);transition:background .3s,transform .3s cubic-bezier(.34,1.56,.64,1);max-height:92svh;overflow-y:auto}
+.ov.on .modal{transform:translateY(0)}
+.mh{width:36px;height:4px;background:var(--s4);border-radius:2px;margin:0 auto 16px}
+.mtitle{font-size:18px;font-weight:900;margin-bottom:14px}
+.mclose{position:absolute;top:18px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--s3);border:1px solid var(--border);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s4);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:200;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--text3);padding:28px 16px;font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spin"></div><div style="color:var(--text2);font-size:14px;font-weight:600">iHuquq Online yuklanmoqda...</div></div>
+<div id="app">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="logo">💻</div>
+      <div class="brand">iHuquq Online</div>
+    </div>
+    <div class="hdr-r">
+      <a href="iHuquqCRM.html" class="back-btn">← CRM</a>
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    </div>
+  </div>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="ni on" data-p="dash"><span class="ic">📊</span>Bosh</div>
+    <div class="ni" data-p="tests"><span class="ic">📝</span>Testlar</div>
+    <div class="ni" data-p="rey"><span class="ic">🏆</span>Reyting</div>
+    <div class="ni" data-p="stud"><span class="ic">👤</span>O'quvchilar</div>
+    <div class="ni" data-p="tolov"><span class="ic">💳</span>To'lovlar</div>
+    <div class="ni" data-p="bot"><span class="ic">🤖</span>Bot</div>
+    <div class="ni" data-p="sozlama"><span class="ic">⚙️</span>Sozlama</div>
+  </div>
+  <!-- PAGES -->
+  <div class="pages">
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-dash">
+      <div class="sec">📊 Umumiy statistika</div>
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="d-stud">0</div><div class="l">O'quvchi</div></div>
+        <div class="sbox g"><div class="v" id="d-test">0</div><div class="l">Testlar</div></div>
+        <div class="sbox y"><div class="v" id="d-active">0</div><div class="l">Faol test</div></div>
+      </div>
+      <div class="srow">
+        <div class="sbox t"><div class="v" id="d-results">0</div><div class="l">Natijalar</div></div>
+        <div class="sbox r"><div class="v" id="d-pending">0</div><div class="l">Kutmoqda</div></div>
+        <div class="sbox g"><div class="v" id="d-approved">0</div><div class="l">Tasdiqlangan</div></div>
+      </div>
+      <div class="sec">🔥 Faol testlar</div>
+      <div id="d-active-tests"></div>
+      <div class="sec">⏳ Kutayotgan to'lovlar</div>
+      <div id="d-pending-pays"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- TESTLAR -->
+    <div class="page" id="page-tests">
+      <div class="chips" id="test-type-chips"></div>
+      <div class="chips" id="test-cat-chips"></div>
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="t-all">0</div><div class="l">Jami</div></div>
+        <div class="sbox b"><div class="v" id="t-rated">0</div><div class="l">Reytingli</div></div>
+        <div class="sbox g"><div class="v" id="t-unrated">0</div><div class="l">Reytingsiz</div></div>
+        <div class="sbox t"><div class="v" id="t-public">0</div><div class="l">Ommaviy</div></div>
+      </div>
+      <div id="test-list"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- REYTING -->
+    <div class="page" id="page-rey">
+      <div class="chips" id="rey-chips"></div>
+      <div id="rey-list"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- O'QUVCHILAR -->
+    <div class="page" id="page-stud">
+      <div class="srch"><span style="color:var(--text3)">🔍</span><input id="stud-srch" placeholder="Ism, telefon..."></div>
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="s-total">0</div><div class="l">Jami</div></div>
+        <div class="sbox g"><div class="v" id="s-paid">0</div><div class="l">To'lagan</div></div>
+        <div class="sbox r"><div class="v" id="s-debt">0</div><div class="l">Qarzdor</div></div>
+      </div>
+      <div id="stud-list"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- TO'LOVLAR -->
+    <div class="page" id="page-tolov">
+      <div class="chips" id="pay-chips"></div>
+      <div class="srow">
+        <div class="sbox y"><div class="v" id="p-pending">0</div><div class="l">Kutmoqda</div></div>
+        <div class="sbox g"><div class="v" id="p-approved">0</div><div class="l">Tasdiqlangan</div></div>
+        <div class="sbox r"><div class="v" id="p-rejected">0</div><div class="l">Rad etilgan</div></div>
+      </div>
+      <div id="pay-list"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- BOT PANEL -->
+    <div class="page" id="page-bot">
+      <div class="sec">🤖 Bot sozlamalari</div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:800;margin-bottom:10px">Bot token</div>
+        <div class="fr">
+          <input class="fi" id="bot-token" placeholder="Bot token..." value="8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues">
+          <button class="abtn" onclick="saveBotSettings()">💾</button>
+        </div>
+        <div class="fr">
+          <input class="fi" id="admin-chat-id" placeholder="Admin Telegram ID...">
+          <button class="abtn gr" onclick="testBot()">Test</button>
+        </div>
+      </div>
+      <div class="sec">📢 Kanal/Guruhga xabar yuborish</div>
+      <div class="card">
+        <div class="fr"><input class="fi" id="broadcast-chat" placeholder="Chat ID (-100...)"></div>
+        <div class="fr"><textarea class="fi" id="broadcast-msg" placeholder="Xabar matni..." style="height:80px;resize:none"></textarea></div>
+        <button class="abtn" style="width:100%;padding:12px" onclick="sendBroadcast()">📢 Yuborish</button>
+      </div>
+      <div class="sec">📊 Bot statistikasi</div>
+      <div id="bot-stats"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- SOZLAMA -->
+    <div class="page" id="page-sozlama">
+      <div class="card">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px">📚 Kurs qo'shish</div>
+        <div class="fr"><input class="fi" id="nc-title" placeholder="Kurs nomi *"></div>
+        <div class="fr">
+          <input class="fi" id="nc-price" placeholder="Narxi (so'm)" type="number">
+          <input class="fi" id="nc-card" placeholder="💳 Karta raqami">
+        </div>
+        <div class="fr">
+          <input class="fi" id="nc-owner" placeholder="Karta egasi">
+          <input class="fi" id="nc-tggroup" placeholder="TG Guruh ID" type="number">
+        </div>
+        <button class="abtn" style="width:100%;padding:12px" onclick="addCourse()">➕ Kurs qo'shish</button>
+        <div id="course-list" style="margin-top:10px"></div>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+  </div>
+
+  <!-- BOTBAR -->
+  <div class="botbar" id="botbar" style="display:none">
+    <button class="mbtn" id="bot-btn"></button>
+  </div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="modal" id="modal">
+    <div class="mh"></div>
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+//  CONFIG
+// ══════════════════════════════
+const SB='https://lwpimllflhpcxtehkgjb.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3cGltbGxmbGhwY3h0ZWhrZ2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzMzNDYsImV4cCI6MjA4OTM0OTM0Nn0.yq2XHQBE6nyfHtRWbbo4C7V5sma5DaCEwzCu9wS1f9M';
+let TG_TOKEN=localStorage.getItem('tg_token')||'8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+let ADMIN_ID=localStorage.getItem('admin_id')||'';
+const H={'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=representation'};
+
+async function sb(m,t,b,p=''){
+  const r=await fetch(`${SB}/rest/v1/${t}${p}`,{method:m,headers:{...H},body:b?JSON.stringify(b):undefined});
+  if(!r.ok)throw new Error(await r.text());
+  const tx=await r.text();return tx?JSON.parse(tx):[];
+}
+const GET=(t,p)=>sb('GET',t,null,p);
+const POST=(t,b)=>sb('POST',t,b);
+const PATCH=(t,b,p)=>sb('PATCH',t,b,p);
+const DEL=(t,p)=>sb('DELETE',t,null,p);
+async function UPSERT(t,b){
+  const r=await fetch(`${SB}/rest/v1/${t}`,{method:'POST',
+    headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},
+    body:JSON.stringify(b)});
+  if(!r.ok)throw new Error(await r.text());
+  const tx=await r.text();return tx?JSON.parse(tx):[];
+}
+async function tgSend(method,body){
+  const r=await fetch(`https://api.telegram.org/bot${TG_TOKEN}/${method}`,{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  return r.json();
+}
+
+// ══════════════════════════════
+//  STATE
+// ══════════════════════════════
+let tests=[],courses=[],onlineStudents=[],enrollRequests=[];
+let testFilter='all',catFilter='all',payFilter='pending',reyFilter='all';
+const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+function avl(n){return(n||'?').split(' ').slice(0,2).map(w=>(w[0]||'').toUpperCase()).join('')}
+function avCls(i){return 'av'+(i%8)}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);return dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear()}
+function fmtDateTime(d){if(!d)return'—';const dt=new Date(d);return dt.getDate()+' '+MONTHS[dt.getMonth()]+', '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0')}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+async function init(){
+  try{
+    document.getElementById('bot-token').value=TG_TOKEN;
+    document.getElementById('admin-chat-id').value=ADMIN_ID;
+    [tests,courses,onlineStudents,enrollRequests]=await Promise.all([
+      GET('tests','?order=created_at.desc&select=*'),
+      GET('courses','?order=title&select=*'),
+      GET('online_students','?order=full_name&select=*'),
+      GET('enrollment_requests','?order=created_at.desc&select=*,courses(title)')
+    ]);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='flex';
+    renderDash();
+  }catch(e){
+    document.getElementById('loading').innerHTML=`<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Xatolik: ${e.message}</div>`;
+  }
+}
+
+// ══════════════════════════════
+//  NAV
+// ══════════════════════════════
+document.querySelectorAll('.ni').forEach(el=>{
+  el.onclick=()=>{
+    document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('page-'+el.dataset.p).classList.add('on');
+    const bb=document.getElementById('botbar');bb.style.display='none';
+    ({
+      dash:renderDash,
+      tests:()=>{renderTests();bb.style.display='block';
+        document.getElementById('bot-btn').textContent='➕ Yangi test yaratish';
+        document.getElementById('bot-btn').onclick=openNewTest},
+      rey:renderReyting,
+      stud:()=>{renderStudents();bb.style.display='block';
+        document.getElementById('bot-btn').textContent='➕ Yangi o\'quvchi';
+        document.getElementById('bot-btn').onclick=openNewStudent},
+      tolov:renderTolov,
+      bot:renderBot,
+      sozlama:renderSozlama
+    })[el.dataset.p]?.();
+  };
+});
+
+// ══════════════════════════════
+//  THEME
+// ══════════════════════════════
+function toggleTheme(){
+  const h=document.documentElement;
+  const d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('theme-btn').textContent=d?'🌙':'☀️';
+  localStorage.setItem('ihuquq_theme',d?'light':'dark');
+}
+const _t=localStorage.getItem('ihuquq_theme');
+if(_t){document.documentElement.setAttribute('data-theme',_t);document.getElementById('theme-btn').textContent=_t==='light'?'🌙':'☀️'}
+
+// ══════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════
+async function renderDash(){
+  document.getElementById('botbar').style.display='none';
+  const results=await GET('test_results','?select=id');
+  const pending=enrollRequests.filter(r=>r.status==='pending');
+  const approved=enrollRequests.filter(r=>r.status==='approved');
+  document.getElementById('d-stud').textContent=onlineStudents.length;
+  document.getElementById('d-test').textContent=tests.length;
+  document.getElementById('d-active').textContent=tests.filter(t=>t.is_active).length;
+  document.getElementById('d-results').textContent=results.length;
+  document.getElementById('d-pending').textContent=pending.length;
+  document.getElementById('d-approved').textContent=approved.length;
+
+  // Faol testlar
+  const active=tests.filter(t=>t.is_active);
+  document.getElementById('d-active-tests').innerHTML=active.length?active.map(t=>{
+    const typeLabel=t.is_public?'🌐 Ommaviy':t.rated?'⭐ Reytingli':'📖 Reytingsiz';
+    const deadline=t.ends_at?`⏰ ${fmtDateTime(t.ends_at)}`:'';
+    return`<div class="card" style="cursor:pointer" onclick="openTestDetail(${t.id})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:14px;font-weight:800">${t.title}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:3px">${typeLabel} · ${t.test_category||'Umumiy'} · ${t.duration_minutes||30} daq</div>
+          ${deadline?`<div style="font-size:11px;color:var(--yellow);margin-top:2px">${deadline}</div>`:''}
+        </div>
+        <span class="badge active">Faol</span>
+      </div>
+    </div>`;
+  }).join(''):'<div class="empty">Faol test yo\'q</div>';
+
+  // Kutayotgan to'lovlar
+  document.getElementById('d-pending-pays').innerHTML=pending.length?pending.slice(0,3).map(r=>`
+    <div class="pay-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:800">${r.full_name||'Noma\'lum'}</div>
+          <div style="font-size:11px;color:var(--text2)">${r.courses?.title||'—'} · ${(r.amount||0).toLocaleString()} so'm</div>
+        </div>
+        <span class="status-badge status-pending">⏳ Kutmoqda</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="abtn gr" style="flex:1;padding:9px;font-size:12px" onclick="approveReq(${r.id},${r.tg_id},'${r.full_name||''}',${r.course_id})">✅ Tasdiqlash</button>
+        <button class="abtn re" style="flex:1;padding:9px;font-size:12px" onclick="rejectReq(${r.id},${r.tg_id})">❌ Rad</button>
+      </div>
+    </div>`).join('')+
+    (pending.length>3?`<div style="text-align:center;padding:8px;font-size:12px;color:var(--text2);cursor:pointer" onclick="document.querySelector('[data-p=tolov]').click()">Yana ${pending.length-3} ta ko'rish →</div>`:'')
+  :'<div class="empty">Kutayotgan to\'lov yo\'q</div>';
+}
+
+// ══════════════════════════════
+//  TESTLAR
+// ══════════════════════════════
+function renderTests(){
+  // Kategoriyalar
+  const cats=[...new Set(tests.map(t=>t.test_category||'Umumiy'))];
+  const tc=document.getElementById('test-type-chips');tc.innerHTML='';
+  [['all','Hammasi'],['rated','⭐ Reytingli'],['unrated','📖 Reytingsiz'],['public','🌐 Ommaviy'],['active','✅ Faol']].forEach(([v,l])=>{
+    const el=document.createElement('div');
+    el.className='chip'+(testFilter===v?' on':'');el.textContent=l;
+    el.onclick=()=>{testFilter=v;renderTests()};tc.appendChild(el);
+  });
+  const cc=document.getElementById('test-cat-chips');cc.innerHTML='';
+  [['all','Barchasi'],...cats.map(c=>[c,c])].forEach(([v,l])=>{
+    const el=document.createElement('div');
+    el.className='chip'+(catFilter===v?' on':'');el.textContent=l;
+    el.onclick=()=>{catFilter=v;renderTests()};cc.appendChild(el);
+  });
+
+  let fil=tests;
+  if(testFilter==='rated')fil=fil.filter(t=>t.rated&&!t.is_public);
+  else if(testFilter==='unrated')fil=fil.filter(t=>!t.rated&&!t.is_public);
+  else if(testFilter==='public')fil=fil.filter(t=>t.is_public);
+  else if(testFilter==='active')fil=fil.filter(t=>t.is_active);
+  if(catFilter!=='all')fil=fil.filter(t=>(t.test_category||'Umumiy')===catFilter);
+
+  document.getElementById('t-all').textContent=tests.length;
+  document.getElementById('t-rated').textContent=tests.filter(t=>t.rated&&!t.is_public).length;
+  document.getElementById('t-unrated').textContent=tests.filter(t=>!t.rated&&!t.is_public).length;
+  document.getElementById('t-public').textContent=tests.filter(t=>t.is_public).length;
+
+  document.getElementById('test-list').innerHTML=fil.map(t=>{
+    const typeBadge=t.is_public?`<span class="badge public">🌐 Ommaviy</span>`:
+      t.rated?`<span class="badge rated">⭐ Reytingli</span>`:
+      `<span class="badge unrated">📖 Reytingsiz</span>`;
+    const statusBadge=t.is_active?`<span class="badge active">Faol</span>`:`<span class="badge inactive">Nofaol</span>`;
+    return`<div class="test-card">
+      <div class="test-card-top">
+        <div style="flex:1;min-width:0">
+          <div class="test-card-title">${t.title}</div>
+          <div class="test-card-meta">${t.test_category||'Umumiy'} · ${t.duration_minutes||30} daq · ${t.max_score||100} ball · Har to'g'ri = 2 ball</div>
+          ${t.ends_at?`<div style="font-size:11px;color:var(--yellow);margin-top:2px">⏰ ${fmtDateTime(t.ends_at)}</div>`:''}
+          ${t.pass_score?`<div style="font-size:11px;color:var(--text2);margin-top:2px">O'tish: ${t.pass_score}%</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          ${typeBadge}${statusBadge}
+        </div>
+      </div>
+      <div class="test-btns">
+        <button class="abtn ${t.is_active?'re':'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">
+          ${t.is_active?'⏹ To\'xtatish':'▶️ Faollashtirish'}
+        </button>
+        <button class="abtn" style="padding:7px 12px;font-size:12px;background:var(--accent2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
+        <button class="abtn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
+        ${t.rated&&!t.is_active?`<button class="abtn" style="padding:7px 12px;font-size:12px;background:var(--teal);color:#000" onclick="makeUnrated(${t.id})">📖 Reytingsizga</button>`:''}
+        <button class="dbtn" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">Test yo\'q</div>';
+}
+
+function openNewTest(){
+  openModal(`
+    <div class="mtitle">📝 Yangi test yaratish</div>
+    <div class="fr"><input class="fi" id="nt-title" placeholder="Test nomi *"></div>
+    <div class="fr">
+      <input class="fi" id="nt-cat" placeholder="Kategoriya (Huquq, Ingliz...)">
+      <input class="fi" id="nt-dur" type="number" value="30" placeholder="Vaqt (daq)" style="max-width:100px">
+    </div>
+    <div style="background:var(--s3);border-radius:var(--rxs);padding:12px;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:800;margin-bottom:10px;color:var(--text2)">Test turi:</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="radio" name="ttype" value="rated" id="tt-rated" checked style="accent-color:var(--accent)">
+          <div>
+            <div style="font-size:13px;font-weight:700">⭐ Reytingli (muddatli)</div>
+            <div style="font-size:11px;color:var(--text2)">Ball reytingga qo'shiladi, 1 marta ishlash</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="radio" name="ttype" value="unrated" style="accent-color:var(--accent)">
+          <div>
+            <div style="font-size:13px;font-weight:700">📖 Reytingsiz (doimiy)</div>
+            <div style="font-size:11px;color:var(--text2)">Ball reytingga qo'shilmaydi, ko'p marta</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="radio" name="ttype" value="public" style="accent-color:var(--teal)">
+          <div>
+            <div style="font-size:13px;font-weight:700">🌐 Ommaviy (bot orqali)</div>
+            <div style="font-size:11px;color:var(--text2)">Barcha uchun, vaqt belgilanadi</div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div id="deadline-wrap">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:700">Boshlanish</div>
+      <input class="fi" id="nt-start" type="datetime-local" style="margin-bottom:8px;width:100%">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:700">Tugash</div>
+      <input class="fi" id="nt-end" type="datetime-local" style="margin-bottom:8px;width:100%">
+    </div>
+    <div class="fr">
+      <input class="fi" id="nt-pass" type="number" value="60" placeholder="O'tish foizi (%)">
+    </div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="createTest()">✅ Yaratish va savollar qo'shish</button>
+  `);
+  document.querySelectorAll('input[name="ttype"]').forEach(r=>{
+    r.onchange=()=>{
+      const dw=document.getElementById('deadline-wrap');
+      dw.style.display=r.value==='unrated'?'none':'block';
+    };
+  });
+}
+
+async function createTest(){
+  const title=document.getElementById('nt-title').value.trim();
+  if(!title)return showToast('⚠️ Test nomini kiriting');
+  const type=document.querySelector('input[name="ttype"]:checked')?.value||'rated';
+  const start=document.getElementById('nt-start').value;
+  const end=document.getElementById('nt-end').value;
+  try{
+    const r=await POST('tests',{
+      title,
+      test_category:document.getElementById('nt-cat').value||'Umumiy',
+      duration_minutes:parseInt(document.getElementById('nt-dur').value)||30,
+      max_score:100,
+      pass_score:parseInt(document.getElementById('nt-pass').value)||60,
+      rated:type==='rated',
+      is_public:type==='public',
+      is_active:false,
+      starts_at:start?new Date(start).toISOString():null,
+      ends_at:end?new Date(end).toISOString():null
+    });
+    tests.unshift(r[0]);
+    closeModal();renderTests();showToast('✅ Test yaratildi! Endi savollar qo\'shing.');
+    setTimeout(()=>openTestEditor(r[0].id),300);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function toggleTest(id,isActive){
+  try{
+    await PATCH('tests',{is_active:!isActive},`?id=eq.${id}`);
+    const t=tests.find(x=>x.id===id);if(t)t.is_active=!isActive;
+    renderTests();showToast(isActive?'⏹ To\'xtatildi':'▶️ Faollashtirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function makeUnrated(id){
+  if(!confirm('Reytingsiz doimiy testga aylantirasizmi?'))return;
+  try{
+    await PATCH('tests',{rated:false,is_active:true,ends_at:null,starts_at:null},`?id=eq.${id}`);
+    const t=tests.find(x=>x.id===id);
+    if(t){t.rated=false;t.is_active=true;t.ends_at=null;}
+    renderTests();showToast('✅ Reytingsiz doimiy testga aylandi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function deleteTest(id){
+  if(!confirm('Testni o\'chirasizmi?'))return;
+  try{
+    await DEL('tests',`?id=eq.${id}`);
+    tests=tests.filter(t=>t.id!==id);renderTests();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ── SAVOL EDITOR ──
+async function openTestEditor(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num`);
+
+  const qHtml=questions.map((q,i)=>`
+    <div class="q-editor">
+      <div class="q-num">
+        <span>${i+1}-savol · ${q.score||1} ball (2 ball = 1 to'g'ri)</span>
+        <button class="dbtn" onclick="deleteQuestion(${q.id},${testId})">🗑</button>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">${q.question_text}</div>
+      ${['A','B','C','D'].map(opt=>`
+        <div class="opt-row">
+          <div class="opt-lbl ${opt}">${opt}</div>
+          <div style="flex:1;font-size:13px">${q['option_'+opt.toLowerCase()]}</div>
+          ${q.correct_answer===opt?'<span style="color:var(--green);font-weight:800">✓</span>':''}
+        </div>`).join('')}
+    </div>`).join('');
+
+  openModal(`
+    <div class="mtitle">✏️ ${t.title}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+      ${questions.length} ta savol · Har to'g'ri javob = <b style="color:var(--green)">2 ball</b>
+    </div>
+    <div id="q-list">${qHtml||'<div class="empty">Savol yo\'q</div>'}</div>
+    <div style="background:var(--s3);border-radius:var(--r);padding:14px;margin-top:10px">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">➕ Savol qo'shish</div>
+      <div class="fr"><input class="fi" id="nq-text" placeholder="Savol matni *"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl A">A</div><input class="fi" id="nq-a" placeholder="A varianti"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl B">B</div><input class="fi" id="nq-b" placeholder="B varianti"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl C">C</div><input class="fi" id="nq-c" placeholder="C varianti"></div>
+      <div class="opt-row" style="margin-bottom:6px"><div class="opt-lbl D">D</div><input class="fi" id="nq-d" placeholder="D varianti"></div>
+      <div class="fr" style="align-items:center;margin-top:4px">
+        <span style="font-size:13px;font-weight:700;flex:1">✓ To'g'ri javob:</span>
+        <select class="fsel" id="nq-correct" style="max-width:90px">
+          <option value="A">A</option><option value="B">B</option>
+          <option value="C">C</option><option value="D">D</option>
+        </select>
+      </div>
+      <button class="abtn gr" style="width:100%;padding:12px;margin-top:8px" onclick="addQuestion(${testId})">➕ Savol qo'shish</button>
+    </div>
+    <button class="abtn" style="width:100%;padding:12px;margin-top:8px" onclick="toggleTest(${t.id},${!t.is_active});closeModal()">
+      ${t.is_active?'⏹ Testni to\'xtatish':'▶️ Testni faollashtirish'}
+    </button>
+  `);
+}
+
+async function addQuestion(testId){
+  const text=document.getElementById('nq-text').value.trim();
+  const a=document.getElementById('nq-a').value.trim();
+  const b=document.getElementById('nq-b').value.trim();
+  const c=document.getElementById('nq-c').value.trim();
+  const d=document.getElementById('nq-d').value.trim();
+  if(!text||!a||!b||!c||!d)return showToast('⚠️ Barcha maydonlarni to\'ldiring');
+  try{
+    const existing=await GET('questions',`?test_id=eq.${testId}&select=id`);
+    await POST('questions',{
+      test_id:testId,question_text:text,
+      option_a:a,option_b:b,option_c:c,option_d:d,
+      correct_answer:document.getElementById('nq-correct').value,
+      score:2, // Har to'g'ri javob = 2 ball
+      order_num:existing.length+1
+    });
+    showToast('✅ Savol qo\'shildi');
+    openTestEditor(testId);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function deleteQuestion(qid,testId){
+  if(!confirm('O\'chirasizmi?'))return;
+  try{await DEL('questions',`?id=eq.${qid}`);openTestEditor(testId);showToast('🗑 O\'chirildi')}
+  catch(e){showToast('❌ '+e.message)}
+}
+
+// ── TEST NATIJALARI ──
+async function openTestResults(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const [results,questions]=await Promise.all([
+    GET('test_results',`?test_id=eq.${testId}&order=score.desc&select=*`),
+    GET('questions',`?test_id=eq.${testId}&select=id`)
+  ]);
+  const qCount=questions.length;
+  const avg=results.length?Math.round(results.reduce((a,b)=>a+(b.score||0),0)/results.length):0;
+  openModal(`
+    <div class="mtitle">📊 ${t.title}</div>
+    <div class="srow" style="margin-bottom:12px">
+      <div class="sbox b"><div class="v">${results.length}</div><div class="l">Topshirdi</div></div>
+      <div class="sbox g"><div class="v">${avg}</div><div class="l">O'rtacha ball</div></div>
+      <div class="sbox t"><div class="v">${qCount}</div><div class="l">Savol</div></div>
+    </div>
+    ${results.length?results.map((r,i)=>{
+      const name=r.participant_name||onlineStudents.find(s=>s.tg_id===r.tg_id)?.full_name||'Noma\'lum';
+      const pct=r.total_score?Math.round((r.score/r.total_score)*100):0;
+      const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+      return`<div class="ri">
+        <div class="rn">${medal}</div>
+        <div class="av av${i%8}" style="width:34px;height:34px;font-size:12px">${avl(name)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:700">${name}</div>
+          <div style="font-size:11px;color:var(--text2)">${fmtDateTime(r.finished_at)}</div>
+          <div class="rb"><div class="rbf" style="width:${pct}%;background:${col}"></div></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:15px;font-weight:900;color:${col}">${r.score}/${r.total_score}</div>
+      </div>`;
+    }).join(''):'<div class="empty">Hali hech kim topshirmadi</div>'}
+  `);
+}
+
+async function openTestDetail(id){
+  document.querySelector('[data-p="tests"]').click();
+}
+
+// ══════════════════════════════
+//  REYTING
+// ══════════════════════════════
+async function renderReyting(){
+  document.getElementById('botbar').style.display='none';
+  // Faqat reytingli testlardan natijalar
+  const ratedTests=tests.filter(t=>t.rated&&!t.is_public).map(t=>t.id);
+  let allResults=[];
+  if(ratedTests.length){
+    allResults=await GET('test_results',`?test_id=in.(${ratedTests.join(',')})&select=*`);
+  }
+
+  // O'quvchi bo'yicha ball yig'ish
+  const scoreMap={};
+  allResults.forEach(r=>{
+    const key=r.tg_id||r.student_id||r.participant_name;
+    if(!key)return;
+    const name=r.participant_name||onlineStudents.find(s=>s.tg_id===r.tg_id)?.full_name||'Noma\'lum';
+    if(!scoreMap[key])scoreMap[key]={name,total:0,count:0,tgId:r.tg_id};
+    if(r.ball_added!==false){ // faqat 1 marta hisoblanadi
+      scoreMap[key].total+=r.score||0;
+      scoreMap[key].count++;
+    }
+  });
+
+  const cats=[...new Set(tests.filter(t=>t.rated).map(t=>t.test_category||'Umumiy'))];
+  const rc=document.getElementById('rey-chips');rc.innerHTML='';
+  [['all','Jami'],['online','Onlayn o\'quvchilar'],...cats.map(c=>[c,c])].forEach(([v,l])=>{
+    const el=document.createElement('div');
+    el.className='chip'+(reyFilter===v?' on':'');el.textContent=l;
+    el.onclick=()=>{reyFilter=v;renderReyting()};rc.appendChild(el);
+  });
+
+  const ranked=Object.values(scoreMap).sort((a,b)=>b.total-a.total);
+  document.getElementById('rey-list').innerHTML=ranked.length?ranked.map((s,i)=>{
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+    const col=s.total>0?'var(--green)':'var(--text2)';
+    return`<div class="ri">
+      <div class="rn">${medal}</div>
+      <div class="av av${i%8}" style="width:36px;height:36px;font-size:12px">${avl(s.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700">${s.name}</div>
+        <div style="font-size:11px;color:var(--text2)">${s.count} ta test</div>
+        <div class="rb"><div class="rbf" style="width:${Math.min(100,(s.total/100)*100)}%;background:${col}"></div></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:16px;font-weight:900;color:${col}">${s.total}</div>
+    </div>`;
+  }).join(''):'<div class="empty">Hali natija yo\'q</div>';
+}
+
+// ══════════════════════════════
+//  O'QUVCHILAR
+// ══════════════════════════════
+function renderStudents(){
+  const srch=(document.getElementById('stud-srch').value||'').toLowerCase();
+  const fil=onlineStudents.filter(s=>
+    !srch||(s.full_name||'').toLowerCase().includes(srch)||(s.phone||'').includes(srch)
+  );
+  const paid=fil.filter(s=>enrollRequests.some(r=>r.tg_id===s.tg_id&&r.status==='approved')).length;
+  document.getElementById('s-total').textContent=fil.length;
+  document.getElementById('s-paid').textContent=paid;
+  document.getElementById('s-debt').textContent=fil.length-paid;
+  document.getElementById('stud-list').innerHTML=fil.map((s,i)=>`
+    <div class="lr" style="cursor:pointer" onclick="openStudentDetail(${s.id})">
+      <div class="av av${i%8}" style="width:40px;height:40px;font-size:13px">${avl(s.full_name)}</div>
+      <div class="lt">
+        <div class="ln">${s.full_name||'Noma\'lum'}</div>
+        <div class="ls">${s.phone||'—'} · @${s.tg_username||'—'}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${s.phone?`<a href="tel:${s.phone}" style="color:var(--accent);font-size:18px;text-decoration:none" onclick="event.stopPropagation()">📞</a>`:''}
+        <button class="dbtn" onclick="event.stopPropagation();deleteStudent(${s.id})">🗑</button>
+      </div>
+    </div>`).join('')||'<div class="empty">O\'quvchi yo\'q</div>';
+}
+
+document.getElementById('stud-srch').oninput=()=>renderStudents();
+
+async function openStudentDetail(id){
+  const s=onlineStudents.find(x=>x.id===id);if(!s)return;
+  const reqs=enrollRequests.filter(r=>r.tg_id===s.tg_id);
+  const results=await GET('test_results',`?tg_id=eq.${s.tg_id}&order=created_at.desc&select=*`);
+  const totalScore=results.reduce((a,b)=>a+(b.score||0),0);
+  openModal(`
+    <div style="text-align:center;padding:16px;background:var(--s3);border-radius:var(--r);margin-bottom:12px">
+      <div class="av av0" style="width:56px;height:56px;font-size:20px;margin:0 auto 10px">${avl(s.full_name)}</div>
+      <div style="font-size:17px;font-weight:900">${s.full_name||'Noma\'lum'}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">@${s.tg_username||'—'} · ${fmtDate(s.created_at)}</div>
+      <div style="margin-top:12px;display:flex;justify-content:center;gap:20px">
+        <div style="text-align:center"><div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--accent)">${results.length}</div><div style="font-size:10px;color:var(--text2);font-weight:700">TEST</div></div>
+        <div style="text-align:center"><div style="font-size:22px;font-weight:900;font-family:var(--mono);color:var(--green)">${totalScore}</div><div style="font-size:10px;color:var(--text2);font-weight:700">BALL</div></div>
+      </div>
+    </div>
+    ${s.phone?`<div style="padding:10px 0;border-bottom:1px solid var(--border)"><a href="tel:${s.phone}" style="color:var(--accent);font-weight:700;font-size:13px">📱 ${s.phone}</a></div>`:''}
+    <div class="sec">📚 Kurslar</div>
+    ${reqs.length?reqs.map(r=>`
+      <div class="lr">
+        <div class="lt">
+          <div class="ln">${r.courses?.title||'—'}</div>
+          <div class="ls">${(r.amount||0).toLocaleString()} so'm · ${fmtDate(r.created_at)}</div>
+        </div>
+        <span class="status-badge status-${r.status}">${r.status==='approved'?'✅':r.status==='pending'?'⏳':'❌'}</span>
+      </div>`).join(''):'<div class="empty">Kurs yo\'q</div>'}
+    <div class="sec">📊 Oxirgi testlar</div>
+    ${results.slice(0,5).map(r=>{
+      const t=tests.find(x=>x.id===r.test_id);
+      const pct=r.total_score?Math.round((r.score/r.total_score)*100):0;
+      const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+      return`<div class="lr">
+        <div class="lt"><div class="ln">${t?.title||'Test'}</div><div class="ls">${fmtDateTime(r.finished_at)}</div></div>
+        <span style="font-family:var(--mono);font-weight:800;color:${col}">${r.score}/${r.total_score}</span>
+      </div>`;
+    }).join('')||'<div class="empty">Natija yo\'q</div>'}
+  `);
+}
+
+function openNewStudent(){
+  openModal(`
+    <div class="mtitle">➕ O'quvchi qo'shish</div>
+    <div class="fr"><input class="fi" id="ns-name" placeholder="Ism Familiya *"></div>
+    <div class="fr">
+      <input class="fi" id="ns-phone" placeholder="📱 Telefon" type="tel">
+      <input class="fi" id="ns-tgid" placeholder="Telegram ID" type="number">
+    </div>
+    <div class="fr"><input class="fi" id="ns-user" placeholder="@username"></div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="addStudent()">➕ Qo'shish</button>
+  `);
+}
+async function addStudent(){
+  const name=document.getElementById('ns-name').value.trim();
+  if(!name)return showToast('⚠️ Ism kiriting');
+  try{
+    const r=await POST('online_students',{
+      full_name:name,
+      phone:document.getElementById('ns-phone').value||null,
+      tg_id:parseInt(document.getElementById('ns-tgid').value)||null,
+      tg_username:document.getElementById('ns-user').value||null
+    });
+    onlineStudents.push(r[0]);
+    closeModal();renderStudents();showToast('✅ Qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function deleteStudent(id){
+  if(!confirm('O\'chirasizmi?'))return;
+  try{
+    await DEL('online_students',`?id=eq.${id}`);
+    onlineStudents=onlineStudents.filter(s=>s.id!==id);
+    renderStudents();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ══════════════════════════════
+//  TO'LOVLAR
+// ══════════════════════════════
+function renderTolov(){
+  document.getElementById('botbar').style.display='none';
+  const pending=enrollRequests.filter(r=>r.status==='pending');
+  const approved=enrollRequests.filter(r=>r.status==='approved');
+  const rejected=enrollRequests.filter(r=>r.status==='rejected');
+  document.getElementById('p-pending').textContent=pending.length;
+  document.getElementById('p-approved').textContent=approved.length;
+  document.getElementById('p-rejected').textContent=rejected.length;
+
+  const pc=document.getElementById('pay-chips');pc.innerHTML='';
+  [['pending','⏳ Kutmoqda'],['approved','✅ Tasdiqlangan'],['rejected','❌ Rad etilgan'],['all','Hammasi']].forEach(([v,l])=>{
+    const el=document.createElement('div');
+    el.className='chip'+(payFilter===v?' on':'');el.textContent=l;
+    el.onclick=()=>{payFilter=v;renderTolov()};pc.appendChild(el);
+  });
+
+  const fil=payFilter==='all'?enrollRequests:enrollRequests.filter(r=>r.status===payFilter);
+  document.getElementById('pay-list').innerHTML=fil.map(r=>`
+    <div class="pay-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:800">${r.full_name||'Noma\'lum'}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">${r.phone||'—'} · @${r.tg_username||r.tg_id||'—'}</div>
+          <div style="font-size:12px;color:var(--accent);margin-top:2px">${r.courses?.title||'—'} · ${(r.amount||0).toLocaleString()} so'm</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${fmtDateTime(r.created_at)}</div>
+        </div>
+        <span class="status-badge status-${r.status}">${r.status==='approved'?'✅ Tasdiqlangan':r.status==='rejected'?'❌ Rad':' ⏳ Kutmoqda'}</span>
+      </div>
+      ${r.screenshot_file_id?`<div style="margin-bottom:8px">
+        <a href="https://api.telegram.org/bot${TG_TOKEN}/getFile?file_id=${r.screenshot_file_id}" target="_blank"
+          style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;background:var(--s3);border:1px solid var(--border);border-radius:10px;color:var(--accent);font-size:12px;font-weight:700;text-decoration:none">
+          🖼 Skrinshotni ko'rish
+        </a>
+      </div>`:''}
+      ${r.status==='pending'?`<div style="display:flex;gap:8px">
+        <button class="abtn gr" style="flex:1;padding:10px" onclick="approveReq(${r.id},${r.tg_id},'${r.full_name||''}',${r.course_id})">✅ Tasdiqlash</button>
+        <button class="abtn re" style="flex:1;padding:10px" onclick="rejectReq(${r.id},${r.tg_id})">❌ Rad etish</button>
+      </div>`:''}
+    </div>`).join('')||'<div class="empty">So\'rov yo\'q</div>';
+}
+
+async function approveReq(reqId,tgId,name,courseId){
+  if(!confirm(`"${name}" tasdiqlaysizmi?`))return;
+  try{
+    await PATCH('enrollment_requests',{status:'approved',reviewed_at:new Date().toISOString()},`?id=eq.${reqId}`);
+    const c=courses.find(x=>x.id===courseId);
+    let msg=`🎉 To'lovingiz tasdiqlandi!\n\n📖 ${c?.title||'Kurs'} ga xush kelibsiz!`;
+    let inviteLink=null;
+    if(c?.tg_group_id){
+      try{
+        const res=await tgSend('createChatInviteLink',{chat_id:c.tg_group_id,member_limit:1});
+        inviteLink=res.result?.invite_link;
+      }catch(e){}
+    }
+    if(inviteLink)msg+=`\n\nGuruhga qo'shilish:\n${inviteLink}`;
+    else msg+=`\n\nAdmin tez orada guruhga qo'shadi.`;
+    if(tgId)await tgSend('sendMessage',{chat_id:tgId,text:msg});
+    const r=enrollRequests.find(x=>x.id===reqId);if(r)r.status='approved';
+    renderTolov();showToast('✅ Tasdiqlandi!');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function rejectReq(reqId,tgId){
+  if(!confirm('Rad etasizmi?'))return;
+  try{
+    await PATCH('enrollment_requests',{status:'rejected',reviewed_at:new Date().toISOString()},`?id=eq.${reqId}`);
+    if(tgId)await tgSend('sendMessage',{chat_id:tgId,text:'❌ To\'lovingiz rad etildi.\n\nQayta urinib ko\'ring:\n/kurslar'});
+    const r=enrollRequests.find(x=>x.id===reqId);if(r)r.status='rejected';
+    renderTolov();showToast('❌ Rad etildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ══════════════════════════════
+//  BOT PANEL
+// ══════════════════════════════
+async function renderBot(){
+  document.getElementById('botbar').style.display='none';
+  try{
+    const me=await tgSend('getMe',{});
+    document.getElementById('bot-stats').innerHTML=me.ok?`
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:32px">🤖</div>
+          <div>
+            <div style="font-size:15px;font-weight:800">@${me.result.username}</div>
+            <div style="font-size:12px;color:var(--green);font-weight:700">✅ Bot ishlayapti</div>
+            <div style="font-size:11px;color:var(--text2)">${me.result.first_name}</div>
+          </div>
+        </div>
+      </div>`:
+      `<div class="empty">Bot ulanmagan</div>`;
+  }catch(e){document.getElementById('bot-stats').innerHTML='<div class="empty">Bot ulanmagan</div>'}
+}
+
+function saveBotSettings(){
+  TG_TOKEN=document.getElementById('bot-token').value.trim();
+  ADMIN_ID=document.getElementById('admin-chat-id').value.trim();
+  localStorage.setItem('tg_token',TG_TOKEN);
+  localStorage.setItem('admin_id',ADMIN_ID);
+  showToast('✅ Saqlandi!');renderBot();
+}
+
+async function testBot(){
+  const chatId=document.getElementById('admin-chat-id').value.trim();
+  if(!chatId)return showToast('⚠️ Admin ID kiriting');
+  try{
+    await tgSend('sendMessage',{chat_id:chatId,text:'✅ iHuquq Online — bot ishlayapti!'});
+    showToast('✅ Test xabari yuborildi!');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function sendBroadcast(){
+  const chatId=document.getElementById('broadcast-chat').value.trim();
+  const msg=document.getElementById('broadcast-msg').value.trim();
+  if(!chatId||!msg)return showToast('⚠️ Chat ID va xabar kiriting');
+  try{
+    await tgSend('sendMessage',{chat_id:chatId,text:msg,parse_mode:'HTML'});
+    showToast('✅ Xabar yuborildi!');
+    document.getElementById('broadcast-msg').value='';
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ══════════════════════════════
+//  SOZLAMA (KURSLAR)
+// ══════════════════════════════
+async function renderSozlama(){
+  document.getElementById('botbar').style.display='none';
+  document.getElementById('course-list').innerHTML=courses.map(c=>`
+    <div class="lr">
+      <div class="lt">
+        <div class="ln">${c.title}</div>
+        <div class="ls">${(c.price||0).toLocaleString()} so'm · ${c.card_number||'Karta yo\'q'}</div>
+      </div>
+      <button class="ebtn" onclick="editCourse(${c.id})">✏️</button>
+      <button class="dbtn" onclick="deleteCourse(${c.id})">🗑</button>
+    </div>`).join('')||'<div class="empty">Kurs yo\'q</div>';
+}
+
+async function addCourse(){
+  const title=document.getElementById('nc-title').value.trim();
+  if(!title)return showToast('⚠️ Kurs nomi kiriting');
+  try{
+    const r=await POST('courses',{
+      title,price:parseInt(document.getElementById('nc-price').value)||0,
+      card_number:document.getElementById('nc-card').value||null,
+      card_owner:document.getElementById('nc-owner').value||null,
+      tg_group_id:parseInt(document.getElementById('nc-tggroup').value)||null
+    });
+    courses.push(r[0]);
+    ['nc-title','nc-price','nc-card','nc-owner','nc-tggroup'].forEach(id=>document.getElementById(id).value='');
+    renderSozlama();showToast('✅ Kurs qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+function editCourse(id){
+  const c=courses.find(x=>x.id===id);if(!c)return;
+  openModal(`
+    <div class="mtitle">✏️ Kursni tahrirlash</div>
+    <div class="fr"><input class="fi" id="ec-title" value="${c.title}" placeholder="Kurs nomi *"></div>
+    <div class="fr">
+      <input class="fi" id="ec-price" value="${c.price||''}" placeholder="Narxi" type="number">
+      <input class="fi" id="ec-card" value="${c.card_number||''}" placeholder="💳 Karta">
+    </div>
+    <div class="fr"><input class="fi" id="ec-owner" value="${c.card_owner||''}" placeholder="Karta egasi"></div>
+    <div class="fr"><input class="fi" id="ec-tggroup" value="${c.tg_group_id||''}" placeholder="TG Guruh ID" type="number"></div>
+    <button class="abtn" style="width:100%;padding:13px;margin-top:4px" onclick="saveCourse(${id})">💾 Saqlash</button>
+  `);
+}
+async function saveCourse(id){
+  const title=document.getElementById('ec-title').value.trim();
+  if(!title)return showToast('⚠️ Nom kiriting');
+  try{
+    const body={title,price:parseInt(document.getElementById('ec-price').value)||0,
+      card_number:document.getElementById('ec-card').value||null,
+      card_owner:document.getElementById('ec-owner').value||null,
+      tg_group_id:parseInt(document.getElementById('ec-tggroup').value)||null};
+    await PATCH('courses',body,`?id=eq.${id}`);
+    const idx=courses.findIndex(c=>c.id===id);
+    courses[idx]={...courses[idx],...body};
+    closeModal();renderSozlama();showToast('✅ Saqlandi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+async function deleteCourse(id){
+  if(!confirm('O\'chirasizmi?'))return;
+  try{
+    await DEL('courses',`?id=eq.${id}`);
+    courses=courses.filter(c=>c.id!==id);
+    renderSozlama();showToast('🗑 O\'chirildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// ══════════════════════════════
+//  MODAL & UTILS
+// ══════════════════════════════
+function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('ov').classList.add('on')}
+function closeModal(){document.getElementById('ov').classList.remove('on')}
+document.getElementById('ov').onclick=e=>{if(e.target===e.currentTarget)closeModal()}
+
+let _tt;
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2500)}
+
+init();
+</script>
+</body>
+</html>
