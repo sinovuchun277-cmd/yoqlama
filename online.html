@@ -980,9 +980,10 @@ async function rejectReq(reqId,tgId){
 async function renderBot(){
   document.getElementById('botbar').style.display='none';
   // Offline info yuklash
-  const savedInfo=localStorage.getItem('offline_info')||'';
-  document.getElementById('offline-info').value=savedInfo;
-  document.getElementById('admin-chat-id').value=ADMIN_ID;
+  try{
+  const setting=await GET('settings',`?key=eq.offline_info&select=value`);
+  document.getElementById('offline-info').value=setting[0]?.value||'';
+}catch(e){}
 
   // Bot holati
   try{
