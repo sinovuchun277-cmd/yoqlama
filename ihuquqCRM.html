@@ -32,6 +32,7 @@ button,input,select,textarea{font-family:var(--font)}
 .icon-btn:active{background:var(--s4)}
 /* NAV 2 QATOR 4x2 */
 .nav{flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:4px 6px 2px;gap:2px;transition:background .3s}
+#nav-online{grid-template-columns:repeat(3,1fr)}
 .ni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;font-size:9px;font-weight:700;color:var(--text3);border-radius:10px;transition:all .2s;letter-spacing:.3px;text-transform:uppercase}
 .ni .ic{font-size:22px;line-height:1}
 .ni.on{color:var(--accent);background:rgba(61,127,255,.08)}
@@ -232,12 +233,12 @@ button,input,select,textarea{font-family:var(--font)}
   <div class="ni" data-p="bosh"><span class="ic">⚙️</span>Boshqaruv</div>
 </div>
 <div class="nav" id="nav-online" style="display:none">
-  <div class="ni on" data-p="on-dash"><span class="ic">📊</span>Bosh</div>
-  <div class="ni" data-p="on-stud"><span class="ic">👤</span>O'quvchilar</div>
-  <div class="ni" data-p="on-grps"><span class="ic">👥</span>Guruhlar</div>
-  <div class="ni" data-p="on-test"><span class="ic">📝</span>Testlar</div>
-  <div class="ni" data-p="on-tolov"><span class="ic">💳</span>To'lovlar</div>
-  <div class="ni" data-p="on-bosh"><span class="ic">⚙️</span>Sozlama</div>
+  <div class="ni on" data-p="on-dash" onclick="onNav(this,'on-dash')"><span class="ic">📊</span>Bosh</div>
+  <div class="ni" data-p="on-stud" onclick="onNav(this,'on-stud')"><span class="ic">👤</span>O'quvchilar</div>
+  <div class="ni" data-p="on-grps" onclick="onNav(this,'on-grps')"><span class="ic">👥</span>Guruhlar</div>
+  <div class="ni" data-p="on-test" onclick="onNav(this,'on-test')"><span class="ic">📝</span>Testlar</div>
+  <div class="ni" data-p="on-tolov" onclick="onNav(this,'on-tolov')"><span class="ic">💳</span>To'lovlar</div>
+  <div class="ni" data-p="on-bosh" onclick="onNav(this,'on-bosh')"><span class="ic">⚙️</span>Sozlama</div>
 </div>
   <div class="pages">
     <!-- DASHBOARD -->
@@ -1588,13 +1589,10 @@ function applyMode() {
 }
 
 // Onlayn nav
-document.getElementById('nav-online').addEventListener('click', e => {
-  const ni = e.target.closest('.ni');
-  if (!ni) return;
-  const p = ni.dataset.p;
+function onNav(el, p) {
   document.querySelectorAll('#nav-online .ni').forEach(x => x.classList.remove('on'));
   document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
-  ni.classList.add('on');
+  el.classList.add('on');
   document.getElementById('page-' + p).classList.add('on');
   const bb = document.getElementById('botbar'); bb.style.display = 'none';
   const map = {
@@ -1606,7 +1604,7 @@ document.getElementById('nav-online').addEventListener('click', e => {
     'on-bosh': renderOnlineBosh
   };
   map[p]?.();
-});
+}
 
 // ── OFLAYN GURUHLAR ──
 function renderGrpPage(){
