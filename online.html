@@ -432,6 +432,7 @@ function renderStudents(){
   document.getElementById('s-debt').textContent=enrollRequests.filter(r=>r.status==='pending').length;
   document.getElementById('stud-list').innerHTML=fil.map((r,i)=>{
     const s=students.find(x=>x.tg_id===r.tg_id)||{};
+    const sid=s.id||0;
     return`<div class="lrow" style="cursor:pointer" onclick="openStudentProfile(${r.id},'req')">
       <div class="av ${avCls(i)}" style="width:42px;height:42px;font-size:14px">${avl(r.full_name)}</div>
       <div class="lrow-info">
@@ -440,6 +441,7 @@ function renderStudents(){
       </div>
       <div style="display:flex;gap:5px;align-items:center">
         ${r.phone?`<a href="tel:${r.phone}" style="color:var(--acc);font-size:18px;text-decoration:none" onclick="event.stopPropagation()">📞</a>`:''}
+        <button class="ibtn" style="background:rgba(0,214,143,.1);color:var(--green);width:32px;height:32px;border-radius:8px;font-size:14px;font-weight:900;border:none;cursor:pointer" onclick="event.stopPropagation();quickScore(${r.tg_id||0},${sid},'${(r.full_name||'').replace(/'/g,'`')}')">±</button>
         <button class="ibtn ed" onclick="event.stopPropagation();editStudent(${r.id})">✏️</button>
         <button class="ibtn dl" onclick="event.stopPropagation();deleteStudent(${r.id})">🗑</button>
       </div>
