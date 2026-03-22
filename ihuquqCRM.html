@@ -716,10 +716,15 @@ button,input,select,textarea{font-family:var(--font)}
 
     <!-- TESTLAR -->
     <div class="page" id="page-test">
-      <div class="srow">
-        <div class="sbox b"><div class="v" id="t-all">0</div><div class="l">Jami</div></div>
-        <div class="sbox g"><div class="v" id="t-active">0</div><div class="l">Faol</div></div>
+      <div style="text-align:center;padding:20px 0 12px">
+        <div style="font-size:48px;margin-bottom:12px">📝</div>
+        <div style="font-size:17px;font-weight:900;margin-bottom:6px">Test Platformasi</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Test yaratish, natijalar va statistika</div>
+        <a href="test.html?admin=1" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:var(--r);font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 6px 20px rgba(79,142,255,.3)">
+          📝 Test platformasini ochish →
+        </a>
       </div>
+      <div class="sec-title">📋 So'nggi testlar</div>
       <div id="test-list"></div>
       <div style="height:16px"></div>
     </div>
@@ -1578,26 +1583,18 @@ async function confirmAddToGroup(sid){
 
 // ── TESTLAR ──
 function renderTests(){
-  document.getElementById('t-total').textContent=tests.length;
-  document.getElementById('t-active').textContent=tests.filter(t=>t.is_active).length;
-  document.getElementById('t-done').textContent=tests.filter(t=>!t.is_active&&t.ends_at&&new Date(t.ends_at)<new Date()).length;
-  document.getElementById('test-list').innerHTML=tests.map(t=>`
-    <div class="test-card">
-      <div class="test-card-hdr">
-        <div>
-          <div class="test-title">${t.title}</div>
-          <div class="test-meta">${t.groups?.name||'Barcha guruhlar'} · ${t.duration_minutes} daqiqa · ${t.max_score} ball</div>
-          ${t.ends_at?`<div style="font-size:11px;color:var(--yellow);margin-top:3px">⏰ ${new Date(t.ends_at).toLocaleString('uz-UZ',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>`:''}
-        </div>
-        <span class="${t.is_active?'active-badge':'inactive-badge'}">${t.is_active?'Faol':'Nofaol'}</span>
+  document.getElementById('test-list').innerHTML=tests.map(t=>{
+    const col=t.is_public?'var(--teal)':t.rated?'var(--green)':'var(--text2)';
+    const badge=t.is_public?'🌐':t.rated?'⭐':'📖';
+    return`<div class="lrow" style="cursor:pointer" onclick="window.location.href='test.html?admin=1'">
+      <div class="av av${tests.indexOf(t)%8}" style="width:40px;height:40px;font-size:18px">📝</div>
+      <div class="lrow-info">
+        <div class="lrow-name">${badge} ${t.title}</div>
+        <div class="lrow-sub">${t.duration_minutes||30} daq · ${t.is_active?'✅ Faol':'⏸ Nofaol'}</div>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="abtn ${t.is_active?'re':'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active?'⏹ To\'xtatish':'▶️ Faollashtirish'}</button>
-        <button class="btn" style="padding:7px 12px;font-size:12px;background:var(--accent2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
-        <button class="btn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
-        <button class="ibtn dl" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
-      </div>
-    </div>`).join('')||'<div class="empty">Test yo\'q. Yangi test yarating!</div>';
+      <span style="color:var(--text3);font-size:18px">›</span>
+    </div>`;
+  }).join('')||'<div class="empty">Test yo\'q.<br><a href="test.html?admin=1" style="color:var(--acc);font-weight:700">Test platformasiga o\'ting →</a></div>';
 }
 
 function openNewTest(){
