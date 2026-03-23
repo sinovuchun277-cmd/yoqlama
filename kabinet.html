@@ -337,18 +337,14 @@ async function renderRey(){
   var cont=document.getElementById('rey-content');
   var ranked=[],myKey=null;
   if(MODE==='offline'&&OFF){
-    var myG=await GET('group_students','?student_id=eq.'+OFF.id+'&is_rated=eq.true&select=group_id');
-    if(!myG.length){cont.innerHTML='<div class="empty">Reytingli guruhingiz yoq</div>';return;}
-    var gIds=myG.map(function(g){return g.group_id});
-    var allGS=await GET('group_students','?group_id=in.('+gIds.join(',')+')'+'&is_rated=eq.true&select=*');
-    var sIds=[...new Set(allGS.map(function(g){return g.student_id}))];
-    if(!sIds.length){cont.innerHTML='<div class="empty">Oquvchi topilmadi</div>';return;}
-    var sts=await GET('students','?id=in.('+sIds.join(',')+')'+'&select=id,name');
-    // Faqat source=offline balllar
-    var sc=await GET('scores','?student_id=in.('+sIds.join(',')+')'+'&source=eq.offline&select=student_id,points');
-    var mp={};sts.forEach(function(s){mp[s.id]={name:s.name,id:s.id,total:0}});
+    // Barcha oflayn o'quvchilar reytingi (faqat guruh emas)
+    var sts=await GET('students','?select=id,name');
+    var sc=await GET('scores','?source=eq.offline&select=student_id,points');
+    var mp={};
+    sts.forEach(function(s){mp[s.id]={name:s.name,id:s.id,total:0}});
     sc.forEach(function(s){if(mp[s.student_id])mp[s.student_id].total+=s.points||0});
-    ranked=Object.values(mp).sort(function(a,b){return b.total-a.total});myKey=OFF.id;
+    ranked=Object.values(mp).sort(function(a,b){return b.total-a.total});
+    myKey=OFF.id;
   }else if(MODE==='online'&&ON){
     var sts2=await GET('online_students','?select=id,full_name,tg_id');
     var onIds=sts2.map(function(s){return s.id});
