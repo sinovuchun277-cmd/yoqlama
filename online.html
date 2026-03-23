@@ -186,13 +186,15 @@ textarea.fi{resize:none}
     </div>
     <!-- TESTLAR -->
     <div class="page" id="page-tests">
-      <div class="chips" id="test-type-chips"></div>
-      <div class="srow">
-        <div class="sbox b"><div class="v" id="t-all">0</div><div class="l">Jami</div></div>
-        <div class="sbox b"><div class="v" id="t-rated">0</div><div class="l">Reytingli</div></div>
-        <div class="sbox g"><div class="v" id="t-unrated">0</div><div class="l">Reytingsiz</div></div>
-        <div class="sbox t"><div class="v" id="t-public">0</div><div class="l">Ommaviy</div></div>
+      <div style="text-align:center;padding:20px 0 12px">
+        <div style="font-size:48px;margin-bottom:12px">📝</div>
+        <div style="font-size:17px;font-weight:900;margin-bottom:6px">Test Platformasi</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Test yaratish, import, natijalar va statistika</div>
+        <a href="test.html?admin=1" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:var(--r);font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 6px 20px rgba(79,142,255,.3)">
+          📝 Test platformasini ochish →
+        </a>
       </div>
+      <div class="sec-title">📋 So'nggi testlar</div>
       <div id="test-list"></div>
       <div style="height:16px"></div>
     </div>
@@ -503,7 +505,7 @@ async function addScore(tgId,sign){
     // online_students dan student_id olish
     const sts=await GET('online_students',`?tg_id=eq.${tgId}&select=id`);
     if(!sts.length)return showToast('⚠️ O\'quvchi topilmadi');
-    await POST('scores',{student_id:sts[0].id,date:new Date().toISOString().slice(0,10),points:final,note:note||`Onlayn: ${final>0?'+':''}${final}`});
+    await POST('scores',{student_id:sts[0].id,date:new Date().toISOString().slice(0,10),points:final,note:note||`Onlayn: ${final>0?'+':''}${final}`,source:'online'});
     closeModal();showToast((final>0?'✅ +':'⚠️ ')+final+' ball qo\'shildi');
   }catch(e){showToast('❌ '+e.message)}
 }
@@ -531,6 +533,25 @@ async function saveStudent(reqId){
 async function deleteStudent(reqId){
   if(!confirm('O\'chirasizmi?'))return;
   try{
+    const r=enrollRequests.find(x=>x.id===reqId);
+    // Telegram guruhdan chiqarish va xabar yuborish
+    if(r?.tg_id){
+      // Kurs guruhini olish
+      const course=groups.find(g=>g.id===r.course_id);
+      if(course?.tg_group_id){
+        try{
+          await tgSend('banChatMember',{chat_id:course.tg_group_id,user_id:r.tg_id});
+          await tgSend('unbanChatMember',{chat_id:course.tg_group_id,user_id:r.tg_id,only_if_banned:true});
+        }catch(e){}
+      }
+      // O'quvchiga xabar
+      try{
+        await tgSend('sendMessage',{chat_id:r.tg_id,
+          text:'ℹ️ Siz *'+(course?.title||'kurs')+'* dan chiqarildingiz.\n\nSavollar bo\'yicha admin bilan bog\'laning.',
+          parse_mode:'Markdown'
+        });
+      }catch(e){}
+    }
     await DEL('enrollment_requests',`?id=eq.${reqId}`);
     enrollRequests=enrollRequests.filter(x=>x.id!==reqId);
     closeModal();renderStudents();showToast('🗑 O\'chirildi');
@@ -675,41 +696,17 @@ async function addStudent(){
 //  TESTLAR
 // ══════════════════════════════
 function renderTests(){
-  const tc=document.getElementById('test-type-chips');tc.innerHTML='';
-  [['all','Hammasi'],['rated','⭐ Reytingli'],['unrated','📖 Reytingsiz'],['public','🌐 Ommaviy'],['active','✅ Faol']].forEach(([v,l])=>{
-    const el=document.createElement('div');el.className='chip'+(testFilter===v?' on':'');el.textContent=l;
-    el.onclick=()=>{testFilter=v;renderTests()};tc.appendChild(el);
-  });
-  let fil=tests;
-  if(testFilter==='rated')fil=fil.filter(t=>t.rated&&!t.is_public);
-  else if(testFilter==='unrated')fil=fil.filter(t=>!t.rated&&!t.is_public);
-  else if(testFilter==='public')fil=fil.filter(t=>t.is_public);
-  else if(testFilter==='active')fil=fil.filter(t=>t.is_active);
-  document.getElementById('t-all').textContent=tests.length;
-  document.getElementById('t-rated').textContent=tests.filter(t=>t.rated&&!t.is_public).length;
-  document.getElementById('t-unrated').textContent=tests.filter(t=>!t.rated&&!t.is_public).length;
-  document.getElementById('t-public').textContent=tests.filter(t=>t.is_public).length;
-  document.getElementById('test-list').innerHTML=fil.map(t=>{
-    const tb=t.is_public?'<span class="bdg bdg-b">🌐 Ommaviy</span>':t.rated?'<span class="bdg bdg-g">⭐ Reytingli</span>':'<span class="bdg bdg-n">📖 Reytingsiz</span>';
-    const ab=t.is_active?'<span class="act-badge on">Faol</span>':'<span class="act-badge off">Nofaol</span>';
-    return`<div class="test-card">
-      <div class="test-top">
-        <div style="flex:1;min-width:0">
-          <div class="test-title">${t.title}</div>
-          <div class="test-meta">${t.test_category||'Umumiy'} · ${t.duration_minutes||30} daq · Har to\'g\'ri = 2 ball</div>
-          ${t.ends_at?'<div style="font-size:11px;color:var(--yellow);margin-top:2px">⏰ '+fmtDT(t.ends_at)+'</div>':''}
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${tb}${ab}</div>
+  document.getElementById('test-list').innerHTML=tests.map((t,i)=>{
+    const badge=t.is_public?'🌐':t.rated?'⭐':'📖';
+    return`<div class="lrow" style="cursor:pointer" onclick="window.location.href='test.html?admin=1'">
+      <div class="av av${i%8}" style="width:40px;height:40px;font-size:18px">📝</div>
+      <div class="lrow-info">
+        <div class="lrow-name">${badge} ${t.title}</div>
+        <div class="lrow-sub">${t.duration_minutes||30} daq · ${t.is_active?'✅ Faol':'⏸ Nofaol'}</div>
       </div>
-      <div class="test-btns">
-        <button class="btn ${t.is_active?'re':'gr'}" style="padding:7px 12px;font-size:12px" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active?'⏹ To\'xtatish':'▶️ Faollashtirish'}</button>
-        <button class="btn" style="padding:7px 12px;font-size:12px;background:var(--acc2)" onclick="openTestEditor(${t.id})">✏️ Savollar</button>
-        <button class="btn te" style="padding:7px 12px;font-size:12px" onclick="openTestResults(${t.id})">📊 Natijalar</button>
-        ${t.rated&&!t.is_active?'<button class="btn" style="padding:7px 12px;font-size:12px;background:var(--teal);color:#000" onclick="makeUnrated('+t.id+')">📖 Reytingsizga</button>':''}
-        <button class="ibtn dl" style="width:auto;padding:7px 12px;border-radius:var(--rxs)" onclick="deleteTest(${t.id})">🗑</button>
-      </div>
+      <span style="color:var(--text3);font-size:18px">›</span>
     </div>`;
-  }).join('')||'<div class="empty">Test yo\'q</div>';
+  }).join('')||'<div class="empty">Test yo\'q.<br><a href="test.html?admin=1" style="color:var(--acc);font-weight:700">Test platformasiga o\'ting →</a></div>';
 }
 
 function openNewTest(){
@@ -870,20 +867,40 @@ async function openTestResults(testId){
 //  REYTING
 // ══════════════════════════════
 async function renderReyting(){
+  // Onlayn reytingda faqat test natijalari ishlatiladi
+  // scores jadvali oflayn va onlayn umumiy, aralashib ketadi
   const ratedTests=tests.filter(t=>t.rated&&!t.is_public).map(t=>t.id);
   let allResults=[];
-  if(ratedTests.length)allResults=await GET('test_results',`?test_id=in.(${ratedTests.join(',')})&select=*`);
-  // Online scores
-  const scores=await GET('scores',`?select=*`);
+  if(ratedTests.length){
+    allResults=await GET('test_results',`?test_id=in.(${ratedTests.join(',')})&finished_at=not.is.null&select=*`);
+  }
+
+  // Faqat onlayn o'quvchilar tg_id larini olish
+  const onlineTgIds=new Set(students.filter(s=>s.tg_id).map(s=>s.tg_id));
+
+  // Qo'lda qo'shilgan balllar (faqat onlayn o'quvchilarga)
+  const onlineStudentIds=students.map(s=>s.id).filter(Boolean);
+  // Faqat onlayn source='online' balllar
+  let manualScores=[];
+  if(onlineStudentIds.length){
+    manualScores=await GET('scores',`?student_id=in.(${onlineStudentIds.join(',')})&source=eq.online&select=*`);
+  }
+
   const scoreMap={};
-  scores.forEach(s=>{
+
+  // Qo'lda qo'shilgan balllar
+  manualScores.forEach(s=>{
     const st=students.find(x=>x.id===s.student_id);
     if(!st?.tg_id)return;
     if(!scoreMap[st.tg_id])scoreMap[st.tg_id]={name:st.full_name||'Noma\'lum',total:0,tgId:st.tg_id,sid:st.id};
     scoreMap[st.tg_id].total+=s.points||0;
   });
+
+  // Test natijalari — faqat onlayn o'quvchilar
   allResults.forEach(r=>{
     if(!r.tg_id)return;
+    // Faqat onlayn o'quvchi bo'lsa qo'shish
+    if(!onlineTgIds.has(r.tg_id))return;
     const name=r.participant_name||students.find(s=>s.tg_id===r.tg_id)?.full_name||'Noma\'lum';
     if(!scoreMap[r.tg_id])scoreMap[r.tg_id]={name,total:0,tgId:r.tg_id};
     scoreMap[r.tg_id].total+=r.score||0;
@@ -955,7 +972,7 @@ async function quickScoreSave(tgId,sid,sign){
     let stId=sid;
     if(!stId&&tgId){const s=await GET('online_students',`?tg_id=eq.${tgId}&select=id`);if(s.length)stId=s[0].id;}
     if(!stId)return showToast('⚠️ O\'quvchi topilmadi');
-    await POST('scores',{student_id:stId,date:new Date().toISOString().slice(0,10),points:final,note:note||`Admin: ${final>0?'+':''}${final}`});
+    await POST('scores',{student_id:stId,date:new Date().toISOString().slice(0,10),points:final,note:note||`Admin: ${final>0?'+':''}${final}`,source:'online'});
     closeModal();renderReyting();showToast((final>0?'✅ +':'⚠️ ')+final+' ball');
   }catch(e){showToast('❌ '+e.message)}
 }
