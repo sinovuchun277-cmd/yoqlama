@@ -201,7 +201,14 @@ async function init(){
   if(window.Telegram&&window.Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();if(!TID)TID=Telegram.WebApp.initDataUnsafe&&Telegram.WebApp.initDataUnsafe.user?Telegram.WebApp.initDataUnsafe.user.id:null;}
   if(!TID){document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Telegram ID topilmadi. Botdan kirish kerak.</div>';return;}
   var res=await Promise.all([GET('students','?telegram_id=eq.'+TID+'&select=*&limit=1'),GET('online_students','?tg_id=eq.'+TID+'&select=*&limit=1')]);
-  OFF=res[0][0]||null;ON=res[1][0]||null;hasBoth=!!(OFF&&ON);
+  OFF=res[0][0]||null;
+  // Onlayn kabinet faqat approved enrollment bo'lsa ko'rinadi
+  var onSt=res[1][0]||null;
+  if(onSt){
+    var approvedEnroll=await GET('enrollment_requests','?tg_id=eq.'+TID+'&status=eq.approved&select=id&limit=1');
+    ON=approvedEnroll.length?onSt:null;
+  }else{ON=null;}
+  hasBoth=!!(OFF&&ON);
   if(!OFF&&!ON){document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px 20px"><div style="font-size:48px;margin-bottom:16px">&#x1F512;</div><div style="font-size:17px;font-weight:800;margin-bottom:8px">Kabinet topilmadi</div><div style="font-size:13px;color:var(--text2)">Botdan royxatdan oting yoki kursga yoziling.</div></div>';return;}
   if(mP==='offline'&&OFF)MODE='offline';
   else if(mP==='online'&&ON)MODE='online';
