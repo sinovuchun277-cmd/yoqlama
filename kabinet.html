@@ -346,7 +346,13 @@ async function renderRey(){
     ranked=Object.values(mp).sort(function(a,b){return b.total-a.total});
     myKey=OFF.id;
   }else if(MODE==='online'&&ON){
+    // Faqat approved enrollment_requests orqali tasdiqlangan o'quvchilar
+    var approvedEnrolls=await GET('enrollment_requests','?status=eq.approved&select=tg_id,full_name&order=tg_id');
+    // Unique tg_id lar
+    var approvedTgIds=new Set(approvedEnrolls.map(function(e){return e.tg_id}).filter(Boolean));
     var sts2=await GET('online_students','?select=id,full_name,tg_id');
+    // Faqat approved bo'lganlar
+    sts2=sts2.filter(function(s){return s.tg_id&&approvedTgIds.has(s.tg_id)});
     var onIds=sts2.map(function(s){return s.id});
     // Faqat source=online balllar
     var sc2=onIds.length?await GET('scores','?student_id=in.('+onIds.join(',')+')'+'&source=eq.online&select=student_id,points'):[];
