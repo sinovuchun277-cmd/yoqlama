@@ -554,6 +554,13 @@ async function deleteStudent(reqId){
     }
     await DEL('enrollment_requests',`?id=eq.${reqId}`);
     enrollRequests=enrollRequests.filter(x=>x.id!==reqId);
+    // online_students dan ham o'chirish — boshqa approved kursi yo'q bo'lsa
+    if(r?.tg_id){
+      const remaining=enrollRequests.filter(x=>x.tg_id===r.tg_id&&x.status==='approved');
+      if(!remaining.length){
+        await DEL('online_students',`?tg_id=eq.${r.tg_id}`);
+      }
+    }
     closeModal();renderStudents();showToast('🗑 O\'chirildi');
   }catch(e){showToast('❌ '+e.message)}
 }
