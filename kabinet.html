@@ -257,7 +257,7 @@ async function loadProfile(){
     var k=at.filter(function(a){return a.status==='keldi'||a.status==='kechikdi'}).length;
     att=at.length?Math.round((k/at.length)*100)+'%':'--';
   }else if(MODE==='online'&&ON){
-    var sc2=await GET('scores','?student_id=eq.'+ON.id+'&select=points');
+    var sc2=await GET('scores','?student_id=eq.'+ON.id+'&source=eq.online&select=points');
     score=sc2.reduce(function(a,b){return a+(b.points||0)},0);
     var tr2=await GET('test_results','?tg_id=eq.'+TID+'&finished_at=not.is.null&select=id');tests=tr2.length;
     att='inf';
