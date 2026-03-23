@@ -392,26 +392,26 @@ button,input,select,textarea{font-family:var(--font)}
 .sc-info{flex:1;min-width:0}
 .sc-name-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
 .sc-name{font-size:14px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sc-id{font-family:var(--mono);font-size:10px;color:var(--text3)}
-.att-btns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
-.att-btn{
+.sc-id,.sid-b{font-family:var(--mono);font-size:10px;color:var(--text3)}
+.att-btns,.stbtns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.att-btn,.stbtn{
   padding:7px 11px;border-radius:8px;font-size:11px;
   font-weight:800;cursor:pointer;border:1.5px solid transparent;
   transition:all .15s;
 }
-.att-btn.k{background:rgba(0,214,143,.08);border-color:rgba(0,214,143,.2);color:var(--green)}
-.att-btn.k.on{background:var(--green);border-color:var(--green);color:#000}
-.att-btn.kch{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.2);color:var(--yellow)}
-.att-btn.kch.on{background:var(--yellow);border-color:var(--yellow);color:#000}
-.att-btn.km{background:rgba(255,71,87,.08);border-color:rgba(255,71,87,.2);color:var(--red)}
-.att-btn.km.on{background:var(--red);border-color:var(--red);color:#fff}
-.score-row{display:flex;align-items:center;gap:6px;padding-top:7px;border-top:1px solid var(--border)}
-.score-row input{
+.att-btn.k,.stbtn.k{background:rgba(0,214,143,.08);border-color:rgba(0,214,143,.2);color:var(--green)}
+.att-btn.k.on,.stbtn.k.on{background:var(--green);border-color:var(--green);color:#000}
+.att-btn.kch,.stbtn.kch{background:rgba(255,176,32,.08);border-color:rgba(255,176,32,.2);color:var(--yellow)}
+.att-btn.kch.on,.stbtn.kch.on{background:var(--yellow);border-color:var(--yellow);color:#000}
+.att-btn.km,.stbtn.km{background:rgba(255,71,87,.08);border-color:rgba(255,71,87,.2);color:var(--red)}
+.att-btn.km.on,.stbtn.km.on{background:var(--red);border-color:var(--red);color:#fff}
+.score-row,.sinl{display:flex;align-items:center;gap:6px;padding-top:7px;border-top:1px solid var(--border)}
+.score-row input,.sinl input{
   flex:1;background:var(--s3);border:1px solid var(--border);border-radius:7px;
   padding:7px 10px;color:var(--text);font-size:12px;font-weight:600;outline:none;min-width:0;
 }
-.score-row input:focus{border-color:var(--acc)}
-.score-row input::placeholder{color:var(--text3);font-size:11px;font-weight:400}
+.score-row input:focus,.sinl input:focus{border-color:var(--acc)}
+.score-row input::placeholder,.sinl input::placeholder{color:var(--text3);font-size:11px;font-weight:400}
 .sadd{padding:7px 12px;border-radius:7px;background:var(--acc);color:#fff;font-size:12px;font-weight:800;border:none;cursor:pointer;flex-shrink:0}
 .save-grp-btn{
   width:100%;padding:12px;background:rgba(79,142,255,.08);
@@ -967,7 +967,7 @@ async function loadAtt(date){
   att[date]={};rows.forEach(r=>{att[date][r.student_id]={status:r.status,id:r.id}});
 }
 async function loadScores(){
-  const rows=await GET('scores','?order=created_at.desc&select=*');
+  const rows=await GET('scores','?source=eq.offline&order=created_at.desc&select=*');
   scores={};rows.forEach(r=>{if(!scores[r.student_id])scores[r.student_id]=[];scores[r.student_id].push(r)});
 }
 async function loadPay(){
@@ -1101,13 +1101,13 @@ function renderDav(){
     return`<div class="grp-block">
       <div class="grp-hdr">
         <div class="grp-hdr-l">
-          <div class="grp-hdr-name">${g.name}${!g.is_rated?' <span style="font-size:10px;color:var(--text2);font-weight:600">(reytingsiz)</span>':''}</div>
-          <div class="grp-hdr-meta">${g.courses?.title||'—'} · ${g.start_time||'—'} · Xona ${g.room||'—'} · ${gSts.length} o'quvchi</div>
+          <div class="grp-name">${g.name}${!g.is_rated?' <span style="font-size:10px;color:var(--text2);font-weight:600">(reytingsiz)</span>':''}</div>
+          <div class="grp-meta">${g.courses?.title||'—'} · ${g.start_time||'—'} · Xona ${g.room||'—'} · ${gSts.length} o'quvchi</div>
         </div>
         <div class="grp-stats">
-          <span class="gstat g">✓${k}</span>
-          <span class="gstat y">⏰${kch}</span>
-          <span class="gstat r">✗${km}</span>
+          <span class="gst g">✓${k}</span>
+          <span class="gst y">⏰${kch}</span>
+          <span class="gst r">✗${km}</span>
         </div>
       </div>
       ${stRows||'<div class="empty">Bu guruhda o\'quvchi yo\'q</div>'}
@@ -1161,7 +1161,7 @@ async function addScore(sid){
   const note=document.getElementById('sn-'+sid)?.value||null;
   if(!pts||isNaN(pts))return showToast('⚠️ Ball kiriting');
   try{
-    const r=await POST('scores',{student_id:sid,date:curDate,points:pts,note});
+    const r=await POST('scores',{student_id:sid,date:curDate,points:pts,note,source:'offline'});
     if(!scores[sid])scores[sid]=[];scores[sid].push(r[0]);
     document.getElementById('si-'+sid).value='';
     if(document.getElementById('sn-'+sid))document.getElementById('sn-'+sid).value='';
@@ -1223,13 +1223,15 @@ function renderRey(){
 function renderReyList(){
   const ranked=getScored(reyGrp).sort((a,b)=>b.total-a.total);
   if(!ranked.length){document.getElementById('rey-list').innerHTML='<div class="empty">O\'quvchi yo\'q</div>';return}
+  const mx=ranked[0].total||1;
   document.getElementById('rey-list').innerHTML=ranked.map((s,i)=>{
     const idx=students.findIndex(x=>x.id===s.id);
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1)+'.';
     const col=s.total>=0?'var(--green)':'var(--red)';
     const sG=getStudentGroups(s.id).map(x=>x.group?.name).filter(Boolean).join(', ');
-    return`<div class="ri" onclick="openStudentProfile(${s.id})">
-      <div class="rn">${medal}</div>
+    const pct=mx>0?Math.max(4,Math.round((Math.max(0,s.total)/Math.max(1,mx))*100)):4;
+    return`<div class="rey-row" onclick="openStudentProfile(${s.id})">
+      <div class="rey-rank">${medal}</div>
       <div class="av ${avCls(idx)}" style="width:36px;height:36px;font-size:12px">${avl(s.name)}</div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px">
@@ -1237,7 +1239,7 @@ function renderReyList(){
           <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span>
         </div>
         <div style="font-size:11px;color:var(--text2)">${sG}</div>
-        <div class="rb"><div class="rbf" style="width:${Math.min(100,Math.max(2,((s.total+300)/600)*100))}%;background:${col}"></div></div>
+        <div class="rey-bar"><div class="rey-bar-fill" style="width:${pct}%;background:${col}"></div></div>
       </div>
       <div style="font-size:16px;font-weight:900;font-family:var(--mono);color:${col};flex-shrink:0">${s.total>=0?'+':''}${s.total}</div>
     </div>`;
@@ -1732,12 +1734,12 @@ async function openTestResults(testId){
       const s=students.find(x=>x.id===r.student_id);
       const pct=r.total_score?Math.round((r.score/r.total_score)*100):0;
       const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
-      return`<div class="ri">
-        <div class="rn">${i+1}</div>
+      return`<div class="rey-row">
+        <div class="rey-rank">${i+1}</div>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:700">${s?.name||'Noma\'lum'}</div>
           <div style="font-size:11px;color:var(--text2)">${r.finished_at?new Date(r.finished_at).toLocaleString('uz-UZ',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</div>
-          <div class="rb"><div class="rbf" style="width:${pct}%;background:${col}"></div></div>
+          <div class="rey-bar"><div class="rey-bar-fill" style="width:${pct}%;background:${col}"></div></div>
         </div>
         <div style="font-size:16px;font-weight:900;font-family:var(--mono);color:${col}">${r.score}/${r.total_score}</div>
       </div>`;
