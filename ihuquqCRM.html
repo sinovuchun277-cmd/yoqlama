@@ -836,6 +836,16 @@ async function UPSERT(t,b){
   if(!r.ok)throw new Error(await r.text());
   const tx=await r.text();return tx?JSON.parse(tx):[];
 }
+async function UPSERT_ATT(rows){
+  // attendance uchun alohida - on_conflict=student_id,date
+  const r=await fetch(`${SB}/rest/v1/attendance?on_conflict=student_id,date`,{
+    method:'POST',
+    headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},
+    body:JSON.stringify(rows)
+  });
+  if(!r.ok)throw new Error(await r.text());
+  const tx=await r.text();return tx?JSON.parse(tx):[];
+}
 
 // ── STATE ──
 let groups=[],students=[],courses=[],tests=[],groupStudents=[];
@@ -1142,7 +1152,7 @@ async function saveGrpDav(grpId){
       student_id:gs.student_id,date:curDate,status:a[gs.student_id].status,
       auto_score:grp?.is_rated&&gs.is_rated?(a[gs.student_id].status==='kelmadi'?-30:a[gs.student_id].status==='kechikdi'?-10:0):0
     }));
-    if(ups.length)await UPSERT('attendance',ups);
+    if(ups.length)await UPSERT_ATT(ups);
     const keldi=gSts.filter(gs=>a[gs.student_id]?.status==='keldi').map(gs=>gs.student).filter(Boolean);
     const kechikdi=gSts.filter(gs=>a[gs.student_id]?.status==='kechikdi').map(gs=>gs.student).filter(Boolean);
     const kelmadi=gSts.filter(gs=>a[gs.student_id]?.status==='kelmadi').map(gs=>gs.student).filter(Boolean);
@@ -1437,17 +1447,17 @@ function renderStudents(){
     const idx=students.indexOf(s);
     const sGrps=getStudentGroups(s.id);
     const scored=getScored('all').find(x=>x.id===s.id)||{total:0};
-    const col=scored.total>=0?'var(--green)':'var(--red)';
+    const col=scored.total>0?'var(--green)':scored.total<0?'var(--red)':'var(--text2)';
     const allPaid=sGrps.length>0&&sGrps.every(x=>payments[`${s.id}_${x.group_id}`]?.paid);
-    return`<div class="st-card" onclick="openStudentProfile(${s.id})">
+    const grpNames=sGrps.map(x=>x.group?.name).filter(Boolean).join(', ')||'Guruh yo\'q';
+    return`<div class="lrow" onclick="openStudentProfile(${s.id})" style="cursor:pointer">
       <div class="av ${avCls(idx)}" style="width:42px;height:42px;font-size:14px">${avl(s.name)}</div>
-      <div class="st-card-info">
-        <div class="st-card-name">${s.name} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span></div>
-        <div class="st-card-meta">${sGrps.map(x=>`<span style="color:${x.is_rated&&x.group?.is_rated?'var(--accent)':'var(--text2)'}">${x.group?.name||'—'}</span>`).join(', ')||'Guruh yo\'q'}</div>
-        ${s.phone?`<div style="font-size:11px;color:var(--text2);margin-top:2px">${s.phone}</div>`:''}
+      <div class="lrow-info">
+        <div class="lrow-name">${s.name} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">#${s.student_id||'—'}</span></div>
+        <div class="lrow-sub">${s.phone||'—'} · ${grpNames}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-        <span style="font-size:14px;font-weight:900;font-family:var(--mono);color:${col}">${scored.total>=0?'+':''}${scored.total}</span>
+        <span style="font-size:13px;font-weight:900;font-family:var(--mono);color:${col}">${scored.total>0?'+':''}${scored.total}</span>
         <span style="font-size:11px;font-weight:700;color:${allPaid?'var(--green)':'var(--red)'}">${allPaid?'✅':'❌'}</span>
       </div>
     </div>`;
@@ -1513,6 +1523,7 @@ function openStudentProfile(id){
             <div style="font-size:11px;color:var(--text2)">${DT[g.days]||g.days} · ${g.start_time||'—'} · ${(gs.monthly_fee||0).toLocaleString()} so'm</div>
           </div>
           <span style="font-size:12px;font-weight:700;color:${isPaid?'var(--green)':'var(--red)'}">${isPaid?'✅':'❌'}</span>
+          <button class="ibtn dl" onclick="removeFromGroup(${gs.id},${id})" title="Guruhdan chiqarish">🗑</button>
         </div>`;
       }).join('')||'<div class="empty">Guruh yo\'q</div>'}
     </div>
@@ -1580,6 +1591,17 @@ async function confirmAddToGroup(sid){
   try{
     const r=await POST('group_students',{student_id:sid,group_id:gid,is_rated:rated,monthly_fee:fee});
     groupStudents.push(r[0]);closeModal();renderStudents();showToast('✅ Guruhga qo\'shildi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function removeFromGroup(gsId,studentId){
+  if(!confirm('O\'quvchini guruhdan chiqarasizmi?'))return;
+  try{
+    await DEL('group_students',`?id=eq.${gsId}`);
+    groupStudents=groupStudents.filter(x=>x.id!==gsId);
+    closeModal();
+    renderStudents();
+    showToast('✅ Guruhdan chiqarildi');
   }catch(e){showToast('❌ '+e.message)}
 }
 
