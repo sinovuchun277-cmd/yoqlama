@@ -291,6 +291,10 @@ textarea.fi{resize:none}
         </div>
         <div class="frow"><select class="fsel" id="mt-type"><option value="rated">⭐ Reytingli</option><option value="unrated">📖 Reytingsiz</option><option value="public">🌐 Ommaviy</option></select></div>
         <div class="frow"><select class="fsel" id="mt-folder"><option value="">Papkasiz</option></select></div>
+        <div><div class="flbl">📢 Test haqida bildirishnoma (botda testdan oldin chiqadi)</div></div>
+        <div class="frow"><textarea class="fi" id="mt-desc" placeholder="Masalan: Bu test 3-dars mavzusidan. Vaqtga e'tibor bering!" style="height:60px"></textarea></div>
+        <div><div class="flbl">📝 Natija sharhi (test yakunida o'quvchiga ko'rinadi)</div></div>
+        <div class="frow"><textarea class="fi" id="mt-comment" placeholder="Test yakunlanganda o'quvchiga ko'rsatiladigan izoh..." style="height:60px"></textarea></div>
         <button class="btn gr" style="width:100%;padding:11px" onclick="createManualTest()">➕ Yaratish</button>
       </div>
 
@@ -821,9 +825,13 @@ async function createManualTest(){
   if(!title)return showToast('⚠️ Nom kiriting');
   const type=document.getElementById('mt-type').value;
   const folderId=parseInt(document.getElementById('mt-folder').value)||null;
+  const comment=document.getElementById('mt-comment')?.value.trim()||null;
+  const desc=document.getElementById('mt-desc')?.value.trim()||null;
   try{
-    const[t]=await POST('tests',{title,duration_minutes:parseInt(document.getElementById('mt-dur').value)||30,pass_score:parseInt(document.getElementById('mt-pass').value)||60,max_score:100,rated:type==='rated',is_public:type==='public',is_active:false,test_category:'Umumiy',folder_id:folderId||null});
+    const[t]=await POST('tests',{title,duration_minutes:parseInt(document.getElementById('mt-dur').value)||30,pass_score:parseInt(document.getElementById('mt-pass').value)||60,max_score:100,rated:type==='rated',is_public:type==='public',is_active:false,test_category:'Umumiy',folder_id:folderId||null,result_comment:comment||null,description:desc||null});
     tests.unshift(t);document.getElementById('mt-title').value='';
+    if(document.getElementById('mt-comment'))document.getElementById('mt-comment').value='';
+    if(document.getElementById('mt-desc'))document.getElementById('mt-desc').value='';
     showToast('✅ Yaratildi! Savollar qo\'shing.');
     setTimeout(()=>openQuestionEditor(t.id),300);
   }catch(e){showToast('❌ '+e.message)}
