@@ -278,6 +278,10 @@ textarea.fi{resize:none}
           </div>
         </div>
         <div class="frow"><div class="flbl">Papka (ixtiyoriy)</div><select class="fsel" id="ni-folder"><option value="">Papkasiz</option></select></div>
+        <div><div class="flbl">📢 Bildirishnoma (botda testdan oldin chiqadi)</div></div>
+        <div class="frow"><textarea class="fi" id="ni-desc" placeholder="Masalan: Bu test 3-dars mavzusidan. Vaqtga e'tibor bering!" style="height:56px"></textarea></div>
+        <div><div class="flbl">📝 Natija sharhi (test yakunida ko'rinadi)</div></div>
+        <div class="frow"><textarea class="fi" id="ni-comment" placeholder="Test yakunlanganda o'quvchiga ko'rsatiladigan izoh..." style="height:56px"></textarea></div>
         <button class="btn-full" onclick="saveImport()">✅ Test yaratish</button>
       </div>
 
@@ -803,7 +807,9 @@ async function saveImport(){
       rated:type==='rated',is_public:type==='public',is_active:false,
       test_category:'Umumiy',folder_id:folderId||null,
       starts_at:startVal?new Date(startVal).toISOString():null,
-      ends_at:endVal?new Date(endVal).toISOString():null
+      ends_at:endVal?new Date(endVal).toISOString():null,
+      description:document.getElementById('ni-desc')?.value.trim()||null,
+      result_comment:document.getElementById('ni-comment')?.value.trim()||null
     });
     for(let i=0;i<importedQuestions.length;i++){
       await POST('questions',{...importedQuestions[i],test_id:newTest.id,order_num:i+1});
