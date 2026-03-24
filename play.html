@@ -203,7 +203,8 @@ button,input,textarea,select{font-family:var(--font)}
 #runner{
   position:fixed;inset:0;z-index:100;
   display:none;flex-direction:column;
-  background:#f0f4ff;
+  background:#f2f4ff !important;
+  color:#0d1120 !important;
 }
 #runner.on{display:flex}
 
@@ -211,16 +212,14 @@ button,input,textarea,select{font-family:var(--font)}
 .runner-hdr{
   flex-shrink:0;
   padding:12px 16px;padding-top:calc(env(safe-area-inset-top,0px)+12px);
-  background:#fff;border-bottom:1px solid rgba(0,0,0,.08);
+  background:#fff !important;border-bottom:1px solid rgba(0,0,0,.08) !important;
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
-[data-theme="dark"] .runner-hdr{background:#0c1020;border-bottom-color:rgba(255,255,255,.08);box-shadow:none}
 .runner-title{
-  font-size:14px;font-weight:800;color:#0d1120;
+  font-size:14px;font-weight:800;color:#0d1120 !important;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-[data-theme="dark"] .runner-title{color:var(--text)}
 .runner-timer{
   font-family:var(--mono);font-size:16px;font-weight:700;
   color:var(--acc);padding:5px 12px;
@@ -245,32 +244,30 @@ button,input,textarea,select{font-family:var(--font)}
 
 /* Question card — Google Forms uslubi */
 .q-card{
-  background:#fff;border-radius:12px;
+  background:#fff !important;border-radius:12px;
   padding:18px;margin-bottom:12px;
   border:2px solid transparent;
   box-shadow:0 1px 4px rgba(0,0,0,.08);
   transition:border-color .2s;
 }
-[data-theme="dark"] .q-card{background:#1e2438;box-shadow:none;border-color:rgba(255,255,255,.1)}
 .q-card.answered{border-color:rgba(91,143,255,.4)}
 [data-theme="dark"] .q-card.answered{border-color:rgba(91,143,255,.4)}
 .q-num{font-size:11px;font-weight:800;color:var(--acc);font-family:var(--mono);margin-bottom:8px}
 .q-text{
   font-size:15px;font-weight:700;line-height:1.7;
   margin-bottom:16px;white-space:pre-wrap;
-  color:#0d1120;
+  color:#0d1120 !important;
 }
-[data-theme="dark"] .q-text{color:var(--text)}
 .q-opts{display:flex;flex-direction:column;gap:8px}
 .q-opt{
   width:100%;text-align:left;
   padding:12px 14px;
-  background:#f8f9ff;border:2px solid #e0e4f8;
+  background:#f8f9ff !important;border:2px solid #e0e4f8 !important;
   border-radius:10px;cursor:pointer;
   display:flex;align-items:flex-start;gap:10px;
   transition:all .15s;
 }
-[data-theme="dark"] .q-opt{background:var(--s3);border-color:var(--border)}
+.q-opt.sel{background:rgba(91,143,255,.1) !important;border-color:#5b8fff !important;}
 .q-opt:active{transform:scale(.99)}
 .q-opt.sel{background:rgba(91,143,255,.08);border-color:var(--acc)}
 .q-opt-key{
@@ -282,18 +279,16 @@ button,input,textarea,select{font-family:var(--font)}
 }
 [data-theme="dark"] .q-opt-key{background:var(--s4);border-color:var(--border2);color:var(--acc)}
 .q-opt.sel .q-opt-key{background:var(--acc);border-color:var(--acc);color:#fff}
-.q-opt-text{font-size:13px;font-weight:600;flex:1;line-height:1.6;white-space:pre-wrap;color:#0d1120;padding-top:3px}
-[data-theme="dark"] .q-opt-text{color:var(--text)}
+.q-opt-text{font-size:13px;font-weight:600;flex:1;line-height:1.6;white-space:pre-wrap;color:#0d1120 !important;padding-top:3px}
 
 /* Submit footer */
 .runner-footer{
   flex-shrink:0;
   padding:12px 16px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+12px);
-  background:#fff;border-top:1px solid rgba(0,0,0,.08);
+  background:#fff !important;border-top:1px solid rgba(0,0,0,.08) !important;
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   box-shadow:0 -2px 8px rgba(0,0,0,.06);
 }
-[data-theme="dark"] .runner-footer{background:var(--s1);border-top-color:var(--border);box-shadow:none}
 .runner-submit{
   flex:1;padding:13px;border-radius:var(--rs);
   background:linear-gradient(135deg,var(--acc),var(--acc2));
@@ -749,6 +744,15 @@ async function startTest(testId, isPublicMode){
     if(TG_ID){
       const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
       if(done.length){
+        // Botga xabar yuborish
+        try{
+          const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+          await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
+          });
+        }catch(e){}
+        // Sahifada ham ko'rsatish
         document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
         document.getElementById('loading').style.display='flex';
         return;
@@ -987,10 +991,6 @@ function showResult(score,total,pct,passed,correct,wrong,unanswered,timeSpent){
           <div class="res-stat"><div class="res-stat-v" style="color:var(--yellow)">${fmtMin(timeSpent)}</div><div class="res-stat-l">Vaqt</div></div>
         </div>
         ${commentHtml}
-        <div style="width:100%;display:flex;gap:8px">
-          <button class="btn-sec" style="flex:1" onclick="downloadText(${score},${total},${pct},${correct},${wrong})">📄 Matn</button>
-          <button class="btn-full" style="flex:2" onclick="downloadPDF(${score},${total},${pct},${correct},${wrong},'${dateStr}')">📥 PDF</button>
-        </div>
       </div>`;
     return;
   }
@@ -1033,10 +1033,6 @@ function showResult(score,total,pct,passed,correct,wrong,unanswered,timeSpent){
     </div>
     <div class="res-answers">${reviewHtml}</div>
     <div style="width:100%;display:flex;flex-direction:column;gap:8px">
-      <div style="display:flex;gap:8px">
-        <button class="btn-sec" style="flex:1" onclick="downloadText(${score},${total},${pct},${correct},${wrong})">📄 Matn</button>
-        <button class="btn-full" style="flex:2" onclick="downloadPDF(${score},${total},${pct},${correct},${wrong},'${dateStr}')">📥 PDF</button>
-      </div>
       <button class="btn-sec" onclick="closeResult()">← Testlarga qaytish</button>
     </div>`;
 }
