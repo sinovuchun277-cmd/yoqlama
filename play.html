@@ -205,7 +205,6 @@ button,input,textarea,select{font-family:var(--font)}
   display:none;flex-direction:column;
   background:#f0f4ff;
 }
-[data-theme="dark"] #runner{background:#06080f;}
 #runner.on{display:flex}
 
 /* Runner Header */
@@ -216,7 +215,7 @@ button,input,textarea,select{font-family:var(--font)}
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
-[data-theme="dark"] .runner-hdr{background:var(--s1);border-bottom-color:var(--border);box-shadow:none}
+[data-theme="dark"] .runner-hdr{background:#0c1020;border-bottom-color:rgba(255,255,255,.08);box-shadow:none}
 .runner-title{
   font-size:14px;font-weight:800;color:#0d1120;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -252,7 +251,7 @@ button,input,textarea,select{font-family:var(--font)}
   box-shadow:0 1px 4px rgba(0,0,0,.08);
   transition:border-color .2s;
 }
-[data-theme="dark"] .q-card{background:var(--s2);box-shadow:none;border-color:var(--border)}
+[data-theme="dark"] .q-card{background:#1e2438;box-shadow:none;border-color:rgba(255,255,255,.1)}
 .q-card.answered{border-color:rgba(91,143,255,.4)}
 [data-theme="dark"] .q-card.answered{border-color:rgba(91,143,255,.4)}
 .q-num{font-size:11px;font-weight:800;color:var(--acc);font-family:var(--mono);margin-bottom:8px}
@@ -739,11 +738,22 @@ async function startTest(testId, isPublicMode){
 
   const now=new Date();
 
-  // Ommaviy test — muddat tekshiruvi
-  if(isPublicMode&&t.ends_at&&new Date(t.ends_at)<now){
-    document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
-    document.getElementById('loading').style.display='flex';
-    return;
+  // Ommaviy test — muddat va bir marta topshirish tekshiruvi
+  if(isPublicMode){
+    if(t.ends_at&&new Date(t.ends_at)<now){
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
+      document.getElementById('loading').style.display='flex';
+      return;
+    }
+    // Bir marta topshirish — TG_ID bo'lsa tekshirish
+    if(TG_ID){
+      const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
+      if(done.length){
+        document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+        document.getElementById('loading').style.display='flex';
+        return;
+      }
+    }
   }
 
   if(t.rated&&!isPublicMode){
@@ -925,6 +935,21 @@ async function submitTest(){
       }
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
+
+    // Adminga natija yuborish (faqat ommaviy test uchun)
+    if(R.isPublic){
+      const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
+      try{
+        const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+        const ADMIN_ID='6608377498';
+        const grade=pct>=80?'🟢 O\'tdi':pct>=60?'🟡 Qisman':'🔴 O\'tmadi';
+        const msg=`📊 *Ommaviy test natijasi*\n👤 ${name}\n📝 ${R.test.title}\n✅ ${score}/${total} ball (${pct}%)\n${grade}`;
+        await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:ADMIN_ID,text:msg,parse_mode:'Markdown'})
+        });
+      }catch(e){}
+    }
   }catch(e){console.error('Submit error:',e)}
 
   document.getElementById('runner').classList.remove('on');
