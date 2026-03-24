@@ -392,23 +392,14 @@ async function renderRey(){
 }
 async function renderTests(){
   var cont=document.getElementById('tests-content');
-  var ts=await GET('tests','?is_active=eq.true&order=test_category&select=*');
-  if(!ts.length){cont.innerHTML='<div class="empty">Faol test yoq</div>';return;}
-  var done=await GET('test_results','?tg_id=eq.'+TID+'&finished_at=not.is.null&select=test_id,score,total_score');
-  var dm={};done.forEach(function(r){dm[r.test_id]=r});
-  var cats={};ts.forEach(function(t){var c=t.test_category||'Umumiy';if(!cats[c])cats[c]=[];cats[c].push(t)});
-  var html='';
-  Object.entries(cats).forEach(function(entry){
-    var cat=entry[0],list=entry[1];
-    html+='<div class="sec">'+cat+'</div>';
-    list.forEach(function(t){
-      var d=dm[t.id];
-      var tl=t.is_public?'Ommaviy':t.rated?'Reytingli':'Reytingsiz';
-      var canR=!t.rated||!d;
-      html+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div style="flex:1"><div style="font-size:15px;font-weight:800">'+t.title+'</div><div style="font-size:11px;color:var(--text2);margin-top:3px">'+tl+' - '+(t.duration_minutes||30)+' daq'+(t.ends_at?' - '+fDT(t.ends_at):'')+'</div></div>'+(d?'<span style="font-family:var(--mono);font-size:12px;font-weight:900">'+d.score+'/'+d.total_score+'</span>':'')+'</div>'+(d&&t.rated?'<div style="font-size:12px;color:var(--green)">Topshirildi</div>':'<button class="btn" style="width:100%;padding:11px" onclick="startTest('+t.id+')">Boshlash</button>')+'</div>';
-    });
-  });
-  cont.innerHTML=html;
+  var PLAY='https://sinovuchun277-cmd.github.io/yoqlama/play.html';
+  // play.html ga yo'naltirish
+  cont.innerHTML='<div style="text-align:center;padding:20px 0 12px">'+
+    '<div style="font-size:48px;margin-bottom:12px">📝</div>'+
+    '<div style="font-size:16px;font-weight:800;margin-bottom:6px">Testlar</div>'+
+    '<div style="font-size:13px;color:var(--text2);margin-bottom:20px">Barcha testlar yangi platformada</div>'+
+    '<a href="'+PLAY+'?tgid='+TID+'" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-radius:16px;font-size:15px;font-weight:800;text-decoration:none;box-shadow:0 6px 20px rgba(79,142,255,.3)">📝 Testlarni ochish →</a>'+
+  '</div>';
 }
 async function startTest(id){
   var ts=await GET('tests','?id=eq.'+id+'&select=*');if(!ts.length)return showToast('Test topilmadi');
