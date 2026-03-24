@@ -649,10 +649,13 @@ async function openQuestionEditor(testId){
   const t=tests.find(x=>x.id===testId);if(!t)return;
   const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
   const qHtml=questions.map((q,i)=>`
-    <div class="q-card">
+    <div class="q-card" id="qc-${q.id}">
       <div class="q-card-hdr">
         <span class="q-num-b">${i+1}/${questions.length} · 2 ball</span>
-        <button class="ibtn dl" onclick="deleteQuestion(${q.id},${testId})">🗑</button>
+        <div style="display:flex;gap:4px">
+          <button class="ibtn ed" onclick="openEditQuestion(${q.id},${testId})">✏️</button>
+          <button class="ibtn dl" onclick="deleteQuestion(${q.id},${testId})">🗑</button>
+        </div>
       </div>
       <div class="q-body">${q.question_text}</div>
       ${['A','B','C','D'].map(o=>`
@@ -687,6 +690,72 @@ async function openQuestionEditor(testId){
       ${t.rated?`<button class="btn or" style="flex:1;padding:11px" onclick="closeModal();openAssignTest(${t.id})">👥 Tayinlash</button>`:''}
     </div>
   `);
+}
+
+// Savol tahrirlash
+function openEditQuestion(qId,testId){
+  GET('questions',`?id=eq.${qId}&select=*`).then(rows=>{
+    if(!rows.length)return;
+    const q=rows[0];
+    openModal(`
+      <div class="modal-title">✏️ Savol tahrirlash</div>
+      <div class="frow"><textarea class="fi" id="eq-text" style="height:80px">${q.question_text}</textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div><div class="flbl" style="color:var(--acc)">A</div><textarea class="fi" id="eq-a" style="height:50px">${q.option_a||''}</textarea></div>
+        <div><div class="flbl" style="color:var(--green)">B</div><textarea class="fi" id="eq-b" style="height:50px">${q.option_b||''}</textarea></div>
+        <div><div class="flbl" style="color:var(--yellow)">C</div><textarea class="fi" id="eq-c" style="height:50px">${q.option_c||''}</textarea></div>
+        <div><div class="flbl" style="color:var(--red)">D</div><textarea class="fi" id="eq-d" style="height:50px">${q.option_d||''}</textarea></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--s3);border-radius:var(--rxs);padding:10px;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:700;flex:1">✓ To'g'ri javob:</span>
+        <select class="fsel" id="eq-correct" style="max-width:70px">
+          ${['A','B','C','D'].map(o=>`<option ${q.correct_answer===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn gr" style="width:100%;padding:12px" onclick="saveEditQuestion(${qId},${testId},'${q.correct_answer}')">💾 Saqlash</button>
+    `);
+  });
+}
+
+async function saveEditQuestion(qId,testId,oldCorrect){
+  const text=document.getElementById('eq-text').value.trim();
+  const a=document.getElementById('eq-a').value.trim();
+  const b=document.getElementById('eq-b').value.trim();
+  const c=document.getElementById('eq-c').value.trim();
+  const d=document.getElementById('eq-d').value.trim();
+  const correct=document.getElementById('eq-correct').value;
+  if(!text||!a||!b||!c||!d)return showToast('⚠️ Barcha maydonlar to\'ldirilishi kerak');
+  try{
+    await PATCH('questions',{
+      question_text:text,option_a:a,option_b:b,option_c:c,option_d:d,correct_answer:correct
+    },`?id=eq.${qId}`);
+
+    // To'g'ri javob o'zgardi — natijalarni qayta hisoblash
+    if(correct!==oldCorrect){
+      await recalcResults(testId);
+      showToast('✅ Saqlandi + natijalar yangilandi');
+    } else {
+      showToast('✅ Saqlandi');
+    }
+    openQuestionEditor(testId);
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+// Natijalarni qayta hisoblash
+async function recalcResults(testId){
+  const [questions,results]=await Promise.all([
+    GET('questions',`?test_id=eq.${testId}&select=*`),
+    GET('test_results',`?test_id=eq.${testId}&finished_at=not.is.null&select=*`)
+  ]);
+  const totalScore=questions.reduce((a,b)=>a+(b.score||2),0);
+  for(const r of results){
+    if(!r.answers||typeof r.answers!=='object')continue;
+    let newScore=0;
+    questions.forEach(q=>{
+      if(r.answers[q.id]===q.correct_answer)newScore+=q.score||2;
+    });
+    await PATCH('test_results',{score:newScore,total_score:totalScore},`?id=eq.${r.id}`);
+  }
 }
 
 async function addQuestion(testId){
