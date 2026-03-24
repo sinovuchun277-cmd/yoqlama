@@ -476,6 +476,7 @@ const PATCH=(t,b,p)=>fetch(`${SB}/rest/v1/${t}${p}`,{method:'PATCH',headers:{...
 // ══ STATE ══
 const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
 let TG_ID=null, MODE='kabinet'; // kabinet | public
+let urlMode=null; // 'offline' | 'online' — qaysi kabinetan kirgan
 let offStudent=null, onStudent=null;
 let allTests=[], myResults=[], assignments=[], folders=[];
 let curFolder=null, folderPath=[];
@@ -494,6 +495,8 @@ async function init(){
   if(p.get('tgid'))TG_ID=parseInt(p.get('tgid'));
   const testId=parseInt(p.get('testId')||0);
   const isPublic=p.get('public')==='1'||!!testId;
+  const urlMode=p.get('mode')||null; // 'offline' | 'online' | null
+  window._urlMode=urlMode; // global saqlayman
 
   try{
     if(testId){
@@ -770,7 +773,10 @@ async function startTest(testId, isPublicMode){
   const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
   if(!questions.length){alert('Bu testda savol yo\'q');return;}
 
-  const totalScore=questions.reduce((a,b)=>a+(b.score||2),0);
+  const isPublicTest=isPublicMode||false;
+  const totalScore=isPublicTest
+    ?Math.round(questions.length*3.1*10)/10
+    :questions.reduce((a,b)=>a+(b.score||2),0);
 
   // Ism: tg_users dan, keyin student dan, keyin fallback
   let name='Foydalanuvchi';
@@ -828,6 +834,19 @@ async function startPublicTest(testId){
     return;
   }
   allTests=tests;
+
+  // Reytingli test uchun offStudent/onStudent yuklansin
+  if(t.rated&&TG_ID){
+    try{
+      const [off,on]=await Promise.all([
+        GET('students',`?telegram_id=eq.${TG_ID}&select=*&limit=1`),
+        GET('online_students',`?tg_id=eq.${TG_ID}&select=*&limit=1`)
+      ]);
+      offStudent=off[0]||null;
+      onStudent=on[0]||null;
+    }catch(e){}
+  }
+
   await startTest(testId,true);
   document.getElementById('loading').style.display='none';
 }
@@ -908,10 +927,11 @@ async function submitTest(){
   if(R.timer)clearInterval(R.timer);
   const timeSpent=Math.round((Date.now()-R.startTime)/1000);
   let score=0,correct=0,wrong=0,unanswered=0;
+  const scorePerQ=R.isPublic?3.1:(q=>q.score||2);
   R.questions.forEach(q=>{
     const ans=R.answers[q.id];
     if(!ans){unanswered++;return;}
-    if(ans===q.correct_answer){score+=q.score||2;correct++;}
+    if(ans===q.correct_answer){score+=R.isPublic?3.1:(q.score||2);correct++;}
     else wrong++;
   });
   const total=R.totalScore;
@@ -929,13 +949,32 @@ async function submitTest(){
     // Reytingli — ball qo'shish (birinchi marta topshirayotgan bo'lsa)
     const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
     if(R.test.rated&&!alreadyDone&&score>0){
-      const sid=offStudent?.id||onStudent?.id;
-      const src=onStudent?'online':'offline';
-      if(sid){
+      const mode=window._urlMode; // 'offline' | 'online' | null
+      if(mode==='offline'&&offStudent?.id){
+        // Faqat oflayn kabinetdan — oflayn reytingga
         await POST('scores',[{
-          student_id:sid,date:today(),points:score,
-          note:`Test: ${R.test.title} (${pct}%)`,source:src
+          student_id:offStudent.id,date:today(),points:score,
+          note:`Test: ${R.test.title} (${pct}%)`,source:'offline'
         }]);
+      } else if(mode==='online'&&onStudent?.id){
+        // Faqat onlayn kabinetdan — onlayn reytingga
+        await POST('scores',[{
+          student_id:onStudent.id,date:today(),points:score,
+          note:`Test: ${R.test.title} (${pct}%)`,source:'online'
+        }]);
+      } else {
+        // mode yo'q (ommaviy test yoki to'g'ridan URL) — mavjud o'quvchiga
+        if(offStudent?.id){
+          await POST('scores',[{
+            student_id:offStudent.id,date:today(),points:score,
+            note:`Test: ${R.test.title} (${pct}%)`,source:'offline'
+          }]);
+        } else if(onStudent?.id){
+          await POST('scores',[{
+            student_id:onStudent.id,date:today(),points:score,
+            note:`Test: ${R.test.title} (${pct}%)`,source:'online'
+          }]);
+        }
       }
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
