@@ -1013,16 +1013,27 @@ async function submitTest(){
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
 
-    // Ommaviy test — faqat o'quvchiga "test qabul qilindi" xabari (adminga yuborilmaydi)
-    if(R.isPublic&&TG_ID){
+    // Ommaviy test — adminga natija + o'quvchiga tasdiq xabari
+    if(R.isPublic){
+      const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
       try{
         const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+        const ADMIN_ID='6608377498';
         const grade=pct>=80?'🟢 O\'tdi':pct>=60?'🟡 Qisman':'🔴 O\'tmadi';
-        const msg=`✅ *Test yakunlandi!*\n📝 ${R.test.title}\n🏆 ${score}/${total} ball (${pct}%)\n${grade}`;
+        // Adminga natija
+        const adminMsg=`📊 *Ommaviy test natijasi*\n👤 ${name}\n📝 ${R.test.title}\n✅ ${score}/${total} ball (${pct}%)\n${grade}`;
         await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
           method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:TG_ID,text:msg,parse_mode:'Markdown'})
+          body:JSON.stringify({chat_id:ADMIN_ID,text:adminMsg,parse_mode:'Markdown'})
         });
+        // O'quvchiga tasdiq
+        if(TG_ID){
+          const userMsg=`✅ *Test yakunlandi!*\n📝 ${R.test.title}\n🏆 ${score}/${total} ball (${pct}%)\n${grade}`;
+          await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({chat_id:TG_ID,text:userMsg,parse_mode:'Markdown'})
+          });
+        }
       }catch(e){}
     }
   }catch(e){console.error('Submit error:',e)}
