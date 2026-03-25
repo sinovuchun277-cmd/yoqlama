@@ -149,7 +149,7 @@ textarea.fi{resize:none}
       <div><div class="hdr-title">iHuquq Online</div><div class="hdr-sub">Onlayn ta'lim platformasi</div></div>
     </div>
     <div class="hdr-right">
-      <a href="#" onclick="shellNav('iHuquqCRM.html');return false;" class="hdr-back">← CRM</a>
+      <a href="iHuquqCRM.html" class="hdr-back">← CRM</a>
       <button class="hdr-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     </div>
   </div>
@@ -298,15 +298,6 @@ textarea.fi{resize:none}
 <div class="ov" id="ov"><div class="modal"><div class="modal-handle"></div><button class="modal-close" onclick="closeModal()">✕</button><div id="modal-body"></div></div></div>
 <div class="toast" id="toast"></div>
 <script>
-
-// Shell app ichida navigatsiya
-function shellNav(url){
-  if(window.parent&&window.parent._shellNavigate){
-    window.parent._shellNavigate(url);
-  } else {
-    window.location.href=url;
-  }
-}
 // ══════════════════════════════
 //  CONFIG
 // ══════════════════════════════
@@ -714,7 +705,7 @@ async function addStudent(){
 function renderTests(){
   document.getElementById('test-list').innerHTML=tests.map((t,i)=>{
     const badge=t.is_public?'🌐':t.rated?'⭐':'📖';
-    return`<div class="lrow" style="cursor:pointer" onclick="shellNav('test.html?admin=1')">
+    return`<div class="lrow" style="cursor:pointer" onclick="window.location.href='test.html?admin=1'">
       <div class="av av${i%8}" style="width:40px;height:40px;font-size:18px">📝</div>
       <div class="lrow-info">
         <div class="lrow-name">${badge} ${t.title}</div>
