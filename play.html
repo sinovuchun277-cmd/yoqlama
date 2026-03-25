@@ -946,26 +946,11 @@ async function submitTest(){
 
   // Saqlash
   try{
-    if(!R.resultId){
-      // resultId yo'q bo'lsa qayta yaratish
-      const name=R.participantName||'Foydalanuvchi';
-      const res2=await POST('test_results',[{
-        test_id:R.test.id,tg_id:TG_ID||null,
-        student_id:offStudent?.id||onStudent?.id||null,
-        participant_name:name,
-        answers:R.answers,score:Math.round(score*10)/10,
-        total_score:Math.round(total*10)/10,
-        started_at:new Date(Date.now()-timeSpent*1000).toISOString(),
-        finished_at:new Date().toISOString(),ball_added:true
-      }]);
-      R.resultId=res2[0]?.id;
-    } else {
     await PATCH('test_results',{
       answers:R.answers,score:Math.round(score*10)/10,total_score:Math.round(total*10)/10,
       finished_at:new Date().toISOString(),
       ball_added:true
     },`?id=eq.${R.resultId}`);
-    }
 
     // Reytingli — ball qo'shish (birinchi marta topshirayotgan bo'lsa)
     const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
