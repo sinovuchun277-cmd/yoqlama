@@ -211,7 +211,7 @@ textarea.fi{resize:none}
       </div>
     </div>
     <div class="hdr-right">
-      <a href="iHuquqCRM.html" class="hdr-link">← CRM</a>
+      <a href="#" onclick="shellNav('iHuquqCRM.html');return false;" class="hdr-link">← CRM</a>
       <button class="hdr-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
     </div>
   </div>
@@ -350,6 +350,15 @@ textarea.fi{resize:none}
 <div class="toast" id="toast"></div>
 
 <script>
+
+// Shell app ichida navigatsiya
+function shellNav(url){
+  if(window.parent&&window.parent._shellNavigate){
+    window.parent._shellNavigate(url);
+  } else {
+    window.location.href=url;
+  }
+}
 // ══ CONFIG ══
 const SB='https://lwpimllflhpcxtehkgjb.supabase.co';
 const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3cGltbGxmbGhwY3h0ZWhrZ2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzMzNDYsImV4cCI6MjA4OTM0OTM0Nn0.yq2XHQBE6nyfHtRWbbo4C7V5sma5DaCEwzCu9wS1f9M';
