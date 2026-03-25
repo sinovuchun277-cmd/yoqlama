@@ -737,17 +737,15 @@ async function startTest(testId, isPublicMode){
   const now=new Date();
 
   // Ommaviy test — muddat va bir marta topshirish tekshiruvi
-  if(isPublicMode){
+  if(t.is_public){
     if(t.ends_at&&new Date(t.ends_at)<now){
       document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
       document.getElementById('loading').style.display='flex';
       return;
     }
-    // Bir marta topshirish — TG_ID bo'lsa tekshirish
     if(TG_ID){
       const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
       if(done.length){
-        // Botga xabar yuborish
         try{
           const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
           await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
@@ -755,14 +753,12 @@ async function startTest(testId, isPublicMode){
             body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
           });
         }catch(e){}
-        // Sahifada ham ko'rsatish
         document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
         document.getElementById('loading').style.display='flex';
         return;
       }
     }
   }
-
   if(t.rated&&!isPublicMode){
     const done=myResults.find(r=>r.test_id===testId);
     if(done){
@@ -990,12 +986,13 @@ async function submitTest(){
 
     // Adminga natija yuborish (faqat ommaviy test uchun)
     if(R.isPublic){
-      const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
+      // Ism: startTest da saqlangan name (tg_users dan olingan)
+      const adminName=offStudent?.name||onStudent?.full_name||'Noma\'lum';
       try{
         const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
         const ADMIN_ID='6608377498';
         const grade=pct>=80?'🟢 O\'tdi':pct>=60?'🟡 Qisman':'🔴 O\'tmadi';
-        const msg=`📊 *Ommaviy test natijasi*\n👤 ${name}\n📝 ${R.test.title}\n✅ ${score}/${total} ball (${pct}%)\n${grade}`;
+        const msg=`📊 *Ommaviy test natijasi*\n👤 ${adminName}\n📝 ${R.test.title}\n✅ ${score}/${total} ball (${pct}%)\n${grade}`;
         await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
           method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({chat_id:ADMIN_ID,text:msg,parse_mode:'Markdown'})
