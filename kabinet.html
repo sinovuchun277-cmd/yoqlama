@@ -78,10 +78,25 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 .av0{background:rgba(79,142,255,.15);color:var(--acc)}.av1{background:rgba(124,92,255,.15);color:var(--acc2)}.av2{background:rgba(0,214,143,.15);color:var(--green)}.av3{background:rgba(255,176,32,.15);color:var(--yellow)}.av4{background:rgba(255,71,87,.15);color:var(--red)}
 .att-dot{display:inline-flex;width:28px;height:28px;border-radius:8px;align-items:center;justify-content:center;font-size:11px;font-weight:800}
 .att-dot.K{background:rgba(0,214,143,.15);color:var(--green)}.att-dot.KCH{background:rgba(255,176,32,.15);color:var(--yellow)}.att-dot.KM{background:rgba(255,71,87,.15);color:var(--red)}.att-dot.em{background:var(--s3);color:var(--text3)}
-.rey-row{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;margin-bottom:6px}
-.rey-rank{width:28px;height:28px;border-radius:8px;background:var(--s3);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
-.rey-bar{width:100%;background:var(--s3);border-radius:3px;height:3px;margin-top:4px}
-.rey-fill{height:3px;border-radius:3px;transition:width .6s}
+.rey-row{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;margin-bottom:6px;transition:all .2s}
+.rey-rank{width:32px;height:32px;border-radius:9px;background:var(--s3);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono)}
+.rey-bar{width:100%;background:var(--s3);border-radius:3px;height:4px;margin-top:5px}
+.rey-fill{height:4px;border-radius:3px;transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+/* Podium */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding:0 4px}
+.podium-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;max-width:110px}
+.podium-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;border:3px solid transparent;flex-shrink:0}
+.podium-name{font-size:11px;font-weight:800;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%}
+.podium-ball{font-family:var(--mono);font-size:13px;font-weight:900}
+.podium-base{width:100%;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+.podium-1 .podium-base{background:linear-gradient(135deg,#ffd700,#ffb700);height:72px}
+.podium-2 .podium-base{background:linear-gradient(135deg,#c0c0c0,#a8a8a8);height:54px}
+.podium-3 .podium-base{background:linear-gradient(135deg,#cd7f32,#b8651a);height:42px}
+/* Statistika */
+.rey-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.rey-stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 6px;text-align:center}
+.rey-stat-v{font-size:18px;font-weight:900;font-family:var(--mono)}
+.rey-stat-l{font-size:10px;color:var(--text2);font-weight:700;margin-top:3px}
 .test-opt{width:100%;padding:13px;border-radius:var(--rs);background:var(--s3);border:1.5px solid var(--border);color:var(--text);font-size:14px;font-weight:600;text-align:left;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:all .15s}
 .test-opt:active{background:var(--s4)}.test-opt.sel{border-color:var(--acc);background:rgba(79,142,255,.08)}.test-opt.correct{border-color:var(--green);background:rgba(0,214,143,.08)}.test-opt.wrong{border-color:var(--red);background:rgba(255,71,87,.08)}
 .opt-l{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;background:var(--s4)}
@@ -380,15 +395,77 @@ async function renderRey(){
   var myR=ranked.findIndex(function(s){return s.id===myKey})+1;
   var myD=ranked.find(function(s){return s.id===myKey});
   var mx=ranked[0]&&ranked[0].total||1;
-  var myCard=myR>0?'<div class="card" style="border:2px solid var(--acc);background:rgba(79,142,255,.05);margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px"><div style="font-size:28px">'+(myR===1?'#1':myR===2?'#2':myR===3?'#3':'#'+myR)+'</div><div style="flex:1"><div style="font-size:15px;font-weight:800">'+(myD&&myD.name||'Siz')+'</div><div style="font-size:12px;color:var(--text2)">Sizning orningiz</div></div><div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--acc)">'+(myD&&myD.total||0)+'</div></div></div>':'';
-  var listHtml=ranked.slice(0,20).map(function(s,i){
+  var totalCount=ranked.length;
+  var avg=totalCount?Math.round(ranked.reduce(function(a,b){return a+b.total},0)/totalCount):0;
+
+  // Statistika
+  var statsHtml='<div class="rey-stats">'+
+    '<div class="rey-stat"><div class="rey-stat-v" style="color:var(--acc)">'+totalCount+'</div><div class="rey-stat-l">Jami</div></div>'+
+    '<div class="rey-stat"><div class="rey-stat-v" style="color:var(--green)">'+(ranked[0]?ranked[0].total:0)+'</div><div class="rey-stat-l">Eng yuqori</div></div>'+
+    '<div class="rey-stat"><div class="rey-stat-v" style="color:var(--yellow)">'+avg+'</div><div class="rey-stat-l">O\x27rtacha</div></div>'+
+  '</div>';
+
+  // Podium — Top 3 (2-chi, 1-chi, 3-chi)
+  var podiumHtml='';
+  if(ranked.length>=2){
+    var podiumOrder=[1,0,2];
+    podiumHtml='<div class="podium">';
+    podiumOrder.forEach(function(idx){
+      var s=ranked[idx];if(!s)return;
+      var rank=idx+1;
+      var isMe=s.id===myKey;
+      var avSize=rank===1?52:44;
+      var col=s.total>0?'var(--green)':s.total<0?'var(--red)':'var(--text2)';
+      var borderCol=rank===1?'#ffd700':rank===2?'#c0c0c0':'#cd7f32';
+      podiumHtml+='<div class="podium-item podium-'+rank+'">'+
+        '<div class="podium-av av av'+(idx%5)+'" style="width:'+avSize+'px;height:'+avSize+'px;font-size:'+(rank===1?17:14)+'px;border-color:'+borderCol+(isMe?';box-shadow:0 0 0 3px var(--acc)':'')+'">'+avl(s.name)+'</div>'+
+        '<div class="podium-name" style="color:'+(isMe?'var(--acc)':'var(--text)')+'">'+s.name+(isMe?' 👈':'')+'</div>'+
+        '<div class="podium-ball" style="color:'+col+'">'+s.total+'</div>'+
+        '<div class="podium-base">'+(rank===1?'🥇':rank===2?'🥈':'🥉')+'</div>'+
+      '</div>';
+    });
+    podiumHtml+='</div>';
+  }
+
+  // Sizning o'rningiz (top 3 dan tashqarida)
+  var myCard='';
+  if(myR>3&&myD){
+    var myCol=myD.total>0?'var(--green)':myD.total<0?'var(--red)':'var(--text2)';
+    myCard='<div class="card" style="border:2px solid var(--acc);background:rgba(79,142,255,.06);margin-bottom:12px">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+        '<div style="font-size:26px;font-weight:900;font-family:var(--mono);color:var(--acc)">#'+myR+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:14px;font-weight:900;color:var(--acc)">'+myD.name+' ← Siz</div>'+
+          '<div style="font-size:11px;color:var(--text2);margin-top:2px">Sizning o\x27rningiz</div>'+
+        '</div>'+
+        '<div style="font-family:var(--mono);font-size:20px;font-weight:900;color:'+myCol+'">'+myD.total+'</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // 4-dan boshlab ro'yxat
+  var listStart=ranked.length>=3?3:ranked.length;
+  var listHtml=ranked.slice(listStart).map(function(s,i){
+    var realIdx=listStart+i;
     var isMe=s.id===myKey;
     var col=s.total>0?'var(--green)':s.total<0?'var(--red)':'var(--text2)';
-    var medal=i===0?'1':i===1?'2':i===2?'3':(i+1)+'.';
-    var pct=mx?Math.max(5,Math.round((Math.max(0,s.total)/Math.max(1,mx))*100)):5;
-    return'<div class="rey-row" style="'+(isMe?'border-color:var(--acc);background:rgba(79,142,255,.05)':'')+'"><div class="rey-rank">'+medal+'</div><div class="av av'+(i%5)+'" style="width:32px;height:32px;font-size:11px">'+avl(s.name)+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:'+(isMe?900:700)+';color:'+(isMe?'var(--acc)':'var(--text)')+'">'+s.name+(isMe?' <- Siz':'')+'</div><div class="rey-bar"><div class="rey-fill" style="width:'+pct+'%;background:'+col+'"></div></div></div><span style="font-family:var(--mono);font-size:14px;font-weight:900;color:'+col+'">'+s.total+'</span></div>';
-  }).join('')||'<div class="empty">Reyting yoq</div>';
-  cont.innerHTML='<div class="sec">Sizning orningiz</div>'+myCard+'<div class="sec">Top 20</div>'+listHtml;
+    var pct=mx?Math.max(4,Math.round((Math.max(0,s.total)/Math.max(1,mx))*100)):4;
+    return'<div class="rey-row" style="'+(isMe?'border:2px solid var(--acc);background:rgba(79,142,255,.05)':'')+'">'+
+      '<div class="rey-rank" style="'+(isMe?'background:var(--acc);color:#fff':'')+'">'+(realIdx+1)+'.</div>'+
+      '<div class="av av'+(realIdx%5)+'" style="width:36px;height:36px;font-size:12px">'+avl(s.name)+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:13px;font-weight:'+(isMe?900:700)+';color:'+(isMe?'var(--acc)':'var(--text)')+'">'+s.name+(isMe?' ← Siz':'')+'</div>'+
+        '<div class="rey-bar"><div class="rey-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+      '</div>'+
+      '<span style="font-family:var(--mono);font-size:14px;font-weight:900;color:'+col+'">'+s.total+'</span>'+
+    '</div>';
+  }).join('')||'';
+
+  cont.innerHTML=
+    statsHtml+
+    podiumHtml+
+    (myCard?'<div class="sec">Sizning o\x27rningiz</div>'+myCard:'')+
+    (listHtml?'<div class="sec">Reyting</div>'+listHtml:'');
 }
 async function renderTests(){
   var cont=document.getElementById('tests-content');
