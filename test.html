@@ -541,9 +541,11 @@ function renderTests(){
       </div>
       <div class="tc-actions">
         <button class="btn ${t.is_active?'re':'gr'}" onclick="toggleTest(${t.id},${t.is_active})">${t.is_active?'⏹':'▶️'} ${t.is_active?'To\'xtat':'Faollash'}</button>
+        ${t.rated||t.is_public?`<button class="btn ye" onclick="openEditTime(${t.id})">⏰ Vaqt</button>`:''}
         ${t.rated?`<button class="btn or" onclick="openAssignTest(${t.id})">👥 Tayinlash</button>`:''}
+        ${t.rated||t.is_public?`<button class="btn sec" onclick="makeUnrated(${t.id})">📖 Doimiy</button>`:''}
         <button class="btn pu" onclick="openQuestionEditor(${t.id})">✏️ Savollar</button>
-        <button class="btn te" onclick="openTestResults(${t.id})">📊 Natija</button>
+        ${t.rated||t.is_public?`<button class="btn te" onclick="openTestResults(${t.id})">📊 Natija</button>`:''}
         <button class="btn sec" onclick="moveTestToFolder(${t.id})">📁</button>
         <button class="ibtn dl" onclick="deleteTest(${t.id})">🗑</button>
       </div>
@@ -624,11 +626,60 @@ async function toggleTest(id,isActive){
 }
 
 async function makeUnrated(id){
-  if(!confirm('Reytingsiz doimiy testga aylantirasizmi?'))return;
+  if(!confirm('Reytingsiz doimiy testga aylantirasizmi?\n\nBundan keyin vaqt cheklovlari va reyting bo\'lmaydi.'))return;
   try{
-    await PATCH('tests',{rated:false,is_active:true,ends_at:null,starts_at:null},`?id=eq.${id}`);
-    const t=tests.find(x=>x.id===id);if(t){t.rated=false;t.is_active=true;t.ends_at=null;}
-    renderTests();showToast('✅ O\'zgartirildi');
+    await PATCH('tests',{rated:false,is_public:false,is_active:true,ends_at:null,starts_at:null},`?id=eq.${id}`);
+    const t=tests.find(x=>x.id===id);
+    if(t){t.rated=false;t.is_public=false;t.is_active=true;t.ends_at=null;t.starts_at=null;}
+    renderTests();showToast('✅ Reytingsiz doimiy testga aylandi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+function openEditTime(testId){
+  const t=tests.find(x=>x.id===testId);if(!t)return;
+  const sVal=t.starts_at?new Date(t.starts_at).toISOString().slice(0,16):'';
+  const eVal=t.ends_at?new Date(t.ends_at).toISOString().slice(0,16):'';
+  openModal(`
+    <div class="modal-title">⏰ Vaqtni o'zgartirish</div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text2)">${t.title}</div>
+    <div class="frow">
+      <div style="flex:1"><div class="flbl">Boshlanish vaqti</div><input class="fi" type="datetime-local" id="et-start" value="${sVal}" style="width:100%"></div>
+    </div>
+    <div class="frow">
+      <div style="flex:1"><div class="flbl">Tugash vaqti</div><input class="fi" type="datetime-local" id="et-end" value="${eVal}" style="width:100%"></div>
+    </div>
+    <div class="frow">
+      <div style="flex:1"><div class="flbl">Davomiylik (daqiqa)</div><input class="fi" type="number" id="et-dur" value="${t.duration_minutes||30}" style="width:100%"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn sec" style="flex:1;padding:12px" onclick="clearTestTime(${testId})">🗑 Vaqtni o'chirish</button>
+      <button class="btn gr" style="flex:2;padding:12px" onclick="saveTestTime(${testId})">💾 Saqlash</button>
+    </div>
+  `);
+}
+
+async function saveTestTime(testId){
+  const s=document.getElementById('et-start').value;
+  const e=document.getElementById('et-end').value;
+  const dur=parseInt(document.getElementById('et-dur').value)||30;
+  try{
+    await PATCH('tests',{
+      starts_at:s?new Date(s).toISOString():null,
+      ends_at:e?new Date(e).toISOString():null,
+      duration_minutes:dur
+    },`?id=eq.${testId}`);
+    const t=tests.find(x=>x.id===testId);
+    if(t){t.starts_at=s?new Date(s).toISOString():null;t.ends_at=e?new Date(e).toISOString():null;t.duration_minutes=dur;}
+    closeModal();renderTests();showToast('✅ Vaqt saqlandi');
+  }catch(e){showToast('❌ '+e.message)}
+}
+
+async function clearTestTime(testId){
+  try{
+    await PATCH('tests',{starts_at:null,ends_at:null},`?id=eq.${testId}`);
+    const t=tests.find(x=>x.id===testId);
+    if(t){t.starts_at=null;t.ends_at=null;}
+    closeModal();renderTests();showToast('✅ Vaqt o\'chirildi');
   }catch(e){showToast('❌ '+e.message)}
 }
 
