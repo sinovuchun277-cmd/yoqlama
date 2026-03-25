@@ -1,272 +1,1217 @@
-`O‘zbekiston Respublikasi Oliy Majlisi bilan bog‘liq to‘g‘ri ma’lumotni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  91-moddasi)
-+A) Oʻzbekiston Respublikasining Oliy Majlisi oliy davlat vakillik organi boʻlib, qonun chiqaruvchi hokimiyatni amalga oshiradi
-B) Oʻzbekiston Respublikasi Oliy Majlisi bir palatadan iborat
-C) Oʻzbekiston Respublikasi Oliy Majlisining vakolat muddati yetti yil
-D) O‘zbekiston Respublikasi Oliy Majlisi – Oʻzbekiston Respublikasi Hukumati ijro etuvchi hokimiyatning oliy organidir`
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>iHuquq — Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ══ TOKENS ══ */
+[data-theme="dark"]{
+  --bg:#06080f;--s1:#0d1120;--s2:#131a2e;--s3:#1a2340;--s4:#212d50;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+  --text:#e4eaf8;--text2:#6a7a9e;--text3:#344060;
+}
+[data-theme="light"]{
+  --bg:#f0f3ff;--s1:#fff;--s2:#f5f7ff;--s3:#eaedff;--s4:#dde2f8;
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.13);
+  --text:#0d1120;--text2:#5a6888;--text3:#9aaac8;
+}
+:root{
+  --acc:#5b8fff;--acc2:#8b5cf6;--green:#10e08a;--yellow:#fbbf24;--red:#f43f5e;--teal:#06d6c8;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;--brand:'Montserrat',sans-serif;
+  --r:18px;--rs:13px;--rxs:9px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font-family:var(--font)}
 
-`O‘zbekiston Respublikasi Oliy Majlisining quyi palatasi (a) va yuqori palatasi (b) nima deb nomlanadi?
-(Oʻzbekiston Respublikasi Konstitutsiyasining  91-moddasi)
-A) a – Senat, b – Qonunchilik palatasi
-B) a – Markaziy Qo‘mita, b – Hukumat
-C) a – Hukumat, b – Senat
-+D) a – Qonunchilik palatasi, b – Senat`
+/* ══ LOADING ══ */
+#loading{
+  position:fixed;inset:0;background:var(--bg);z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+}
+.load-brand{
+  font-family:var(--brand);font-size:32px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.load-sub{font-size:13px;color:var(--text2);font-weight:600;letter-spacing:.5px}
+.load-dots{display:flex;gap:8px}
+.load-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--acc);opacity:.3;
+  animation:dotPulse 1.2s ease-in-out infinite;
+}
+.load-dot:nth-child(2){animation-delay:.2s;background:var(--acc2)}
+.load-dot:nth-child(3){animation-delay:.4s;background:var(--teal)}
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
 
-`Nuqtalar o‘rniga mos keluvchi javobni aniqlang.
-Oʻzbekiston Respublikasi Oliy Majlisi Senatining ... (a) nafar aʼzosi fan, sanʼat, adabiyot, ishlab chiqarish sohasida hamda davlat va jamiyat faoliyatining boshqa tarmoqlarida katta amaliy tajribaga ega boʻlgan hamda alohida xizmat koʻrsatgan eng obroʻli fuqarolar orasidan ... (b) tomonidan tayinlanadi
-1) toʻqqiz; 
-2) o‘n besh;
-3) Oʻzbekiston Respublikasi Prezidenti;
-4) Oliy Majlis Senatining Raisi.
-+A) a-1, b-3		
-B) a-2, b-3
-C) a-1, b-4		
-D) a-2, b-4`
+/* ══ APP ══ */
+#app{display:none;flex-direction:column;height:100dvh}
 
-`To‘g‘ri berilgan ma’lumotlarni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  92-moddasi)
-1) Qonunchilik palatasining 150 nafar deputati hududiy bir mandatli saylov okruglari bo‘yicha
-ko‘ppartiyaviylik asosida umumiy, teng va to‘g‘ridan-to‘g‘ri saylov huquqi asosida yashirin ovoz berish yo‘li bilan saylanadi;
-2) Ayni bir shaxs bir paytning oʻzida Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputati va Senati aʼzosi boʻlishi mumkin emas; 
-3) O‘zbekiston Respublikasi Oliy Majlisining Senati hududiy vakillik palatasi bo‘lib, 100 nafar Senat a’zolaridan (senatorlardan) iborat; 
-4) Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasining deputati bir vaqtning oʻzida Qoraqalpogʻiston Respublikasi Joʻqorgʻi Kengesining, viloyatlar, tumanlar, shaharlar davlat hokimiyati vakillik organlarining deputati boʻlishi mumkin emas.
-A) 1, 3   
-+B) 2, 4   
-C) 1, 4   
-D) 2, 3`
+/* ══ HEADER ══ */
+.hdr{
+  flex-shrink:0;
+  padding:0 16px;padding-top:env(safe-area-inset-top,0px);
+  height:calc(54px + env(safe-area-inset-top,0px));
+  background:var(--s1);border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:10px;
+  position:relative;z-index:10;
+}
+.hdr-brand{
+  font-family:var(--brand);font-size:20px;font-weight:900;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.hdr-btn{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--s3);border:1px solid var(--border);
+  color:var(--text2);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
 
-`Quyida berilgan ma’lumolarga mos yakuniy xulosa (to‘g‘ri/noto‘g‘ri) berilgan qatorni aniqlang. 
-(Oʻzbekiston Respublikasi Konstitutsiyasining  92-moddasi)
-I. Senat aʼzolari Qoraqalpogʻiston Respublikasi, viloyatlar va Toshkent shahridan teng miqdorda – toʻrt kishidan saylanadi;
-II. Oʻzbekiston Respublikasi Oliy Majlisining Senatining ellik olti nafar a’zosi saylanadi;
-III. Senatning o‘n besh nafar aʼzosi fan, sanʼat, adabiyot, ishlab chiqarish sohasida hamda davlat va jamiyat faoliyatining boshqa tarmoqlarida katta amaliy tajribaga ega boʻlgan hamda alohida xizmat koʻrsatgan eng obroʻli fuqarolar orasidan Oʻzbekiston Respublikasi Prezidenti tomonidan tayinlanadi
-A) I-to‘g‘ri, II-to‘g‘ri, III-to‘g‘ri
-B) I-noto‘g‘ri, II-noto‘g‘ri, III-to‘g‘ri
-+C) I-to‘g‘ri, II-to‘g‘ri, III-noto‘g‘ri
-D) I-to‘g‘ri, II-noto‘g‘ri, III-to‘g‘ri`
+/* ══ PAGES ══ */
+.pages{flex:1;overflow:hidden;position:relative;min-height:0}
+.page{
+  position:absolute;inset:0;overflow-y:auto;
+  display:none;padding:16px;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px)+16px);
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.page::-webkit-scrollbar{display:none}
+.page.on{display:block}
 
-`Oʻzbekiston Respublikasi Oliy Majlisi Senati aʼzolarining saynanish tartibi to‘g‘ri ko‘rsatilgan javobni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  92-moddasi)
-+A) Oʻzbekiston Respublikasi Oliy Majlisining Senati aʼzolari Qoraqalpogʻiston Respublikasi Joʻqorgʻi Kengesi, viloyatlar, tumanlar va shaharlar davlat hokimiyati vakillik organlari deputatlarining tegishli qoʻshma majlislarida mazkur deputatlar orasidan yashirin ovoz berish yoʻli bilan Qoraqalpogʻiston Respublikasi, viloyatlar va Toshkent shahridan teng miqdorda saylanadi
-B) Oʻzbekiston Respublikasi Oliy Majlisining Senati aʼzolari Qoraqalpogʻiston Respublikasi Joʻqorgʻi Kengesi, viloyatlar, tumanlar va shaharlar davlat hokimiyati vakillik organlari deputatlarining tegishli qoʻshma majlislarida mazkur deputatlar orasidan ochiq ovoz berish yoʻli bilan Qoraqalpogʻiston Respublikasi, viloyatlar va Toshkent shahridan hududdagi aholi soniga mutanosib ravishda saylanadi
-C) Oʻzbekiston Respublikasi Oliy Majlisining Senati aʼzolari Qoraqalpogʻiston Respublikasi Joʻqorgʻi Kengesi va viloyat Kengashlari deputatlari orasidan umumiy, teng va to‘g‘ridan-to‘g‘ri saylov huquqi asosida yashirin ovoz berish yo‘li bilan O‘zbekiston Respublikasining butun hududi bo‘yicha bir mandatli saylov okruglari bo‘yicha O‘zbekiston Respublikasining fuqarolari tomonidan saylanadi
-D) Oʻzbekiston Respublikasi Oliy Majlisining Senati aʼzolari Qoraqalpogʻiston Respublikasi Joʻqorgʻi Kengesi, viloyatlar, tumanlar va shaharlar davlat hokimiyati vakillik organlari deputatlari orasidan O‘zbekiston Respublikasi Prezidentining taqdimnomasiga binoan tegishli Kengashlarning majlislarida yashirin ovoz berish yo‘li bilan saylanadi`
+/* ══ TEST LIST ══ */
+.section-label{
+  font-size:10px;font-weight:800;color:var(--text3);
+  text-transform:uppercase;letter-spacing:2px;
+  margin:20px 0 10px;display:flex;align-items:center;gap:8px;
+}
+.section-label:first-child{margin-top:0}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-`Oʻzbekiston Respublikasi fuqarosi Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputatli, shuningdek Oʻzbekiston Respublikasi Oliy Majlisining Senati aʼzosi bo‘lishi uchun belgilangan talablar to‘g‘ri ko‘rsatilgan javobni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining 92-moddasi)
-1) saylov kuni yigirma besh yoshga toʻlgan bo‘lish;
-2) davlat tilini bilish;
-3) saylov kuniga qadar kamida besh yil Oʻzbekiston Respublikasi hududida muqim yashayotgan bo‘lish;
-4) oliy ma’lumotli bo‘lish.
-+A) 1, 3   
-B) 2, 4   
-C) 2, 3   
-D) 1, 4`
+/* AKTIV TEST CARD — ustuvor */
+.active-test-card{
+  background:linear-gradient(135deg,rgba(91,143,255,.15),rgba(139,92,246,.1));
+  border:1.5px solid rgba(91,143,255,.35);
+  border-radius:var(--r);padding:18px;margin-bottom:10px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .15s,border-color .2s;
+}
+.active-test-card:active{transform:scale(.98)}
+.active-test-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(91,143,255,.2),transparent);
+}
+.atc-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;
+  background:rgba(16,224,138,.15);color:var(--green);
+  border:1px solid rgba(16,224,138,.25);
+  font-size:11px;font-weight:700;margin-bottom:10px;
+}
+.atc-title{font-size:17px;font-weight:800;margin-bottom:6px;line-height:1.3}
+.atc-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text2)}
+.atc-meta span{display:flex;align-items:center;gap:4px}
+.atc-timer{
+  font-family:var(--mono);font-size:13px;font-weight:700;
+  color:var(--yellow);background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.2);
+  border-radius:8px;padding:4px 10px;display:inline-block;margin-top:10px;
+}
+.atc-btn{
+  width:100%;padding:13px;margin-top:12px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;font-size:14px;font-weight:800;
+  border:none;border-radius:var(--rs);cursor:pointer;
+  box-shadow:0 4px 16px rgba(91,143,255,.3);
+  transition:opacity .15s;
+}
+.atc-btn:active{opacity:.85}
 
-`Quyidagilardan qaysilari O‘zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi deputatligiga nomzod etib roʻyxatga olinmaydi?
-(Oʻzbekiston Respublikasi Saylov kodeksining 71-moddasi)
-1) sodir etilgan ogʻir yoki oʻta ogʻir jinoyati uchun sudlanganlik holati tugallanmagan yoxud sudlanganligi olib tashlanmagan fuqarolar;
-2) saylov kuniga qadar soʻnggi besh yil mobaynida Oʻzbekiston Respublikasi hududida muqim yashamagan fuqarolar;
-3) O‘zbekiston Respublikasi Oliy sudi va boshqa sudlarning sudyalari
-4) Oliy Majlisi Senati a’zolari.
-+A) 1, 2   
-B) 2, 4   
-C) 2, 3   
-D) 1, 4`
+/* ODDIY TEST CARD */
+.test-card{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:var(--rs);padding:14px;margin-bottom:8px;
+  cursor:pointer;display:flex;align-items:center;gap:12px;
+  transition:background .15s,transform .15s;
+}
+.test-card:active{background:var(--s3);transform:scale(.99)}
+.tc-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.tc-info{flex:1;min-width:0}
+.tc-title{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tc-meta{font-size:11px;color:var(--text2);margin-top:3px}
+.tc-badge{
+  font-size:11px;font-weight:700;padding:3px 8px;
+  border-radius:6px;flex-shrink:0;
+}
+.tc-done{background:rgba(16,224,138,.1);color:var(--green);border:1px solid rgba(16,224,138,.2)}
+.tc-rated{background:rgba(91,143,255,.1);color:var(--acc);border:1px solid rgba(91,143,255,.2)}
+.tc-unrated{background:var(--s3);color:var(--text2);border:1px solid var(--border)}
 
-`Quyidagilardan qaysi biri O‘zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi deputatligiga nomzod ko‘rsatish huquqiga ega?
-(Oʻzbekiston Respublikasi Saylov kodeksining 68-moddasi)
-A) notijorat davlat tashkilotlari
-B) fuqarolarning o‘zi o‘zi boshqarish organlari
-C) kasaba uyushmalari
-+D) siyosiy partiyalar`
+/* FOLDER */
+.folder-row{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--s2);
+  border:1px solid var(--border);border-radius:var(--rs);
+  margin-bottom:6px;cursor:pointer;transition:background .15s;
+}
+.folder-row:active{background:var(--s3)}
+.folder-icon{font-size:20px;flex-shrink:0}
+.folder-info{flex:1}
+.folder-name{font-size:13px;font-weight:700}
+.folder-cnt{font-size:11px;color:var(--text2);margin-top:2px}
 
-`Quyidagilardan qaysilari O‘zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi deputatligiga nomzod etib roʻyxatga olinmaydi?
-(Oʻzbekiston Respublikasi Saylov kodeksining 71-moddasi)
-1) qasddan sodir etilgan jinoyati uchun ilgari sudlangan fuqarolar; 
-2) Oʻzbekiston Respublikasi Qurolli Kuchlarining harbiy xizmatchilari, Oʻzbekiston Respublikasi Davlat xavfsizlik xizmatining, Milliy gvardiyasining, Ichki ishlar vazirligining, Davlat bojxona qoʻmitasining, boshqa harbiylashtirilgan boʻlinmalarning xodimlari; 
-3) diniy tashkilotlar va birlashmalarning professional xizmatchilari; 
-4) siyosiy pariyalar, fuqarolarning o‘zini o‘zi boshqarish organlari, nodavlat notijorat tashkilotlar va shunga o‘xshash jamoat birlashmalarining professional xizmatchilari.
-A) 1, 3     
-+B) 2, 3     
-C) 1, 4     
-D) 2, 4`
+/* BREADCRUMB */
+.breadcrumb{
+  display:flex;align-items:center;gap:4px;
+  padding:0 0 12px;overflow-x:auto;scrollbar-width:none;
+}
+.breadcrumb::-webkit-scrollbar{display:none}
+.bc-item{
+  font-size:12px;font-weight:700;color:var(--text2);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  padding:4px 8px;border-radius:8px;transition:background .15s;
+}
+.bc-item:active{background:var(--s3)}
+.bc-item.active{color:var(--acc)}
+.bc-sep{color:var(--text3);font-size:12px;flex-shrink:0}
 
-`Quyida berilgan atamalar va ularning izohi to‘g‘ri moslashtirilgan javobni aniqlang.
-1) ratifikatsiya; 
-2) valyuta; 
-3) budjet; 
-4) denonsatsiya.
--a) xalqaro shartnoma yoki konvensiyaning oliy davlat hokimiyati organi tomonidan tasdiqlanishi, mamlakatda qonuniy kuchga kiritilishi;
--b) biror davlatning o‘zaro xalqaro shartnomani bekor qilish, shartnomadan chiqish haqida boshqa davlatni xabardor qilish;
--c) muayyan vaqt uchun ishlab chiqilgan, me’yorlashtirilgan va qonuniy tarzda tasdiqlangan daromadlar va xarajatlar yig‘indisi;
--d) muayyan davlatning pul birligi.
-A) 1-b, 2-c, 3-d, 4-a	
-B) 1-a, 2-d, 3-b, 4-c 
-C) 1-c, 2-b, 3-d, 4-a 	
-+D) 1-a, 2-d, 3-c, 4-b`
+/* MY RESULTS */
+.result-card{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:var(--rs);padding:12px 14px;margin-bottom:6px;
+  display:flex;align-items:center;gap:12px;
+}
+.rc-pct{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:14px;font-weight:700;flex-shrink:0;
+}
 
-`Quyidagi ma’lumotlarga mos yakuniy xulosa (to‘g‘ri/noto‘g‘ri) keltirilgan javobni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  99-moddasi)
-I. O‘zbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi tomonidan qabul qilingan qonun qabul qilingan kundan e’tiboran o‘n kundan kechiktirmay O‘zbekiston Respublikasi Oliy Majlisining Senatiga yuboriladi; 
-II. Agar O‘zbekiston Respublikasi Oliy Majlisining Senati tomonidan rad etilgan qonun qayta ko‘rib chiqishda Qonunchilik palatasi deputatlar umumiy sonining uchdan bir qismidan iborat ko‘pchilik ovozi bilan qonuniy yana ma’qullansa, qonun O‘zbekiston Respublikasi Oliy Majlisi tomonidan qabul qilingan hisoblanadi hamda imzolanishi va e’lon qilinishi uchun O‘zbekiston Respublikasi Prezidentiga Qonunchilik palatasi tomonidan yuboriladi;
-III. Agar qonun avvalgi qabul qilingan tahririda tegishincha O‘zbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputatlari va Senati a’zolari umumiy sonining kamida uchdan ikki qismidan iborat ko‘pchilik ovozi bilan ma’qullansa, qonun O‘zbekiston Respublikasi Prezidenti tomonidan o‘n to‘rt kun ichida imzolanishi va e’lon qilinishi kerak.
-+A) I-to‘g‘ri, II-noto‘g‘ri, III-to‘g‘ri
-B) I-noto‘g‘ri, II-to‘g‘ri, III-to‘g‘ri
-C) I-to‘g‘ri, II-noto‘g‘ri, III-noto‘g‘ri
-D) I-to‘g‘ri, II-to‘g‘ri, III-noto‘g‘ri`
+/* ══ TEST RUNNER ══ */
+#runner{
+  position:fixed;inset:0;z-index:100;
+  display:none;flex-direction:column;
+  background:#f2f4ff !important;
+  color:#0d1120 !important;
+}
+#runner.on{display:flex}
 
-`Quyidagilardan qaysi birining lavozimiga tayinlanishi (saylanishi)da Oliy Majlisning Senati ishtirok etmaydi?
-A) O‘zbekiston Respublikasi Bosh prokurori
-+B) O‘zbekiston Respublikasi Adliya vaziri
-C) Markaziy bank boshqaruvining raisi
-D) O‘zbekiston Respublikasi Oliy sudining raisi`
+/* Runner Header */
+.runner-hdr{
+  flex-shrink:0;
+  padding:12px 16px;padding-top:calc(env(safe-area-inset-top,0px)+12px);
+  background:#fff !important;border-bottom:1px solid rgba(0,0,0,.08) !important;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.runner-title{
+  font-size:14px;font-weight:800;color:#0d1120 !important;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.runner-timer{
+  font-family:var(--mono);font-size:16px;font-weight:700;
+  color:var(--acc);padding:5px 12px;
+  background:rgba(91,143,255,.1);border:1px solid rgba(91,143,255,.2);
+  border-radius:10px;transition:all .3s;flex-shrink:0;
+}
+.runner-timer.warn{color:var(--red);background:rgba(244,63,94,.1);border-color:rgba(244,63,94,.2);animation:warnPulse .6s ease-in-out infinite}
+@keyframes warnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.runner-prog-bar{height:4px;background:rgba(0,0,0,.08);flex-shrink:0}
+[data-theme="dark"] .runner-prog-bar{background:var(--s3)}
+.runner-prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
 
-`Quyida berilganlardan qaysilari qonunchilik tashabbusi huquqiga ega emas?
-(Oʻzbekiston Respublikasi Konstitutsiyasining  98-moddasi)
-1) O‘zbekiston Respublikasi Vazirlar Mahkamasi;
-2) O‘zbekiston Respublikasi Markaziy saylov komissiyasi;
-3) O‘zbekiston Respublikasi Oliy Majlisining Senati;
-4) O‘zbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputatlari;
-5) O‘zbekiston Respublikasi Oliy sudi;
-6) O‘zbekiston Respublikasi Oliy Majlisining Inson huquqlari bo‘yicha vakili.
-A) 1, 4, 6   
-B) 2, 3, 5   
-+C) 2, 3, 6   
-D) 1, 4, 5`
+/* Runner Body — scroll */
+.runner-body{
+  flex:1;overflow-y:auto;
+  padding:16px;
+  min-height:0;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.runner-body::-webkit-scrollbar{display:none}
 
-`Quyidagilardan qaysi biri O‘zbekiston Respublikasi Oliy Majlisining Senati mutlaq vakolati hisoblanmaydi? 
-(O‘zbekiston Respublikasi Konstitutsiyasining 95-moddasi)
-A) mahalliy davlat hokimiyati vakillik organlarining qarorlarini, ular qonunchilik normalariga muvofiq bo‘lmagan taqdirda, bekor qilish
-B) O‘zbekiston Respublikasi Prezidenti tomonidan taklif etilgan O‘zbekiston Respublikasi Davlat xavfsizlik xizmati raisi lavozimiga nomzod yuzasidan maslahatlashuvlar o‘tkazish
-C) mahalliy davlat hokimiyati vakillik organlariga o‘z faoliyatini amalga oshirishda ko‘maklashish
-+D) O‘zbekiston Respublikasi Hisob palatasining hisobotini ko‘rib chiqish`
+/* Question card — Google Forms uslubi */
+.q-card{
+  background:#fff !important;border-radius:12px;
+  padding:18px;margin-bottom:12px;
+  border:2px solid transparent;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);
+  transition:border-color .2s;
+}
+.q-card.answered{border-color:rgba(91,143,255,.4)}
+[data-theme="dark"] .q-card.answered{border-color:rgba(91,143,255,.4)}
+.q-num{font-size:11px;font-weight:800;color:var(--acc);font-family:var(--mono);margin-bottom:8px}
+.q-text{
+  font-size:15px;font-weight:700;line-height:1.7;
+  margin-bottom:16px;white-space:pre-wrap;
+  color:#0d1120 !important;
+}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{
+  width:100%;text-align:left;
+  padding:12px 14px;
+  background:#f8f9ff !important;border:2px solid #e0e4f8 !important;
+  border-radius:10px;cursor:pointer;
+  display:flex;align-items:flex-start;gap:10px;
+  transition:all .15s;
+}
+.q-opt.sel{background:rgba(91,143,255,.1) !important;border-color:#5b8fff !important;}
+.q-opt:active{transform:scale(.99)}
+.q-opt.sel{background:rgba(91,143,255,.08);border-color:var(--acc)}
+.q-opt-key{
+  width:26px;height:26px;min-width:26px;border-radius:7px;
+  background:#e8ecff;border:1px solid #c8d0f0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#5b8fff;
+  transition:all .15s;margin-top:1px;
+}
+[data-theme="dark"] .q-opt-key{background:var(--s4);border-color:var(--border2);color:var(--acc)}
+.q-opt.sel .q-opt-key{background:var(--acc);border-color:var(--acc);color:#fff}
+.q-opt-text{font-size:13px;font-weight:600;flex:1;line-height:1.6;white-space:pre-wrap;color:#0d1120 !important;padding-top:3px}
 
-`Senat oʻzini oʻzi tarqatib yuborgan taqdirda qancha vaqt ichida uning yangi tarkibi shakllantiriladi?
-(“Oʻzbekiston Respublikasi Oliy Majlisining Senati toʻgʻrisida”gi konstitutsiyaviy qonnuning 29-moddasi)
-A) ikki oy	  
-+B) bir oy  
-C) o‘n kun  
-D) uch oy`
+/* Submit footer */
+.runner-footer{
+  flex-shrink:0;
+  padding:12px 16px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+12px);
+  background:#fff !important;border-top:1px solid rgba(0,0,0,.08) !important;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  box-shadow:0 -2px 8px rgba(0,0,0,.06);
+}
+.runner-submit{
+  flex:1;padding:13px;border-radius:var(--rs);
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;font-size:14px;font-weight:800;
+  border:none;cursor:pointer;
+  box-shadow:0 4px 14px rgba(91,143,255,.3);
+  transition:opacity .15s;
+}
+.runner-submit:active{opacity:.85}
+.runner-submit:disabled{opacity:.5;cursor:not-allowed}
 
-`Quyida berilganlardan Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi va Senatining birgalikdagi vakolatlarini aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining 93-moddasi)
-1) Oʻzbekiston Respublikasining Konstitutsiyasini qabul qilish, unga oʻzgartirish va qoʻshimchalar kiritish;
-2) oʻz huzurida akkreditatsiyadan oʻtgan diplomatik hamda boshqa vakillarning ishonch va chaqiruv yorliqlarini qabul qilish;
-3) Oʻzbekiston Respublikasining konstitutsiyaviy qonunlarini, qonunlarini qabul qilish, ularga oʻzgartirish va qoʻshimchalar kiritish;
-4) Konstitutsiyani, qonunlarni buzgan yoki hokim shaʼni va qadr-qimmatiga dogʻ tushiradigan xatti-harakat sodir etgan tuman va shahar hokimlarini lavozimidan ozod qilish;
-5) Oʻzbekiston Respublikasining ordenlari, medallari va yorligʻi bilan mukofotlash, Oʻzbekiston Respublikasining malakaviy va faxriy unvonlarini berish;
-6) xalqaro shartnomalarni ratifikatsiya va denonsatsiya qilish.
-A) 2, 4, 6   
-B) 2, 3, 5   
-+C) 1, 3, 6   
-D) 1, 4, 5`
+/* ══ RESULT SCREEN ══ */
+#result{
+  position:fixed;inset:0;background:var(--bg);z-index:101;
+  display:none;flex-direction:column;overflow-y:auto;
+  padding:24px 16px;
+  padding-top:calc(env(safe-area-inset-top,0px)+24px);
+  padding-bottom:calc(env(safe-area-inset-bottom,0px)+24px);
+  scrollbar-width:none;
+}
+#result::-webkit-scrollbar{display:none}
+#result.on{display:flex;flex-direction:column;align-items:center}
+.res-brand{
+  font-family:var(--brand);font-size:22px;font-weight:900;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:20px;letter-spacing:-.5px;
+}
+.res-circle{
+  width:130px;height:130px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid var(--acc);margin-bottom:16px;
+  position:relative;
+  box-shadow:0 0 32px rgba(91,143,255,.25);
+}
+.res-pct{font-size:32px;font-weight:900;font-family:var(--mono)}
+.res-lbl{font-size:11px;color:var(--text2);font-weight:700}
+.res-grade{font-size:40px;margin-bottom:8px}
+.res-title{font-size:20px;font-weight:900;margin-bottom:6px;text-align:center}
+.res-sub{font-size:13px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:20px}
+.res-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-bottom:20px}
+.res-stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 8px;text-align:center}
+.res-stat-v{font-size:20px;font-weight:900;font-family:var(--mono)}
+.res-stat-l{font-size:10px;color:var(--text2);font-weight:700;margin-top:2px}
 
-`To‘g‘ri berilgan ma’lumotni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  93-moddasi)
-+A) Palatalarning birgalikdagi vakolatlariga kiradigan masalalar, qoida tariqasida, avval Qonunchilik palatasida, soʻngra Senatida koʻrib chiqiladi
-B) Oʻzbekiston Respublikasi Oliy Majlisi Prezident taqdimiga binoan Oʻzbekiston Respublikasining Davlat budjetini qabul qiladi
-C) Oʻzbekiston Respublikasi Oliy Majlisi Oʻzbekiston Respublikasi davlat qarzining eng past miqdorini belgilaydi
-D) Oʻzbekiston Respublikasi Oliy Majlisi soliqlar joriy qilishga haqli emas`
+/* Answer review */
+.res-answers{width:100%;margin-bottom:16px}
+.ra-item{
+  padding:12px 14px;border-radius:var(--rs);
+  margin-bottom:6px;border:1px solid var(--border);
+}
+.ra-item.correct{background:rgba(16,224,138,.05);border-color:rgba(16,224,138,.15)}
+.ra-item.wrong{background:rgba(244,63,94,.05);border-color:rgba(244,63,94,.15)}
+.ra-num{font-size:10px;font-weight:800;color:var(--text3);font-family:var(--mono);margin-bottom:6px}
+.ra-q{font-size:12px;font-weight:700;line-height:1.5;margin-bottom:8px;white-space:pre-wrap}
+.ra-answers{display:flex;flex-direction:column;gap:4px}
+.ra-ans-row{display:flex;align-items:flex-start;gap:8px;font-size:11px;line-height:1.5}
+.ra-tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;flex-shrink:0;margin-top:1px}
+.ra-tag.your-correct{background:rgba(16,224,138,.15);color:var(--green)}
+.ra-tag.your-wrong{background:rgba(244,63,94,.15);color:var(--red)}
+.ra-tag.correct-ans{background:rgba(91,143,255,.15);color:var(--acc)}
 
-`To‘g‘ri moslashtirilgan javobni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  94, 95-moddalari)
-I. Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasining mutlaq vakolatlari; 
-II. Oʻzbekiston Respublikasi Oliy Majlisi Senatining mutlaq vakolatlari.
-a) Oʻzbekiston Respublikasi Davlat budjetining ijro etilishi ustidan nazoratni amalga oshirish; 
-b) Oʻzbekiston Respublikasi Hisob palatasining hisobotini koʻrib chiqish; 
-c) Oʻzbekiston Respublikasi Prezidentining taqdimiga binoan amnistiya toʻgʻrisidagi hujjatlarni qabul qilish;
-d) Oʻzbekiston Respublikasi Bosh prokurorining, Oʻzbekiston Respublikasi Markaziy banki boshqaruvi raisining hisobotlarini eshitish.
-+A) I-a, b; II-c, d	     
-B) I-b, d; II-a, c
-C) I-a, c; II-b, d	    
-D) I-b, c; II-a, d`
+/* Public result — sodda */
+.pub-res-wrap{
+  width:100%;display:flex;flex-direction:column;align-items:center;
+}
 
-`Nuqtalar o‘rniga mos keluvchi javobni aniqlang.
-Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi … taqdimiga binoan Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputatini daxlsizlik huquqidan mahrum etish toʻgʻrisidagi masalalarni hal etadi.
-A) Oʻzbekiston Respublikasi Ichki ishlar vazirining
-+B) Oʻzbekiston Respublikasi Bosh prokurorining
-C) Oʻzbekiston Respublikasi Oliy sudi raisining
-D) Oʻzbekiston Respublikasi Konstitutsiyaviy sud raisining`
+/* ══ PUBLIC RUNNER (ommaviy) ══ */
+.pub-runner-hdr{
+  flex-shrink:0;background:var(--s1);border-bottom:1px solid var(--border);
+  padding:12px 16px;padding-top:calc(env(safe-area-inset-top,0px)+12px);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pub-title{font-size:14px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-`Oʻzbekiston Respublikasi Oliy Majlisining Qoununchilik palatasi deputatlari (a) va Senati a’zolari (b) sonini aniqlang.
-A) a – 100, b – 60	
-B) a – 150, b – 100
-+C) a – 150, b – 65	
-D) a – 150, b – 50`
+/* ══ COMMON ══ */
+.btn-full{
+  width:100%;padding:14px;border-radius:var(--r);
+  font-size:15px;font-weight:800;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;border:none;cursor:pointer;
+  box-shadow:0 6px 20px rgba(91,143,255,.3);
+  transition:opacity .15s;
+}
+.btn-full:active{opacity:.85}
+.btn-sec{
+  width:100%;padding:13px;border-radius:var(--r);
+  font-size:14px;font-weight:800;
+  background:var(--s3);color:var(--text);
+  border:1px solid var(--border);cursor:pointer;transition:opacity .15s;
+}
+.btn-sec:active{opacity:.8}
+.empty{text-align:center;color:var(--text3);padding:40px 16px;font-size:14px;font-weight:600}
+.srow{display:flex;gap:8px;margin-bottom:14px}
+.sbox{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 6px;text-align:center}
+.sbox .v{font-size:18px;font-weight:900;font-family:var(--mono)}.sbox .l{font-size:10px;color:var(--text2);font-weight:700;margin-top:3px}
+.sbox.g .v{color:var(--green)}.sbox.y .v{color:var(--yellow)}.sbox.r .v{color:var(--red)}.sbox.b .v{color:var(--acc)}
+</style>
+</head>
+<body>
 
-`Oʻzbekiston Respublikasining referendumini oʻtkazish toʻgʻrisida va uni oʻtkazish sanasini tayinlash haqida qaror qabul qilish bilan bog‘liq to‘g‘ri ma’lumotni aniqlang.
-A) Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasining mutlaq vakolati hisoblanadi
-B) Oʻzbekiston Respublikasi Oliy Majlisi Senatining mutlaq vakolatidir
-C) Oʻzbekiston Respublikasi Prezidentining mutlaq vakolati hisoblanadi
-+D) Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi va Senatining birgalikdagi vakolati hisoblanadi`
+<div id="loading">
+  <div class="load-brand">iHuquq</div>
+  <div class="load-sub">Test platformasi</div>
+  <div class="load-dots">
+    <div class="load-dot"></div>
+    <div class="load-dot"></div>
+    <div class="load-dot"></div>
+  </div>
+</div>
 
-`Quyida berilganlardan Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi va Senatining birgalikdagi vakolatlarini aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  93-moddasi)
-1) referendumga chiqarilayotgan masalalarning Oʻzbekiston Respublikasi Konstitutsiyasiga muvofiqligi toʻgʻrisida xulosa berish;
-2) Oʻzbekiston Respublikasi ichki va tashqi siyosatining asosiy yoʻnalishlarini belgilash hamda davlat strategik dasturlarini qabul qilish;
-3) Oʻzbekiston Respublikasining Konstitutsiyasi va qonunlari normalariga sharh berish;
-4) Oʻzbekiston Respublikasi qonun chiqaruvchi, ijro etuvchi hamda sud hokimiyati organlarining tizimini va vakolatlarini belgilash;
-5) tegishli mahalliy budjetlarni koʻrib chiqish va qabul qilish, ularning ijro etilishi ustidan nazoratni amalga oshirish;
-6) Oʻzbekiston Respublikasi tarkibiga yangi davlat tuzilmalarini qabul qilish va ularning Oʻzbekiston Respublikasi tarkibidan chiqishi haqidagi qarorlarni tasdiqlash.
-+A) 2, 4, 6   
-B) 2, 3, 5   
-C) 1, 3, 6  
-D) 1, 4, 5`
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-brand">iHuquq</div>
+    <div class="hdr-right">
+      <button class="hdr-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+    </div>
+  </div>
+  <div class="pages">
+    <!-- TESTLAR RO'YXATI -->
+    <div class="page on" id="page-list">
+      <div id="list-content"></div>
+    </div>
+    <!-- MENING NATIJALARIM -->
+    <div class="page" id="page-results">
+      <div class="srow">
+        <div class="sbox b"><div class="v" id="mr-cnt">0</div><div class="l">Topshirdim</div></div>
+        <div class="sbox g"><div class="v" id="mr-ball">0</div><div class="l">Ball</div></div>
+        <div class="sbox y"><div class="v" id="mr-avg">0%</div><div class="l">O'rtacha</div></div>
+      </div>
+      <div id="results-list"></div>
+    </div>
+  </div>
+  <!-- NAV faqat kabinet rejimida -->
+  <div id="bottom-nav" style="display:none;flex-shrink:0;background:var(--s1);border-top:1px solid var(--border);display:flex;padding:0 4px;padding-bottom:env(safe-area-inset-bottom,0px)">
+    <div class="nav-item on" id="ni-tests" onclick="switchNav('tests')">
+      <div style="font-size:20px">📝</div>
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Testlar</div>
+    </div>
+    <div class="nav-item" id="ni-results" onclick="switchNav('results')">
+      <div style="font-size:20px">📊</div>
+      <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">Natijalarim</div>
+    </div>
+  </div>
+</div>
 
-`Oʻzbekiston Respublikasi Oliy Majlisi Qonunchilik palatasining mutlaq vakolatlarini aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining  94-moddasi)
-1) Oʻzbekiston Respublikasi Bosh vaziri nomzodini koʻrib chiqish va maʼqullash;
-2) mahalliy davlat hokimiyati vakillik organlariga oʻz faoliyatini amalga oshirishda koʻmaklashish; 
-3) Oʻzbekiston Respublikasi Bosh prokurorining, Oʻzbekiston Respublikasi Markaziy banki boshqaruvi raisining hisobotlarini eshitish;
-4) Oʻzbekiston Respublikasi Vazirlar Mahkamasining mamlakat ijtimoiy-iqtisodiy hayotining eng muhim masalalari boʻyicha har yilgi maʼruzasini eshitish.
-A) 1, 3     
-B) 2, 3     
-+C) 1, 4     
-D) 2, 4`
+<!-- TEST RUNNER -->
+<div id="runner">
+  <!-- Sticky header -->
+  <div class="runner-hdr">
+    <div style="flex:1;min-width:0">
+      <div class="runner-title" id="runner-title">Test</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:1px" id="runner-prog-txt">0/0 javob</div>
+    </div>
+    <div class="runner-timer" id="runner-timer">00:00</div>
+  </div>
+  <div class="runner-prog-bar" style="flex-shrink:0">
+    <div class="runner-prog-fill" id="runner-prog-fill" style="width:0%"></div>
+  </div>
+  <!-- Barcha savollar scroll -->
+  <div class="runner-body" id="runner-body"></div>
+  <!-- Footer -->
+  <div class="runner-footer">
+    <button class="runner-submit" id="runner-submit-btn" onclick="submitTest()">✅ Yakunlash</button>
+  </div>
+</div>
 
-`To‘g‘ri berilgan ma’lumotni aniqlang.
-(Oʻzbekiston Respublikasi Konstitutsiyasining 94-moddasi)
-A) Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi oʻzini oʻzi tarqatib yuborish toʻgʻrisida deputatlar umumiy sonining koʻpchilik ovozi bilan qaror qabul qilishi mumkin
-+B) Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi oʻzini oʻzi tarqatib yuborish toʻgʻrisida qaror deputatlar umumiy sonining kamida uchdan ikki qismidan iborat koʻpchilik ovozi bilan qaror qabul qilishi mumkin
-C) Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi oʻzini oʻzi tarqatib yuborish toʻgʻrisida qaror qabul qilinishi uchun barcha deputatlar ovoz berishlari kerak
-D) Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi oʻzini oʻzi tarqatib yuborish toʻgʻrisida deputatlar umumiy sonining kamida uchdan bir qismining ovozi bilan qaror qabul qilishi mumkin`
+<!-- RESULT -->
+<div id="result"></div>
 
-`Quyidagi ma’lumotlarga mos yakuniy xulosa (to‘g‘ri/noto‘g‘ri) keltirilgan javobni aniqlang.
-(“Oʻzbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi toʻgʻrisida”gi konstitutsiyaviy qonunning 2, 6-moddalari)
-I. Qonunchilik palatasining ishi palata barcha deputatlarining professional, doimiy faoliyat koʻrsatishiga asoslanadi; 
-II. O‘zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi deputatining vakolat muddati – besh yil;
-III. Qonunchilik palatasi deputatlari oʻz vakolatlari davrida ilmiy, ijodiy va pedagogik faoliyatdan tashqari haq toʻlanadigan boshqa turdagi faoliyat bilan shugʻullanishlari mumkin emas.
-+A) I-to‘g‘ri, II-noto‘g‘ri, III-to‘g‘ri
-B) I-noto‘g‘ri, II-to‘g‘ri, III-to‘g‘ri
-C) I-to‘g‘ri, II-noto‘g‘ri, III-noto‘g‘ri
-D) I-to‘g‘ri, II-to‘g‘ri, III-noto‘g‘ri`
+<style>
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;cursor:pointer;color:var(--text3);border-top:3px solid transparent;transition:all .2s}
+.nav-item.on{color:var(--acc);border-top-color:var(--acc)}
+</style>
 
-`O‘zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi va Senatining birgalikdagi vakolatini aniqlang.
-(O‘zbekiston Respublikasi Konstitutsiyasining 93-moddasi)	
-A) O‘zbekiston Respublikasi Bosh vazirining mamlakatni ijtimoiy-iqtisodiy jihatdan rivojlantirishning dolzarb masalalari yuzasidan, shuningdek Vazirlar Mahkamasi a’zolarining o‘z faoliyati masalalari yuzasidan hisobotlarini eshitish
-+B) O‘zbekiston Respublikasining ma’muriy-hududiy tuzilishi masalalarini qonun yo‘li bilan tartibga solish, chegaralarini o‘zgartirish
-C) O‘zbekiston Respublikasi Prezidentining taqdimiga binoan O‘zbekiston Respublikasi Bosh vaziri nomzodini ko‘rib chiqish va ma’qullash
-D) o‘z faoliyatini tashkil etish va palataning ichki tartib-qoidalari bilan bog‘liq masalalar yuzasidan qarorlar qabul qilish`
+<script>
+// ══ CONFIG ══
+const SB='https://lwpimllflhpcxtehkgjb.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3cGltbGxmbGhwY3h0ZWhrZ2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzMzNDYsImV4cCI6MjA4OTM0OTM0Nn0.yq2XHQBE6nyfHtRWbbo4C7V5sma5DaCEwzCu9wS1f9M';
+const H={'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=representation'};
+const GET=(t,p)=>fetch(`${SB}/rest/v1/${t}${p||''}`,{headers:{...H}}).then(r=>r.json());
+const POST=(t,b)=>fetch(`${SB}/rest/v1/${t}`,{method:'POST',headers:{...H},body:JSON.stringify(b)}).then(r=>r.json());
+const PATCH=(t,b,p)=>fetch(`${SB}/rest/v1/${t}${p}`,{method:'PATCH',headers:{...H},body:JSON.stringify(b)}).then(r=>r.json());
 
-`O‘zbekiston Respublikasi Oliy Majlisining Senati a’zolari Qoraqalpog‘iston Respublikasi Jo‘qorg‘i Kengesi, viloyatlar, tumanlar va shaharlar davlat hokimiyati vakillik organlari deputatlarining tegishli qo‘shma majlislarida mazkur deputatlar orasidan yashirin ovoz berish yo‘li bilan Qoraqalpog‘iston Respublikasi, viloyatlar va Toshkent shahridan necha nafardan saylanadi?
-(O‘zbekiston Respublikasi Konstitutsiyasining 92-moddasi)
-+A) to‘rt     
-B) olti     
-C) to‘qqiz     
-D) yetti`
+// ══ STATE ══
+const MONTHS=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+let TG_ID=null, MODE='kabinet'; // kabinet | public
+let urlMode=null; // 'offline' | 'online' — qaysi kabinetan kirgan
+let offStudent=null, onStudent=null;
+let allTests=[], myResults=[], assignments=[], folders=[];
+let curFolder=null, folderPath=[];
 
-`Nuqtalar o‘rniga mos keluvchi javobni aniqlang.
-Saylov kuni … (a) yoshga to‘lgan hamda kamida … (b) O‘zbekiston Respublikasi hududida muqim yashayotgan O‘zbekiston Respublikasi fuqarosi O‘zbekiston Respublikasi Oliy Majlisining Qonunchilik palatasi deputati, shuningdek Oliy Majlisning Senati a’zosi bo‘lishi mumkin.
-(O‘zbekiston Respublikasi Konstitutsiyasining 92-moddasi)
-+A) a – yigirma besh, b – besh 
-B) a – o‘ttiz besh, b – o‘n
-C) a – yigirma bir, b – besh
-D) a – o‘n sakkiz, b – besh`
+// Runner state
+let R={test:null,questions:[],answers:{},cur:0,timer:null,startTime:null,remaining:0,endsAt:null,resultId:null,totalScore:0,isPublic:false};
+let _submitLock=false;
 
-`Quyidagilardan qaysi biri O‘zbekiston Respublikasi Oliy Majlisi palatalarining birgalikdagi vakolatiga kirmaydi?
-(O‘zbekiston Respublikasi Konstitutsiyasining 93-moddasi)
-A) Xalqaro shartnomalarni ratifikatsiya va denonsatsiya qilish
-B) Bojxona, valyuta va kredit ishlarini qonun yo‘li bilan tartibga solish
-C) O‘zbekiston Respublikasi davlat qarzining eng yuqori miqdorini belgilash
-+D) O‘zbekiston Respublikasining ordenlari, medallari va yorlig‘i bilan mukofotlash, O‘zbekiston Respublikasining malakaviy va faxriy unvonlarini berish`
+function fmtMin(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function today(){return new Date().toISOString().slice(0,10)}
+function avl(n){return(n||'?').split(' ').slice(0,2).map(w=>(w[0]||'').toUpperCase()).join('')}
+
+// ══ INIT ══
+async function init(){
+  if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();TG_ID=Telegram.WebApp.initDataUnsafe?.user?.id||null;}
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('tgid'))TG_ID=parseInt(p.get('tgid'));
+  const testId=parseInt(p.get('testId')||0);
+  const isPublic=p.get('public')==='1'||!!testId;
+  const urlMode=p.get('mode')||null; // 'offline' | 'online' | null
+  window._urlMode=urlMode; // global saqlayman
+
+  try{
+    if(testId){
+      // Ommaviy test — to'g'ridan boshlash
+      MODE='public';
+      await startPublicTest(testId);
+      document.getElementById('loading').style.display='none';
+      return;
+    }
+
+    // Kabinet rejimi
+    MODE='kabinet';
+    if(!TG_ID){
+      document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Telegram orqali kiring</div>';
+      return;
+    }
+    const [off,on,tests,asgn,flds]=await Promise.all([
+      GET('students',`?telegram_id=eq.${TG_ID}&select=*&limit=1`),
+      GET('online_students',`?tg_id=eq.${TG_ID}&select=*&limit=1`),
+      GET('tests','?is_active=eq.true&order=created_at.desc&select=*'),
+      GET('test_assignments','?select=*'),
+      GET('test_folders','?order=name&select=*')
+    ]);
+    offStudent=off[0]||null;
+    onStudent=on[0]||null;
+    allTests=tests;
+    assignments=asgn;
+    folders=flds;
+    myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
+
+    document.getElementById('loading').style.display='none';
+    document.getElementById('app').style.display='flex';
+    document.getElementById('bottom-nav').style.display='flex';
+    renderList();
+  }catch(e){
+    document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Xatolik: '+e.message+'</div>';
+  }
+}
+
+// ══ NAV ══
+function switchNav(tab){
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('ni-'+tab).classList.add('on');
+  document.getElementById('page-'+(tab==='tests'?'list':'results')).classList.add('on');
+  if(tab==='results')renderMyResults();
+}
+
+// ══ TEST LIST ══
+function renderList(){
+  const now=new Date();
+  const content=document.getElementById('list-content');
+  const html=[];
+
+  // O'quvchining guruh IDlari
+  const myOffGrpIds=offStudent?assignments.filter(a=>a.group_type==='offline').map(a=>a.group_id):[];
+  const myOnGrpIds=onStudent?assignments.filter(a=>a.group_type==='online').map(a=>a.group_id):[];
+
+  // Hozir aktiv reytingli testlar
+  const activeRated=allTests.filter(t=>{
+    if(!t.rated||t.is_public)return false;
+    const myAsgn=assignments.filter(a=>a.test_id===t.id);
+    if(!myAsgn.length)return false;
+    const inMyGroup=myAsgn.some(a=>{
+      if(a.group_type==='offline'&&offStudent){
+        const gIds=assignments.filter(x=>x.group_type==='offline'&&x.test_id===t.id).map(x=>x.group_id);
+        return gIds.length>0;
+      }
+      if(a.group_type==='online'&&onStudent){
+        const gIds=assignments.filter(x=>x.group_type==='online'&&x.test_id===t.id).map(x=>x.group_id);
+        return gIds.length>0;
+      }
+      return false;
+    });
+    if(!inMyGroup)return false;
+    const asgn=myAsgn[0];
+    if(asgn.starts_at&&new Date(asgn.starts_at)>now)return false;
+    if(asgn.ends_at&&new Date(asgn.ends_at)<now)return false;
+    return true;
+  });
+
+  // Reytingsiz testlar (hamma uchun)
+  const unratedTests=allTests.filter(t=>!t.rated&&!t.is_public);
+
+  // Papkalar va testlar
+  if(activeRated.length){
+    html.push('<div class="section-label">🔥 Hozir aktiv</div>');
+    activeRated.forEach(t=>{
+      const asgn=assignments.find(a=>a.test_id===t.id);
+      const done=myResults.find(r=>r.test_id===t.id);
+      const endsAt=asgn?.ends_at?new Date(asgn.ends_at):null;
+      let timerHtml='';
+      if(endsAt){
+        const left=Math.max(0,Math.floor((endsAt-now)/1000));
+        const h=Math.floor(left/3600),m=Math.floor((left%3600)/60);
+        timerHtml=`<div class="atc-timer">⏰ ${h>0?h+'s ':''} ${m} daqiqa qoldi</div>`;
+      }
+      html.push(`<div class="active-test-card" onclick="startTest(${t.id},false)">
+        <div class="atc-badge">${done?'🔄 Qayta ishlash':'▶️ Aktiv test'}</div>
+        <div class="atc-title">${t.title}</div>
+        <div class="atc-meta">
+          <span>⏱ ${t.duration_minutes||30} daqiqa</span>
+          <span>📝 Har to'g'ri = 2 ball</span>
+          ${done?'<span style="color:var(--green)">✅ '+done.score+'/'+done.total_score+' ball</span>':''}
+        </div>
+        ${timerHtml}
+        ${!done?'<button class="atc-btn">▶️ Testni boshlash</button>':''}
+      </div>`);
+    });
+  }
+
+  // Papkalar (curFolder ga ko'ra)
+  if(curFolder===null){
+    // Breadcrumb
+    if(folderPath.length){
+      html.push('<div class="breadcrumb"><span class="bc-item" onclick="goToFolder(null)">🏠</span>'+
+        folderPath.map((f,i)=>`<span class="bc-sep">›</span><span class="bc-item ${i===folderPath.length-1?'active':''}" onclick="goToFolder('${f.id}','${f.name}')">${f.name}</span>`).join('')+
+        '</div>');
+    }
+    const rootFolders=folders.filter(f=>!f.parent_id);
+    if(rootFolders.length){
+      html.push('<div class="section-label">📁 Papkalar</div>');
+      rootFolders.forEach(f=>{
+        const cnt=unratedTests.filter(t=>t.folder_id===f.id).length;
+        html.push(`<div class="folder-row" onclick="enterFolder(${f.id},'${f.name}')">
+          <div class="folder-icon">📁</div>
+          <div class="folder-info">
+            <div class="folder-name">${f.name}</div>
+            <div class="folder-cnt">${cnt} ta test</div>
+          </div>
+          <span style="color:var(--text3);font-size:18px">›</span>
+        </div>`);
+      });
+    }
+    // Root dagi reytingsiz testlar
+    const rootTests=unratedTests.filter(t=>!t.folder_id);
+    if(rootTests.length){
+      html.push('<div class="section-label">📖 Reytingsiz testlar</div>');
+      rootTests.forEach(t=>html.push(testCardHtml(t)));
+    }
+  } else {
+    // Papka ichida
+    html.push(buildBreadcrumb());
+    const subFolders=folders.filter(f=>f.parent_id===curFolder);
+    if(subFolders.length){
+      subFolders.forEach(f=>{
+        const cnt=unratedTests.filter(t=>t.folder_id===f.id).length;
+        html.push(`<div class="folder-row" onclick="enterFolder(${f.id},'${f.name}')">
+          <div class="folder-icon">📁</div>
+          <div class="folder-info">
+            <div class="folder-name">${f.name}</div>
+            <div class="folder-cnt">${cnt} ta test</div>
+          </div>
+          <span style="color:var(--text3);font-size:18px">›</span>
+        </div>`);
+      });
+    }
+    const folderTests=unratedTests.filter(t=>t.folder_id===curFolder);
+    if(folderTests.length){
+      html.push('<div class="section-label">📖 Testlar</div>');
+      folderTests.forEach(t=>html.push(testCardHtml(t)));
+    }
+    if(!subFolders.length&&!folderTests.length){
+      html.push('<div class="empty">Bu papkada test yo\'q</div>');
+    }
+  }
+
+  if(!activeRated.length&&!unratedTests.length){
+    html.push('<div class="empty">Hozircha test yo\'q</div>');
+  }
+
+  content.innerHTML=html.join('');
+}
+
+function testCardHtml(t){
+  const done=myResults.find(r=>r.test_id===t.id);
+  const pct=done?.total_score?Math.round(done.score/done.total_score*100):null;
+  const col=pct===null?'var(--text3)':pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+  return`<div class="test-card" onclick="startTest(${t.id},false)">
+    <div class="tc-icon" style="background:rgba(91,143,255,.1)">📖</div>
+    <div class="tc-info">
+      <div class="tc-title">${t.title}</div>
+      <div class="tc-meta">⏱ ${t.duration_minutes||30} daq · Ko'p marta ishlash mumkin</div>
+    </div>
+    ${done?`<span class="tc-badge tc-done" style="color:${col}">${pct}%</span>`:'<span class="tc-badge tc-unrated">Yangi</span>'}
+  </div>`;
+}
+
+function buildBreadcrumb(){
+  return'<div class="breadcrumb"><span class="bc-item" onclick="goToFolder(null)">🏠</span>'+
+    folderPath.map((f,i)=>`<span class="bc-sep">›</span><span class="bc-item ${i===folderPath.length-1?'active':''}" onclick="goToFolder(${f.id},'${f.name}')">${f.name}</span>`).join('')+
+    '</div>';
+}
+
+function enterFolder(id,name){
+  curFolder=id;
+  folderPath.push({id,name});
+  renderList();
+}
+function goToFolder(id,name){
+  if(id===null){curFolder=null;folderPath=[];}
+  else{
+    const idx=folderPath.findIndex(f=>f.id===id);
+    folderPath=folderPath.slice(0,idx+1);
+    curFolder=id;
+  }
+  renderList();
+}
+
+// ══ MY RESULTS ══
+async function renderMyResults(){
+  document.getElementById('mr-cnt').textContent=myResults.length;
+  const total=myResults.reduce((a,b)=>a+(b.score||0),0);
+  const avg=myResults.length?Math.round(myResults.reduce((a,b)=>{return a+(b.total_score?(b.score/b.total_score)*100:0)},0)/myResults.length):0;
+  document.getElementById('mr-ball').textContent=total;
+  document.getElementById('mr-avg').textContent=avg+'%';
+
+  document.getElementById('results-list').innerHTML=myResults.slice(0,20).map(r=>{
+    const t=allTests.find(x=>x.id===r.test_id);
+    const pct=r.total_score?Math.round(r.score/r.total_score*100):0;
+    const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+    const dt=new Date(r.finished_at||r.created_at);
+    return`<div class="result-card">
+      <div class="rc-pct" style="background:${col}18;color:${col}">${pct}%</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t?.title||'Test'}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${r.score}/${r.total_score} ball · ${dt.getDate()} ${MONTHS[dt.getMonth()]}</div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">Hali test topshirilmagan</div>';
+}
+
+// ══ TEST BOSHLASH ══
+async function startTest(testId, isPublicMode){
+  const t=allTests.find(x=>x.id===testId)||await GET('tests',`?id=eq.${testId}&select=*`).then(r=>r[0]);
+  if(!t)return;
+
+  const now=new Date();
+
+  // Ommaviy test — muddat va bir marta topshirish tekshiruvi
+  if(isPublicMode){
+    if(t.ends_at&&new Date(t.ends_at)<now){
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
+      document.getElementById('loading').style.display='flex';
+      return;
+    }
+    // Bir marta topshirish — TG_ID bo'lsa tekshirish
+    if(TG_ID){
+      const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
+      if(done.length){
+        // Botga xabar yuborish
+        try{
+          const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+          await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
+          });
+        }catch(e){}
+        // Sahifada ham ko'rsatish
+        document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+        document.getElementById('loading').style.display='flex';
+        return;
+      }
+    }
+  }
+
+  if(t.rated&&!isPublicMode){
+    const done=myResults.find(r=>r.test_id===testId);
+    if(done){
+      if(!confirm('Bu reytingli testni allaqachon topshirgansiz. Qayta ishlaysizmi? (ball qo\'shilmaydi)'))return;
+    }
+  }
+
+  const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
+  if(!questions.length){alert('Bu testda savol yo\'q');return;}
+
+  const isPublicTest=isPublicMode||false;
+  const totalScore=isPublicTest
+    ?Math.round(questions.length*3.1*10)/10
+    :questions.reduce((a,b)=>a+(b.score||2),0);
+
+  // Ism: Telegram WebApp dan, keyin tg_users dan, keyin student dan, keyin fallback
+  let name='Noma\'lum';
+  // 1. Telegram WebApp dan to'g'ridan olish (eng ishonchli)
+  const tgUser_wa=window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if(tgUser_wa){
+    const fn=tgUser_wa.first_name||'';
+    const ln=tgUser_wa.last_name||'';
+    const un=tgUser_wa.username||'';
+    if(fn||ln) name=(fn+' '+ln).trim();
+    else if(un) name='@'+un;
+  }
+  // 2. tg_users jadvalidan
+  if((name==='Noma\'lum')&&TG_ID){
+    try{
+      const [tgU]=await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`).catch(()=>[]);
+      if(tgU?.full_name) name=tgU.full_name;
+    }catch(e){}
+  }
+  // 3. students / online_students dan
+  if(name==='Noma\'lum'){
+    name=offStudent?.name||onStudent?.full_name||'Noma\'lum';
+  }
+
+  // Timer hisoblash: reytingsiz testda timer yo'q
+  let endsAt=null;
+  let remaining;
+  const isUnrated=!t.rated&&!t.is_public;
+  if(isUnrated){
+    // Reytingsiz — timer yo'q, cheksiz vaqt
+    remaining=999999;
+    endsAt=null;
+  } else if(t.ends_at){
+    endsAt=new Date(t.ends_at).getTime();
+    remaining=Math.max(0,Math.floor((endsAt-now.getTime())/1000));
+  } else {
+    remaining=(t.duration_minutes||30)*60;
+  }
+
+  // Natija yaratish
+  const res=await POST('test_results',[{
+    test_id:testId,tg_id:TG_ID||null,
+    student_id:offStudent?.id||onStudent?.id||null,
+    participant_name:name,
+    answers:{},score:0,total_score:totalScore,
+    started_at:new Date().toISOString(),ball_added:false
+  }]);
+
+  R={
+    test:t,questions,answers:{},
+    cur:0,timer:null,startTime:Date.now(),
+    remaining,endsAt,
+    resultId:res[0]?.id,totalScore,
+    isPublic:isPublicMode||false
+  };
+  _submitLock=false;
+
+  document.getElementById('loading').style.display='none';
+  document.getElementById('runner-title').textContent=t.title;
+  document.getElementById('runner').classList.add('on');
+  renderAllQuestions();
+  startTimer();
+}
+
+async function startPublicTest(testId){
+  const tests=await GET('tests',`?id=eq.${testId}&select=*`);
+  if(!tests.length){
+    document.getElementById('loading').innerHTML='<div style="color:var(--red);padding:20px;text-align:center;font-weight:700">Test topilmadi</div>';
+    return;
+  }
+  const t=tests[0];
+  // Muddat tekshiruvi
+  if(t.ends_at&&new Date(t.ends_at)<new Date()){
+    document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
+    return;
+  }
+  // Bir marta topshirish tekshiruvi
+  if(TG_ID){
+    const done=await GET('test_results',`?test_id=eq.${testId}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
+    if(done.length){
+      try{
+        const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+        await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
+        });
+      }catch(e){}
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+      return;
+    }
+  }
+
+  allTests=tests;
+
+  // Student ma'lumotlarini yuklash (ism uchun)
+  if(TG_ID){
+    try{
+      const [off,on]=await Promise.all([
+        GET('students',`?telegram_id=eq.${TG_ID}&select=*&limit=1`),
+        GET('online_students',`?tg_id=eq.${TG_ID}&select=*&limit=1`)
+      ]);
+      offStudent=off[0]||null;
+      onStudent=on[0]||null;
+    }catch(e){}
+  }
+
+  await startTest(testId,true);
+  // loading ni startTest o'zi boshqaradi
+}
+
+// ══ RUNNER — Google Forms uslubi ══
+function renderAllQuestions(){
+  const total=R.questions.length;
+  const answered=Object.keys(R.answers).length;
+  const pct=answered/total*100;
+
+  document.getElementById('runner-prog-fill').style.width=pct+'%';
+  document.getElementById('runner-prog-txt').textContent=`${answered}/${total} javob berildi`;
+  // Reytingsiz testda timer yashirish
+  const isUnrated=R.test&&!R.test.rated&&!R.test.is_public;
+  const timerEl=document.getElementById('runner-timer');
+  if(timerEl)timerEl.style.display=isUnrated?'none':'block';
+
+  // Barcha savollarni render qilish
+  const body=document.getElementById('runner-body');
+  body.innerHTML=R.questions.map((q,i)=>{
+    const sel=R.answers[q.id];
+    return`<div class="q-card ${sel?'answered':''}" id="qcard-${q.id}">
+      <div class="q-num">${i+1}-savol</div>
+      <div class="q-text">${q.question_text}</div>
+      <div class="q-opts">
+        ${['A','B','C','D'].map(o=>`
+          <button class="q-opt ${sel===o?'sel':''}" onclick="selectAns('${o}',${q.id})">
+            <div class="q-opt-key">${o}</div>
+            <div class="q-opt-text">${q['option_'+o.toLowerCase()]||''}</div>
+          </button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Submit tugma
+  const submitBtn=document.getElementById('runner-submit-btn');
+  const unanswered=total-answered;
+  if(unanswered>0){
+    submitBtn.textContent=`✅ Yakunlash (${unanswered} ta javobsiz)`;
+    submitBtn.style.background='linear-gradient(135deg,var(--yellow),var(--orange))';
+    submitBtn.style.color='#000';
+  } else {
+    submitBtn.textContent='✅ Yakunlash';
+    submitBtn.style.background='linear-gradient(135deg,var(--green),var(--teal))';
+    submitBtn.style.color='#000';
+  }
+}
+
+function selectAns(opt, qId){
+  // Qayta tanlash mumkin — avvalgi javobni o'chiradi
+  if(R.answers[qId]===opt){
+    delete R.answers[qId]; // Ikkinchi marta bossа — bekor qiladi
+  } else {
+    R.answers[qId]=opt;
+  }
+  renderAllQuestions();
+  // Scroll qilmaslik — foydalanuvchi o'zi ko'radi
+}
+
+function startTimer(){
+  if(R.timer)clearInterval(R.timer);
+  updateTimer();
+  R.timer=setInterval(()=>{
+    // ends_at bo'lsa — ayni vaqtdan ends_at gacha hisoblash
+    if(R.endsAt){
+      R.remaining=Math.max(0,Math.floor((R.endsAt-Date.now())/1000));
+    } else {
+      R.remaining=Math.max(0,R.remaining-1);
+    }
+    updateTimer();
+    if(R.remaining<=0){clearInterval(R.timer);submitTest();}
+  },1000);
+}
+function updateTimer(){
+  const el=document.getElementById('runner-timer');
+  el.textContent=fmtMin(R.remaining);
+  el.className='runner-timer'+(R.remaining<=60?' warn':'');
+}
+
+// ══ TEST YAKUNLASH ══
+async function submitTest(){
+  if(_submitLock)return;
+  _submitLock=true;
+  const submitBtn=document.getElementById('runner-submit-btn');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='⏳ Saqlanmoqda...';}
+  if(R.timer)clearInterval(R.timer);
+  const timeSpent=Math.round((Date.now()-R.startTime)/1000);
+  let score=0,correct=0,wrong=0,unanswered=0;
+  const scorePerQ=R.isPublic?3.1:(q=>q.score||2);
+  R.questions.forEach(q=>{
+    const ans=R.answers[q.id];
+    if(!ans){unanswered++;return;}
+    if(ans===q.correct_answer){score+=R.isPublic?3.1:(q.score||2);correct++;}
+    else wrong++;
+  });
+  const total=R.totalScore;
+  const pct=total?Math.round(score/total*100):0;
+  const passed=pct>=(R.test.pass_score||60);
+
+  // Saqlash
+  try{
+    await PATCH('test_results',{
+      answers:R.answers,score,total_score:total,
+      finished_at:new Date().toISOString(),
+      ball_added:true
+    },`?id=eq.${R.resultId}`);
+
+    // Reytingli — ball qo'shish (birinchi marta topshirayotgan bo'lsa)
+    const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
+    if(R.test.rated&&!alreadyDone&&score>0){
+      const mode=window._urlMode; // 'offline' | 'online' | null
+      if(mode==='offline'&&offStudent?.id){
+        // Faqat oflayn kabinetdan — oflayn reytingga
+        await POST('scores',[{
+          student_id:offStudent.id,date:today(),points:score,
+          note:`Test: ${R.test.title} (${pct}%)`,source:'offline'
+        }]);
+      } else if(mode==='online'&&onStudent?.id){
+        // Faqat onlayn kabinetdan — onlayn reytingga
+        await POST('scores',[{
+          student_id:onStudent.id,date:today(),points:score,
+          note:`Test: ${R.test.title} (${pct}%)`,source:'online'
+        }]);
+      } else {
+        // mode yo'q (ommaviy test yoki to'g'ridan URL) — mavjud o'quvchiga
+        if(offStudent?.id){
+          await POST('scores',[{
+            student_id:offStudent.id,date:today(),points:score,
+            note:`Test: ${R.test.title} (${pct}%)`,source:'offline'
+          }]);
+        } else if(onStudent?.id){
+          await POST('scores',[{
+            student_id:onStudent.id,date:today(),points:score,
+            note:`Test: ${R.test.title} (${pct}%)`,source:'online'
+          }]);
+        }
+      }
+    }
+    myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
+
+  }catch(e){console.error('Submit error:',e)}
+
+  document.getElementById('runner').classList.remove('on');
+  showResult(score,total,pct,passed,correct,wrong,unanswered,timeSpent);
+}
+
+// ══ NATIJA EKRANI ══
+function showResult(score,total,pct,passed,correct,wrong,unanswered,timeSpent){
+  const el=document.getElementById('result');
+  el.className='on';
+  const grade=pct>=90?'🏆':pct>=80?'🎉':pct>=70?'👍':pct>=60?'📚':'😔';
+  const col=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+  const dt=new Date();
+  const dateStr=dt.getDate()+'-'+MONTHS[dt.getMonth()]+'-'+dt.getFullYear()+' '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+
+  if(R.isPublic){
+    const commentHtml=R.test.result_comment?`
+      <div style="width:100%;background:rgba(91,143,255,.08);border:1px solid rgba(91,143,255,.2);border-radius:14px;padding:16px;margin-bottom:16px;text-align:left">
+        <div style="font-size:11px;font-weight:800;color:var(--acc);margin-bottom:6px">📝 Admin izohi</div>
+        <div style="font-size:14px;font-weight:600;line-height:1.6">${R.test.result_comment}</div>
+      </div>`:'';
+    el.innerHTML=`
+      <div class="pub-res-wrap">
+        <div class="res-brand">iHuquq</div>
+        <div class="res-grade">${grade}</div>
+        <div class="res-circle" style="border-color:${col};box-shadow:0 0 32px ${col}33">
+          <div class="res-pct" style="color:${col}">${pct}%</div>
+          <div class="res-lbl">${score}/${total}</div>
+        </div>
+        <div class="res-title">${passed?'Tabriklaymiz!':'Keyingi safar!'}</div>
+        <div class="res-sub" style="margin-bottom:16px">${R.test.title}</div>
+        <div class="res-stats" style="width:100%;margin-bottom:16px">
+          <div class="res-stat"><div class="res-stat-v" style="color:var(--green)">${correct}</div><div class="res-stat-l">To'g'ri</div></div>
+          <div class="res-stat"><div class="res-stat-v" style="color:var(--red)">${wrong}</div><div class="res-stat-l">Noto'g'ri</div></div>
+          <div class="res-stat"><div class="res-stat-v" style="color:var(--yellow)">${fmtMin(timeSpent)}</div><div class="res-stat-l">Vaqt</div></div>
+        </div>
+        ${commentHtml}
+      </div>`;
+    return;
+  }
+
+  // Kabinet test
+  const reviewHtml=R.questions.map((q,i)=>{
+    const myAns=R.answers[q.id];
+    const isCorr=myAns===q.correct_answer;
+    const ansText=myAns?q['option_'+myAns.toLowerCase()]:'Javob berilmadi';
+    const corrText=q['option_'+q.correct_answer.toLowerCase()];
+    return`<div class="ra-item ${isCorr?'correct':'wrong'}">
+      <div class="ra-num">${i+1}-savol</div>
+      <div class="ra-q">${q.question_text}</div>
+      <div class="ra-answers">
+        <div class="ra-ans-row">
+          <span class="ra-tag ${myAns?(isCorr?'your-correct':'your-wrong'):'your-wrong'}">${myAns?myAns+')':'—'}</span>
+          <span style="color:${isCorr?'var(--green)':'var(--red)'}">${ansText}</span>
+        </div>
+        ${!isCorr?`<div class="ra-ans-row">
+          <span class="ra-tag correct-ans">${q.correct_answer})</span>
+          <span style="color:var(--acc)">${corrText}</span>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML=`
+    <div class="res-brand">iHuquq</div>
+    <div class="res-grade">${grade}</div>
+    <div class="res-circle" style="border-color:${col};box-shadow:0 0 32px ${col}33">
+      <div class="res-pct" style="color:${col}">${pct}%</div>
+      <div class="res-lbl">${score}/${total}</div>
+    </div>
+    <div class="res-title">${passed?'Tabriklaymiz!':'Keyingi safar!'}</div>
+    <div class="res-sub">${R.test.title}${R.test.rated?'<br><span style="color:var(--green)">⭐ '+score+' ball reytingga qo\x27shildi</span>':''}</div>
+    <div class="res-stats">
+      <div class="res-stat"><div class="res-stat-v" style="color:var(--green)">${correct}</div><div class="res-stat-l">To'g'ri</div></div>
+      <div class="res-stat"><div class="res-stat-v" style="color:var(--red)">${wrong}</div><div class="res-stat-l">Noto'g'ri</div></div>
+      <div class="res-stat"><div class="res-stat-v" style="color:var(--yellow)">${fmtMin(timeSpent)}</div><div class="res-stat-l">Vaqt</div></div>
+    </div>
+    <div class="res-answers">${reviewHtml}</div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:8px">
+      <button class="btn-sec" onclick="closeResult()">← Testlarga qaytish</button>
+    </div>`;
+}
+
+function downloadText(score,total,pct,correct,wrong){
+  const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
+  const dt=new Date();
+  const dateStr=dt.getDate()+'-'+MONTHS[dt.getMonth()]+'-'+dt.getFullYear();
+  let txt='iHuquq — Test natijasi\n'+'='.repeat(36)+'\n';
+  txt+=`Test: ${R.test.title}\nO\'quvchi: ${name}\nSana: ${dateStr}\n${'-'.repeat(36)}\n`;
+  txt+=`Natija: ${pct}% (${score}/${total} ball)\nTo\'g\'ri: ${correct} ta\nNoto\'g\'ri: ${wrong} ta\n`;
+  if(!R.isPublic){
+    txt+='-'.repeat(36)+'\nSavollar tahlili:\n\n';
+    R.questions.forEach((q,i)=>{
+      const myAns=R.answers[q.id];
+      const isCorr=myAns===q.correct_answer;
+      txt+=`${i+1}. ${q.question_text}\n`;
+      txt+=`   Javob: ${myAns||'—'}) ${myAns?q['option_'+myAns.toLowerCase()]:'Javob berilmadi'}\n`;
+      if(!isCorr)txt+=`   To\'g\'ri: ${q.correct_answer}) ${q['option_'+q.correct_answer.toLowerCase()]}\n`;
+      txt+=(isCorr?'   ✓ To\'g\'ri':'   ✗ Noto\'g\'ri')+'\n\n';
+    });
+  }
+  txt+='='.repeat(36)+'\niHuquq — Huquqiy ta\'lim platformasi';
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`iHuquq_natija.txt`;a.click();URL.revokeObjectURL(a.href);
+}
+
+function downloadPDF(score,total,pct,correct,wrong,dateStr){
+  const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
+  const colHex=pct>=80?'#10e08a':pct>=60?'#fbbf24':'#f43f5e';
+  const grade=pct>=90?'Mukammal 🏆':pct>=80?'Yaxshi 🎉':pct>=70?'O\'rta 👍':pct>=60?'Qoniqarli 📚':'Qoniqarsiz 😔';
+  let reviewRows='';
+  if(!R.isPublic){
+    reviewRows=R.questions.map((q,i)=>{
+      const myAns=R.answers[q.id];
+      const isCorr=myAns===q.correct_answer;
+      return`<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;background:${isCorr?'#f0fff8':'#fff5f5'};border-left:3px solid ${isCorr?'#10e08a':'#f43f5e'}">
+        <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:3px">${i+1}-savol</div>
+        <div style="font-size:12px;font-weight:600;color:#0d1120;white-space:pre-wrap;margin-bottom:5px">${q.question_text}</div>
+        <div style="font-size:11px;color:${isCorr?'#10e08a':'#f43f5e'};font-weight:700">${isCorr?'✓':'✗'} ${myAns||'—'}) ${myAns?q['option_'+myAns.toLowerCase()]:'Javob berilmadi'}</div>
+        ${!isCorr?`<div style="font-size:11px;color:#5b8fff;font-weight:700;margin-top:2px">→ ${q.correct_answer}) ${q['option_'+q.correct_answer.toLowerCase()]}</div>`:''}
+      </td></tr>`;
+    }).join('');
+  }
+  const html=`<!DOCTYPE html><html lang="uz"><head><meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Outfit:wght@400;600;700&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Outfit',sans-serif;background:#fff;color:#0d1120;padding:32px;max-width:700px;margin:0 auto}
+    .brand{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:900;background:linear-gradient(135deg,#5b8fff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .div{height:2px;background:linear-gradient(90deg,#5b8fff,#8b5cf6);border-radius:1px;margin:16px 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+    .box{background:#f8f9ff;border-radius:8px;padding:10px 12px}
+    .lbl{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    .val{font-size:13px;font-weight:700}
+    .score{text-align:center;padding:20px;background:${colHex}18;border:2px solid ${colHex}40;border-radius:12px;margin-bottom:16px}
+    .sp{font-family:'Montserrat',sans-serif;font-size:48px;font-weight:900;color:${colHex}}
+    .sr{font-size:14px;color:#666;margin-top:3px}.sg{font-size:16px;font-weight:800;margin-top:6px}
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+    .stat{text-align:center;background:#f8f9ff;border-radius:8px;padding:10px}
+    .sv{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900}.sl{font-size:9px;color:#888;font-weight:700;margin-top:2px;text-transform:uppercase}
+    table{width:100%;border-collapse:collapse}.footer{margin-top:20px;text-align:center;font-size:10px;color:#aaa}
+  </style></head><body>
+  <div class="brand">iHuquq</div>
+  <div style="font-size:11px;color:#888;margin-bottom:4px">Huquqiy ta'lim platformasi</div>
+  <div class="div"></div>
+  <div class="grid">
+    <div class="box"><div class="lbl">Test</div><div class="val">${R.test.title}</div></div>
+    <div class="box"><div class="lbl">O'quvchi</div><div class="val">${name}</div></div>
+    <div class="box"><div class="lbl">Sana</div><div class="val">${dateStr||''}</div></div>
+    <div class="box"><div class="lbl">Davomiylik</div><div class="val">${fmtMin(Math.round((Date.now()-R.startTime)/1000))}</div></div>
+  </div>
+  <div class="score"><div class="sp">${pct}%</div><div class="sr">${score}/${total} ball</div><div class="sg">${grade}</div></div>
+  <div class="stats">
+    <div class="stat"><div class="sv" style="color:#10e08a">${correct}</div><div class="sl">To'g'ri</div></div>
+    <div class="stat"><div class="sv" style="color:#f43f5e">${wrong}</div><div class="sl">Noto'g'ri</div></div>
+    <div class="stat"><div class="sv" style="color:#fbbf24">${unanswered}</div><div class="sl">Javobsiz</div></div>
+  </div>
+  ${reviewRows?`<div class="div"></div><div style="font-size:13px;font-weight:800;margin-bottom:10px">Savollar tahlili</div><table>${reviewRows}</table>`:''}
+  <div class="footer">iHuquq · ${dateStr||''}</div>
+  </body></html>`;
+  const win=window.open('','_blank');
+  if(win){win.document.write(html);win.document.close();setTimeout(()=>win.print(),600);}
+}
+function closeResult(){
+  document.getElementById('result').className='';
+  document.getElementById('result').innerHTML='';
+  if(MODE==='public'){
+    // Ommaviy testda yopish
+    if(window.Telegram?.WebApp){Telegram.WebApp.close();}
+    else document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px;font-weight:700;color:var(--green)">✅ Test yakunlandi!</div>';
+  } else {
+    renderList();
+  }
+}
+
+// ══ THEME ══
+function toggleTheme(){
+  const h=document.documentElement;
+  const d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('theme-btn').textContent=d?'🌙':'☀️';
+  localStorage.setItem('ihuquq_play_theme',d?'light':'dark');
+}
+const _t=localStorage.getItem('ihuquq_play_theme');
+if(_t){document.documentElement.setAttribute('data-theme',_t);document.getElementById('theme-btn').textContent=_t==='light'?'🌙':'☀️';}
+
+if(window.Telegram?.WebApp){Telegram.WebApp.expand();Telegram.WebApp.ready();}
+init();
+</script>
+</body>
+</html>
