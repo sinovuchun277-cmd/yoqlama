@@ -743,9 +743,16 @@ async function startTest(testId, isPublicMode){
       document.getElementById('loading').style.display='flex';
       return;
     }
+    // Bir marta tekshiruv: DB + localStorage
+    const localKey='done_'+t.id+(TG_ID?'_'+TG_ID:'');
+    const localDone=localStorage.getItem(localKey);
+    let dbDone=false;
     if(TG_ID){
       const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
-      if(done.length){
+      if(done.length)dbDone=true;
+    }
+    if(localDone||dbDone){
+      if(TG_ID&&dbDone){
         try{
           const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
           await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
@@ -753,10 +760,10 @@ async function startTest(testId, isPublicMode){
             body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
           });
         }catch(e){}
-        document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
-        document.getElementById('loading').style.display='flex';
-        return;
       }
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+      document.getElementById('loading').style.display='flex';
+      return;
     }
   }
   if(t.rated&&!isPublicMode){
@@ -813,7 +820,7 @@ async function startTest(testId, isPublicMode){
     cur:0,timer:null,startTime:Date.now(),
     remaining,endsAt,
     resultId:res[0]?.id,totalScore,
-    isPublic:isPublicMode||false,
+    isPublic:t.is_public||false,
     participantName:name
   };
 
@@ -984,6 +991,12 @@ async function submitTest(){
       }
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
+
+    // Ommaviy test — localStorage ga yozish
+    if(R.isPublic){
+      const lk='done_'+R.test.id+(TG_ID?'_'+TG_ID:'');
+      try{localStorage.setItem(lk,'1');}catch(e){}
+    }
 
     // Adminga natija yuborish (faqat ommaviy test uchun)
     if(R.isPublic){
