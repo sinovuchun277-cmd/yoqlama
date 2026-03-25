@@ -737,17 +737,22 @@ async function startTest(testId, isPublicMode){
   const now=new Date();
 
   // Ommaviy test — muddat va bir marta topshirish tekshiruvi
-  if(isPublicMode){
+  if(t.is_public){
     if(t.ends_at&&new Date(t.ends_at)<now){
       document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">⏰</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Muddati tugagan</div><div style="font-size:13px;color:var(--text2)">Bu test uchun belgilangan vaqt o\'tib ketdi.</div></div>';
       document.getElementById('loading').style.display='flex';
       return;
     }
-    // Bir marta topshirish — TG_ID bo'lsa tekshirish
+    // Bir marta tekshiruv: DB + localStorage
+    const localKey='done_'+t.id+(TG_ID?'_'+TG_ID:'');
+    const localDone=localStorage.getItem(localKey);
+    let dbDone=false;
     if(TG_ID){
       const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
-      if(done.length){
-        // Botga xabar yuborish
+      if(done.length)dbDone=true;
+    }
+    if(localDone||dbDone){
+      if(TG_ID&&dbDone){
         try{
           const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
           await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
@@ -755,14 +760,12 @@ async function startTest(testId, isPublicMode){
             body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
           });
         }catch(e){}
-        // Sahifada ham ko'rsatish
-        document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
-        document.getElementById('loading').style.display='flex';
-        return;
       }
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+      document.getElementById('loading').style.display='flex';
+      return;
     }
   }
-
   if(t.rated&&!isPublicMode){
     const done=myResults.find(r=>r.test_id===testId);
     if(done){
@@ -817,7 +820,8 @@ async function startTest(testId, isPublicMode){
     cur:0,timer:null,startTime:Date.now(),
     remaining,endsAt,
     resultId:res[0]?.id,totalScore,
-    isPublic:isPublicMode||false
+    isPublic:t.is_public||false,
+    participantName:name
   };
 
   document.getElementById('runner-title').textContent=t.title;
@@ -839,6 +843,28 @@ async function startPublicTest(testId){
     return;
   }
   allTests=tests;
+
+  // Ommaviy test — bir marta tekshiruv (startPublicTest orqali kirganda)
+  if(t.is_public&&TG_ID){
+    const localKey='done_'+t.id+'_'+TG_ID;
+    const localDone=localStorage.getItem(localKey);
+    let dbDone=false;
+    try{
+      const done=await GET('test_results',`?test_id=eq.${t.id}&tg_id=eq.${TG_ID}&finished_at=not.is.null&select=id&limit=1`);
+      if(done.length)dbDone=true;
+    }catch(e){}
+    if(localDone||dbDone){
+      try{
+        const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
+        await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({chat_id:TG_ID,text:`⚠️ Siz *${t.title}* testini allaqachon topshirgansiz.\n\nHar bir ommaviy test faqat bir marta topshirilishi mumkin.`,parse_mode:'Markdown'})
+        });
+      }catch(e){}
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2)">Siz bu testni avval topshirgansiz.</div></div>';
+      return;
+    }
+  }
 
   // Reytingli test uchun offStudent/onStudent yuklansin
   if(t.rated&&TG_ID){
@@ -933,6 +959,11 @@ function updateTimer(){
 
 // ══ TEST YAKUNLASH ══
 async function submitTest(){
+  // Bir marta bosilishini ta'minlash
+  if(R._submitting)return;
+  R._submitting=true;
+  const submitBtn=document.getElementById('runner-submit-btn');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='⏳ Saqlanmoqda...';}
   if(R.timer)clearInterval(R.timer);
   const timeSpent=Math.round((Date.now()-R.startTime)/1000);
   let score=0,correct=0,wrong=0,unanswered=0;
@@ -950,7 +981,7 @@ async function submitTest(){
   // Saqlash
   try{
     await PATCH('test_results',{
-      answers:R.answers,score,total_score:total,
+      answers:R.answers,score:Math.round(score*10)/10,total_score:Math.round(total*10)/10,
       finished_at:new Date().toISOString(),
       ball_added:true
     },`?id=eq.${R.resultId}`);
@@ -988,20 +1019,13 @@ async function submitTest(){
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
 
-    // Adminga natija yuborish (faqat ommaviy test uchun)
+    // Ommaviy test — localStorage ga yozish
     if(R.isPublic){
-      const name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
-      try{
-        const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
-        const ADMIN_ID='6608377498';
-        const grade=pct>=80?'🟢 O\'tdi':pct>=60?'🟡 Qisman':'🔴 O\'tmadi';
-        const msg=`📊 *Ommaviy test natijasi*\n👤 ${name}\n📝 ${R.test.title}\n✅ ${score}/${total} ball (${pct}%)\n${grade}`;
-        await fetch(`https://api.telegram.org/bot${TG_BOT}/sendMessage`,{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({chat_id:ADMIN_ID,text:msg,parse_mode:'Markdown'})
-        });
-      }catch(e){}
+      const lk='done_'+R.test.id+(TG_ID?'_'+TG_ID:'');
+      try{localStorage.setItem(lk,'1');}catch(e){}
     }
+
+
   }catch(e){console.error('Submit error:',e)}
 
   document.getElementById('runner').classList.remove('on');
