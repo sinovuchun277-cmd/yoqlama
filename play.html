@@ -788,10 +788,15 @@ async function startTest(testId, isPublicMode){
     }catch(e){name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';}
   }
 
-  // Timer hisoblash: ends_at bo'lsa — undan hisoblash, yo'qsa — duration
+  // Timer hisoblash: reytingsiz testda timer yo'q
   let endsAt=null;
   let remaining;
-  if(t.ends_at){
+  const isUnrated=!t.rated&&!t.is_public;
+  if(isUnrated){
+    // Reytingsiz — timer yo'q, cheksiz vaqt
+    remaining=999999;
+    endsAt=null;
+  } else if(t.ends_at){
     endsAt=new Date(t.ends_at).getTime();
     remaining=Math.max(0,Math.floor((endsAt-now.getTime())/1000));
   } else {
@@ -859,6 +864,10 @@ function renderAllQuestions(){
 
   document.getElementById('runner-prog-fill').style.width=pct+'%';
   document.getElementById('runner-prog-txt').textContent=`${answered}/${total} javob berildi`;
+  // Reytingsiz testda timer yashirish
+  const isUnrated=R.test&&!R.test.rated&&!R.test.is_public;
+  const timerEl=document.getElementById('runner-timer');
+  if(timerEl)timerEl.style.display=isUnrated?'none':'block';
 
   // Barcha savollarni render qilish
   const body=document.getElementById('runner-body');
