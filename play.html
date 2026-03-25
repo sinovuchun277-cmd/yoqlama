@@ -813,7 +813,8 @@ async function startTest(testId, isPublicMode){
     cur:0,timer:null,startTime:Date.now(),
     remaining,endsAt,
     resultId:res[0]?.id,totalScore,
-    isPublic:isPublicMode||false
+    isPublic:isPublicMode||false,
+    participantName:name
   };
 
   document.getElementById('runner-title').textContent=t.title;
@@ -986,8 +987,8 @@ async function submitTest(){
 
     // Adminga natija yuborish (faqat ommaviy test uchun)
     if(R.isPublic){
-      // Ism: startTest da saqlangan name (tg_users dan olingan)
-      const adminName=offStudent?.name||onStudent?.full_name||'Noma\'lum';
+      // Ism: startTest da tg_users dan olingan haqiqiy ism
+      const adminName=R.participantName||'Noma\'lum';
       try{
         const TG_BOT='8334080941:AAFWR81J-g-vP_tQq-pdoF0ORC_yj4PXues';
         const ADMIN_ID='6608377498';
