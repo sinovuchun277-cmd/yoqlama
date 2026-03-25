@@ -779,14 +779,27 @@ async function startTest(testId, isPublicMode){
     ?Math.round(questions.length*3.1*10)/10
     :questions.reduce((a,b)=>a+(b.score||2),0);
 
-  // Ism: tg_users dan, keyin student dan, keyin fallback
-  let name='Foydalanuvchi';
-  if(TG_ID){
+  // Ism: Telegram WebApp dan, keyin tg_users dan, keyin student dan, keyin fallback
+  let name='Noma\'lum';
+  // 1. Telegram WebApp dan to'g'ridan olish (eng ishonchli)
+  const tgUser_wa=window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if(tgUser_wa){
+    const fn=tgUser_wa.first_name||'';
+    const ln=tgUser_wa.last_name||'';
+    const un=tgUser_wa.username||'';
+    if(fn||ln) name=(fn+' '+ln).trim();
+    else if(un) name='@'+un;
+  }
+  // 2. tg_users jadvalidan
+  if((name==='Noma\'lum')&&TG_ID){
     try{
-      const [tgUser]=await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`).catch(()=>[]);
-      if(tgUser?.full_name)name=tgUser.full_name;
-      else name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';
-    }catch(e){name=offStudent?.name||onStudent?.full_name||'Foydalanuvchi';}
+      const [tgU]=await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`).catch(()=>[]);
+      if(tgU?.full_name) name=tgU.full_name;
+    }catch(e){}
+  }
+  // 3. students / online_students dan
+  if(name==='Noma\'lum'){
+    name=offStudent?.name||onStudent?.full_name||'Noma\'lum';
   }
 
   // Timer hisoblash: reytingsiz testda timer yo'q
@@ -822,6 +835,7 @@ async function startTest(testId, isPublicMode){
   };
   _submitLock=false;
 
+  document.getElementById('loading').style.display='none';
   document.getElementById('runner-title').textContent=t.title;
   document.getElementById('runner').classList.add('on');
   renderAllQuestions();
@@ -858,8 +872,8 @@ async function startPublicTest(testId){
 
   allTests=tests;
 
-  // Reytingli test uchun offStudent/onStudent yuklansin
-  if(t.rated&&TG_ID){
+  // Student ma'lumotlarini yuklash (ism uchun)
+  if(TG_ID){
     try{
       const [off,on]=await Promise.all([
         GET('students',`?telegram_id=eq.${TG_ID}&select=*&limit=1`),
@@ -871,7 +885,7 @@ async function startPublicTest(testId){
   }
 
   await startTest(testId,true);
-  document.getElementById('loading').style.display='none';
+  // loading ni startTest o'zi boshqaradi
 }
 
 // ══ RUNNER — Google Forms uslubi ══
