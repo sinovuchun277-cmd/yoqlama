@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="iHuquq CRM">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>iHuquq CRM</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#06080f;font-family:sans-serif}
+
+/* Loading */
+#splash{
+  position:fixed;inset:0;background:#06080f;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+.splash-logo{
+  font-family:'Montserrat',sans-serif;font-size:36px;font-weight:900;
+  background:linear-gradient(135deg,#5b8fff,#8b5cf6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.splash-bar{width:120px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.splash-fill{height:100%;background:linear-gradient(90deg,#5b8fff,#8b5cf6);border-radius:2px;animation:ldf 1.2s ease-in-out infinite}
+@keyframes ldf{0%{width:0;margin-left:0}50%{width:100%}100%{width:0;margin-left:100%}}
+
+/* Main iframe */
+#frame{
+  width:100%;
+  height:100%;
+  border:none;
+  display:block;
+}
+
+/* Back button — faqat bosh sahifa emas bo'lsa ko'rinadi */
+#back-btn{
+  position:fixed;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  left:16px;
+  width:44px;height:44px;
+  border-radius:50%;
+  background:rgba(91,143,255,.9);
+  border:none;
+  color:#fff;font-size:20px;
+  cursor:pointer;
+  display:none;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(91,143,255,.4);
+  z-index:100;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+#back-btn.show{display:flex}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-logo">iHuquq</div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<iframe id="frame" src="iHuquqCRM.html" allowfullscreen></iframe>
+<button id="back-btn" onclick="goBack()">←</button>
+
+<script>
+const HOME = 'iHuquqCRM.html';
+const frame = document.getElementById('frame');
+const backBtn = document.getElementById('back-btn');
+const history = [HOME];
+
+// Splash yopish
+frame.onload = function(){
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+  }, 400);
+  updateBackBtn();
+};
+
+// iFrame ichidagi linklar shu ichida ochilishi uchun
+frame.onload = function(){
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    injectLinkInterceptor();
+  }, 400);
+  updateBackBtn();
+};
+
+function injectLinkInterceptor(){
+  try{
+    const doc = frame.contentDocument || frame.contentWindow.document;
+    // window.location.href o'zgarishlarini ushlash
+    const win = frame.contentWindow;
+
+    // navigate funksiyasini inject qilish
+    win._shellNavigate = function(url){
+      navigate(url);
+    };
+
+    // Barcha <a> taglarni ushlash
+    doc.addEventListener('click', function(e){
+      const a = e.target.closest('a[href]');
+      if(!a) return;
+      const href = a.getAttribute('href');
+      if(!href || href.startsWith('#') || href.startsWith('tel:') || href.startsWith('mailto:')) return;
+      if(href.startsWith('http') && !href.includes('sinovuchun277-cmd.github.io')) return; // tashqi linklar
+      e.preventDefault();
+      navigate(href);
+    }, true);
+
+  }catch(e){
+    // Cross-origin error — skip
+  }
+}
+
+function navigate(url){
+  // Relative URL ni to'liq qilish
+  if(!url.startsWith('http') && !url.startsWith('/')){
+    // iHuquqCRM.html, online.html, test.html kabi
+    const base = frame.src.replace(/[^/]+$/, '');
+    url = base + url;
+  }
+  history.push(url);
+  frame.src = url;
+}
+
+function goBack(){
+  if(history.length <= 1){
+    frame.src = HOME;
+    history.splice(0, history.length, HOME);
+  } else {
+    history.pop();
+    frame.src = history[history.length - 1];
+  }
+  updateBackBtn();
+}
+
+function updateBackBtn(){
+  try{
+    const cur = frame.contentWindow.location.href;
+    const isHome = cur.includes(HOME) || cur.endsWith('/yoqlama/') || cur === HOME;
+    backBtn.classList.toggle('show', !isHome && history.length > 1);
+  }catch(e){}
+}
+
+// iFrame ichida window.location.href = '...' ishlatilganda ushlash
+// MutationObserver orqali URL o'zgarishini kuzatish
+setInterval(()=>{
+  try{
+    const cur = frame.contentWindow.location.href;
+    if(cur !== frame._lastUrl){
+      frame._lastUrl = cur;
+      updateBackBtn();
+      injectLinkInterceptor();
+    }
+  }catch(e){}
+}, 500);
+
+// iOS da hardware back gesture uchun
+window.addEventListener('popstate', goBack);
+</script>
+
+</body>
+</html>
