@@ -412,7 +412,9 @@ async function startTest(testId, isPublicMode){
   let _resultId=null;
   try{
     const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
+    console.log('CREATE result_id response:',JSON.stringify(res));
     _resultId=Array.isArray(res)?res[0]?.id:res?.id||null;
+    console.log('_resultId:',_resultId);
   }catch(e){console.error('Result create error:',e);}
   R={test:t,questions,answers:{},cur:0,timer:null,startTime:Date.now(),remaining,endsAt,resultId:_resultId,totalScore,isPublic:isPublicMode||false};
   document.getElementById('runner-title').textContent=t.title;
@@ -530,12 +532,14 @@ async function submitTest(){
   const passed=pct>=(R.test.pass_score||60);
   try{
     if(R.resultId){
-      await PATCH('test_results',{answers:R.answers,score,total_score:total,finished_at:new Date().toISOString(),ball_added:true},`?id=eq.${R.resultId}`);
+      const _patchRes=await PATCH('test_results',{answers:R.answers,score,total_score:total,finished_at:new Date().toISOString(),ball_added:true},`?id=eq.${R.resultId}`);
+      console.log('PATCH result:',JSON.stringify(_patchRes));
     } else {
       // resultId yo'q — yangi yozuv yaratish
       let _name2='Foydalanuvchi';
       if(TG_ID){try{const _u=await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`);if(_u[0]?.full_name)_name2=_u[0].full_name;}catch(e){}}
-      await POST('test_results',[{test_id:R.test.id,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:_name2,answers:R.answers,score,total_score:total,started_at:new Date(Date.now()-timeSpent*1000).toISOString(),finished_at:new Date().toISOString(),ball_added:true}]);
+      const _postRes=await POST('test_results',[{test_id:R.test.id,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:_name2,answers:R.answers,score,total_score:total,started_at:new Date(Date.now()-timeSpent*1000).toISOString(),finished_at:new Date().toISOString(),ball_added:true}]);
+      console.log('POST result:',JSON.stringify(_postRes));
     }
     const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
     if(R.test.rated&&!alreadyDone&&score>0){
@@ -556,7 +560,13 @@ async function submitTest(){
       try{localStorage.setItem(_lk3,'1');}catch(e){}
     }
     // ═══ 3-TUZATMA: Admin xabari olib tashlandi ═══
-  }catch(e){console.error('Submit error:',e)}
+  }catch(e){
+    document.getElementById('runner').classList.remove('on');
+    const _eid=document.getElementById('result');
+    _eid.className='on';
+    _eid.innerHTML='<div style="padding:32px;text-align:center"><div style="font-size:48px">❌</div><div style="font-size:15px;font-weight:800;margin:12px 0">Saqlashda xato</div><div style="font-size:11px;color:var(--text2);word-break:break-all">'+String(e)+'</div><div style="font-size:11px;margin-top:8px;color:var(--text3)">resultId: '+String(R.resultId)+'</div></div>';
+    return;
+  }
   document.getElementById('runner').classList.remove('on');
   showResult(score,total,pct,passed,correct,wrong,unanswered,timeSpent);
 }
