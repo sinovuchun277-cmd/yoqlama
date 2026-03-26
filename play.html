@@ -401,8 +401,12 @@ async function startTest(testId, isPublicMode){
   if(isUnrated){remaining=999999;endsAt=null;}
   else if(t.ends_at){endsAt=new Date(t.ends_at).getTime();remaining=Math.max(0,Math.floor((endsAt-now.getTime())/1000));}
   else{remaining=(t.duration_minutes||30)*60;}
-  const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
-  R={test:t,questions,answers:{},cur:0,timer:null,startTime:Date.now(),remaining,endsAt,resultId:res[0]?.id,totalScore,isPublic:isPublicMode||false};
+  let _resultId=null;
+  try{
+    const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
+    _resultId=Array.isArray(res)?res[0]?.id:res?.id||null;
+  }catch(e){console.error('Result create error:',e);}
+  R={test:t,questions,answers:{},cur:0,timer:null,startTime:Date.now(),remaining,endsAt,resultId:_resultId,totalScore,isPublic:isPublicMode||false};
   document.getElementById('runner-title').textContent=t.title;
   document.getElementById('runner').classList.add('on');
   renderAllQuestions();
@@ -512,7 +516,13 @@ async function submitTest(){
   const pct=total?Math.round(score/total*100):0;
   const passed=pct>=(R.test.pass_score||60);
   try{
-    await PATCH('test_results',{answers:R.answers,score,total_score:total,finished_at:new Date().toISOString(),ball_added:true},`?id=eq.${R.resultId}`);
+    if(R.resultId){
+      await PATCH('test_results',{answers:R.answers,score,total_score:total,finished_at:new Date().toISOString(),ball_added:true},`?id=eq.${R.resultId}`);
+    } else {
+      // resultId yo'q — yangi yozuv yaratish
+      const name2=R.test&&TG_ID?(await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`).catch(()=>[])).then?.[0]?.full_name||'Foydalanuvchi':'Foydalanuvchi';
+      await POST('test_results',[{test_id:R.test.id,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:typeof name2==='string'?name2:'Foydalanuvchi',answers:R.answers,score,total_score:total,started_at:new Date(Date.now()-timeSpent*1000).toISOString(),finished_at:new Date().toISOString(),ball_added:true}]);
+    }
     const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
     if(R.test.rated&&!alreadyDone&&score>0){
       const mode=window._urlMode;
