@@ -410,12 +410,21 @@ async function startTest(testId, isPublicMode){
   else if(t.ends_at){endsAt=new Date(t.ends_at).getTime();remaining=Math.max(0,Math.floor((endsAt-now.getTime())/1000));}
   else{remaining=(t.duration_minutes||30)*60;}
   let _resultId=null;
+  let _postErr=null;
   try{
     const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
-    console.log('CREATE result_id response:',JSON.stringify(res));
-    _resultId=Array.isArray(res)?res[0]?.id:res?.id||null;
-    console.log('_resultId:',_resultId);
-  }catch(e){console.error('Result create error:',e);}
+    if(Array.isArray(res)&&res[0]?.id){
+      _resultId=res[0].id;
+    } else {
+      _postErr=JSON.stringify(res);
+    }
+  }catch(e){_postErr=String(e);}
+  if(_postErr){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('result').className='on';
+    document.getElementById('result').innerHTML='<div style="padding:32px;text-align:center"><div style="font-size:40px;margin-bottom:12px">⚠️</div><div style="font-size:14px;font-weight:800;margin-bottom:8px">Xato javobi:</div><div style="font-size:11px;color:var(--text2);word-break:break-all;background:var(--s2);padding:12px;border-radius:8px;text-align:left">'+_postErr+'</div></div>';
+    return;
+  }
   R={test:t,questions,answers:{},cur:0,timer:null,startTime:Date.now(),remaining,endsAt,resultId:_resultId,totalScore,isPublic:isPublicMode||false};
   document.getElementById('runner-title').textContent=t.title;
   document.getElementById('runner').classList.add('on');
