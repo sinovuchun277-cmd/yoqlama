@@ -412,7 +412,7 @@ async function startTest(testId, isPublicMode){
   let _resultId=null;
   let _postErr=null;
   try{
-    const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
+    const res=await POST('test_results',[{test_id:testId,tg_id:TG_ID||null,student_id:null,participant_name:name,answers:{},score:0,total_score:totalScore,started_at:new Date().toISOString(),ball_added:false}]);
     if(Array.isArray(res)&&res[0]?.id){
       _resultId=res[0].id;
     } else {
@@ -547,7 +547,7 @@ async function submitTest(){
       // resultId yo'q — yangi yozuv yaratish
       let _name2='Foydalanuvchi';
       if(TG_ID){try{const _u=await GET('tg_users',`?tg_id=eq.${TG_ID}&select=full_name&limit=1`);if(_u[0]?.full_name)_name2=_u[0].full_name;}catch(e){}}
-      const _postRes=await POST('test_results',[{test_id:R.test.id,tg_id:TG_ID||null,student_id:offStudent?.id||onStudent?.id||null,participant_name:_name2,answers:R.answers,score,total_score:total,started_at:new Date(Date.now()-timeSpent*1000).toISOString(),finished_at:new Date().toISOString(),ball_added:true}]);
+      const _postRes=await POST('test_results',[{test_id:R.test.id,tg_id:TG_ID||null,student_id:offStudent?.id||null,participant_name:_name2,answers:R.answers,score,total_score:total,started_at:new Date(Date.now()-timeSpent*1000).toISOString(),finished_at:new Date().toISOString(),ball_added:true}]);
       console.log('POST result:',JSON.stringify(_postRes));
     }
     const alreadyDone=myResults.find(r=>r.test_id===R.test.id&&r.id!==R.resultId);
