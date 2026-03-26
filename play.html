@@ -395,7 +395,7 @@ async function startTest(testId, isPublicMode){
   const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
   if(!questions.length){alert('Bu testda savol yo\'q');return;}
   const isPublicTest=isPublicMode||false;
-  const totalScore=isPublicTest?Math.round(questions.length*3.1*10)/10:questions.reduce((a,b)=>a+(b.score||2),0);
+  const totalScore=isPublicTest?Math.round(questions.length*3.1):questions.reduce((a,b)=>a+(b.score||2),0);
   let name='Foydalanuvchi';
   if(TG_ID){
     try{
@@ -529,11 +529,11 @@ async function submitTest(){
   if(R.timer)clearInterval(R.timer);
   const timeSpent=Math.round((Date.now()-R.startTime)/1000);
   let score=0,correct=0,wrong=0,unanswered=0;
-  const scorePerQ=R.isPublic?3.1:(q=>q.score||2);
+  const scorePerQ=R.isPublic?3:(q=>q.score||2);
   R.questions.forEach(q=>{
     const ans=R.answers[q.id];
     if(!ans){unanswered++;return;}
-    if(ans===q.correct_answer){score+=R.isPublic?3.1:(q.score||2);correct++;}
+    if(ans===q.correct_answer){score+=R.isPublic?3:(q.score||2);correct++;}
     else wrong++;
   });
   const total=R.totalScore;
