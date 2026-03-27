@@ -395,7 +395,7 @@ async function startTest(testId, isPublicMode){
   const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
   if(!questions.length){alert('Bu testda savol yo\'q');return;}
   const isPublicTest=isPublicMode||false;
-  const totalScore=isPublicTest?Math.round(questions.length*3.1):questions.reduce((a,b)=>a+(b.score||2),0);
+  const totalScore=isPublicTest?questions.length*3:questions.reduce((a,b)=>a+(b.score||2),0);
   let name='Foydalanuvchi';
   if(TG_ID){
     try{
@@ -427,6 +427,10 @@ async function startTest(testId, isPublicMode){
   }
   R={test:t,questions,answers:{},cur:0,timer:null,startTime:Date.now(),remaining,endsAt,resultId:_resultId,totalScore,isPublic:isPublicMode||false};
   document.getElementById('runner-title').textContent=t.title;
+  // Ommaviy test uchun sarlavha ostida 3.1 ball yozuvi
+  if(isPublicMode){
+    document.getElementById('runner-prog-txt').textContent='Har togri javob = 3.1 ball';
+  }
   document.getElementById('runner').classList.add('on');
   renderAllQuestions();
   startTimer();
