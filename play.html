@@ -275,7 +275,12 @@ function renderList(){
     // O'quvchining o'z guruh IDsi tayinlangan guruhlar ichida bo'lishi kerak
     const offGrpIds=offStudent?._groupIds||[];
     const onGrpIds=onStudent?._groupIds||[];
+    const curMode=window._urlMode; // 'offline' | 'online' | null
     const inMyGroup=myAsgn.some(a=>{
+      // Faqat joriy kabinetga mos guruhni ko'rsatish
+      if(curMode==='offline')return a.group_type==='offline'&&offStudent&&offGrpIds.includes(a.group_id);
+      if(curMode==='online')return a.group_type==='online'&&onStudent&&onGrpIds.includes(a.group_id);
+      // mode yo'q — ikkisini ham tekshir
       if(a.group_type==='offline'&&offStudent)return offGrpIds.includes(a.group_id);
       if(a.group_type==='online'&&onStudent)return onGrpIds.includes(a.group_id);
       return false;
@@ -283,6 +288,8 @@ function renderList(){
     if(!inMyGroup)return false;
     // Vaqt tekshiruvi — o'quvchining guruhiga mos tayinlovdan
     const myGroupAsgn=myAsgn.find(a=>{
+      if(curMode==='offline')return a.group_type==='offline'&&offStudent&&offGrpIds.includes(a.group_id);
+      if(curMode==='online')return a.group_type==='online'&&onStudent&&onGrpIds.includes(a.group_id);
       if(a.group_type==='offline'&&offStudent)return offGrpIds.includes(a.group_id);
       if(a.group_type==='online'&&onStudent)return onGrpIds.includes(a.group_id);
       return false;
