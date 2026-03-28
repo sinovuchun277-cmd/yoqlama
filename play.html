@@ -237,6 +237,15 @@ async function init(){
     allTests=tests;
     assignments=asgn;
     folders=flds;
+    // O'quvchining guruh IDlarini yuklash
+    if(offStudent){
+      const offGs=await GET('group_students',`?student_id=eq.${offStudent.id}&select=group_id`);
+      offStudent._groupIds=offGs.map(x=>x.group_id);
+    }
+    if(onStudent){
+      const onGs=await GET('group_students',`?student_id=eq.${onStudent.id}&select=group_id`);
+      onStudent._groupIds=onGs.map(x=>x.group_id);
+    }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='flex';
@@ -263,15 +272,23 @@ function renderList(){
     if(!t.rated||t.is_public)return false;
     const myAsgn=assignments.filter(a=>a.test_id===t.id);
     if(!myAsgn.length)return false;
+    // O'quvchining o'z guruh IDsi tayinlangan guruhlar ichida bo'lishi kerak
+    const offGrpIds=offStudent?._groupIds||[];
+    const onGrpIds=onStudent?._groupIds||[];
     const inMyGroup=myAsgn.some(a=>{
-      if(a.group_type==='offline'&&offStudent){const gIds=assignments.filter(x=>x.group_type==='offline'&&x.test_id===t.id).map(x=>x.group_id);return gIds.length>0;}
-      if(a.group_type==='online'&&onStudent){const gIds=assignments.filter(x=>x.group_type==='online'&&x.test_id===t.id).map(x=>x.group_id);return gIds.length>0;}
+      if(a.group_type==='offline'&&offStudent)return offGrpIds.includes(a.group_id);
+      if(a.group_type==='online'&&onStudent)return onGrpIds.includes(a.group_id);
       return false;
     });
     if(!inMyGroup)return false;
-    const asgn=myAsgn[0];
-    if(asgn.starts_at&&new Date(asgn.starts_at)>now)return false;
-    if(asgn.ends_at&&new Date(asgn.ends_at)<now)return false;
+    // Vaqt tekshiruvi — o'quvchining guruhiga mos tayinlovdan
+    const myGroupAsgn=myAsgn.find(a=>{
+      if(a.group_type==='offline'&&offStudent)return offGrpIds.includes(a.group_id);
+      if(a.group_type==='online'&&onStudent)return onGrpIds.includes(a.group_id);
+      return false;
+    })||myAsgn[0];
+    if(myGroupAsgn.starts_at&&new Date(myGroupAsgn.starts_at)>now)return false;
+    if(myGroupAsgn.ends_at&&new Date(myGroupAsgn.ends_at)<now)return false;
     return true;
   });
   const unratedTests=allTests.filter(t=>!t.rated&&!t.is_public);
@@ -389,8 +406,13 @@ async function startTest(testId, isPublicMode){
     }
   }
   if(t.rated&&!isPublicMode){
-    const done=myResults.find(r=>r.test_id===testId);
-    if(done){if(!confirm('Bu reytingli testni allaqachon topshirgansiz. Qayta ishlaysizmi? (ball qo\'shilmaydi)'))return;}
+    const done=myResults.find(r=>r.test_id===testId&&r.finished_at);
+    if(done){
+      const pct=done.total_score?Math.round(done.score/done.total_score*100):0;
+      document.getElementById('loading').innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:12px">✅</div><div style="font-size:17px;font-weight:800;margin-bottom:6px">Allaqachon topshirilgan</div><div style="font-size:13px;color:var(--text2);margin-bottom:8px">'+t.title+'</div><div style="font-size:22px;font-weight:900;color:var(--acc)">'+done.score+'/'+done.total_score+' ball ('+pct+'%)</div></div>';
+      document.getElementById('loading').style.display='flex';
+      return;
+    }
   }
   const questions=await GET('questions',`?test_id=eq.${testId}&order=order_num&select=*`);
   if(!questions.length){alert('Bu testda savol yo\'q');return;}
