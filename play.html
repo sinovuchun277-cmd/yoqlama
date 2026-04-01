@@ -242,9 +242,10 @@ async function init(){
       const offGs=await GET('group_students',`?student_id=eq.${offStudent.id}&select=group_id`);
       offStudent._groupIds=offGs.map(x=>x.group_id);
     }
-    if(onStudent){
-      const onGs=await GET('group_students',`?student_id=eq.${onStudent.id}&select=group_id`);
-      onStudent._groupIds=onGs.map(x=>x.group_id);
+    if(onStudent&&TG_ID){
+      // Onlayn o'quvchi uchun: enrollment_requests.course_id (approved)
+      const enrs=await GET('enrollment_requests',`?tg_id=eq.${TG_ID}&status=eq.approved&select=course_id`);
+      onStudent._groupIds=enrs.map(x=>x.course_id).filter(Boolean);
     }
     myResults=TG_ID?await GET('test_results',`?tg_id=eq.${TG_ID}&finished_at=not.is.null&select=*`):[];
     document.getElementById('loading').style.display='none';
